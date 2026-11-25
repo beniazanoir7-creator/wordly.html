@@ -137,13 +137,14 @@
       flex-wrap: wrap;
     }
 
-    .crest-box {
-      width: 92px;
-      height: 76px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
+    .crest-img {
+      width: 96px;
+      height: 80px;
+      object-fit: contain;
+      border-radius: 12px;
+      background: #090E1A;
+      padding: 4px;
+      border: 1px solid #1E293B;
     }
 
     .grid-4 {
@@ -247,6 +248,14 @@
       border-radius: 14px;
       padding: 10px;
       text-align: center;
+    }
+
+    .rank-tile img {
+      width: 72px;
+      height: 60px;
+      object-fit: contain;
+      margin: 0 auto;
+      display: block;
     }
 
     .rank-tile.current {
@@ -365,10 +374,10 @@
       <div class="rank-banner">
         <div class="rank-header">
           <div style="display:flex; align-items:center; gap:14px;">
-            <div class="crest-box" id="rank-crest"></div>
+            <img id="rank-crest" class="crest-img" src="rank-1.png" alt="رتبة المستوى" />
             <div>
-              <div class="muted" style="font-size:0.78rem;" id="rank-level-label">المستوى 1 من 10</div>
-              <h1 style="margin:2px 0; font-size:1.3rem;" id="rank-name">BEGINNER</h1>
+              <div class="muted" style="font-size:0.78rem;" id="rank-level-label">المستوى 1 من 10 — يتطلب 50 كلمة جديدة في هذا المستوى</div>
+              <h1 style="margin:2px 0; font-size:1.3rem;" id="rank-name">المستوى 1</h1>
               <div class="muted" id="rank-next-info">أكمل 50 كلمة جديدة في هذا المستوى ثم اجتز الاختبار للترقية</div>
             </div>
           </div>
@@ -573,45 +582,17 @@
 
   <script>
     const LEVELS_10 = [
-      { level: 1, name: "BEGINNER", reqWords: 50, color: "#B45309", accent: "#F59E0B", motif: "hood" },
-      { level: 2, name: "NOVICE", reqWords: 100, color: "#64748B", accent: "#E2E8F0", motif: "helm" },
-      { level: 3, name: "INTERMEDIATE", reqWords: 150, color: "#0284C7", accent: "#38BDF8", motif: "sword" },
-      { level: 4, name: "UPPER-INTERMEDIATE", reqWords: 250, color: "#0D9488", accent: "#2DD4BF", motif: "wolf" },
-      { level: 5, name: "ADVANCED", reqWords: 350, color: "#CA8A04", accent: "#FACC15", motif: "lion" },
-      { level: 6, name: "EXPERT", reqWords: 450, color: "#DC2626", accent: "#FBBF24", motif: "spartan" },
-      { level: 7, name: "MASTER", reqWords: 600, color: "#7C3AED", accent: "#C084FC", motif: "crownGem" },
-      { level: 8, name: "GRANDMASTER", reqWords: 800, color: "#B91C1C", accent: "#F87171", motif: "dragon" },
-      { level: 9, name: "LEGENDARY", reqWords: 1000, color: "#D97706", accent: "#FDE047", motif: "royalCrown" },
-      { level: 10, name: "MYTHICAL", reqWords: 1250, color: "#E11D48", accent: "#FB923C", motif: "phoenix" }
+      { level: 1, name: "المستوى 1", reqWords: 50, img: "rank-1.png" },
+      { level: 2, name: "المستوى 2", reqWords: 100, img: "rank-2.png" },
+      { level: 3, name: "المستوى 3", reqWords: 150, img: "rank-3.png" },
+      { level: 4, name: "المستوى 4", reqWords: 250, img: "rank-4.png" },
+      { level: 5, name: "المستوى 5", reqWords: 350, img: "rank-5.png" },
+      { level: 6, name: "المستوى 6", reqWords: 450, img: "rank-6.png" },
+      { level: 7, name: "المستوى 7", reqWords: 600, img: "rank-7.png" },
+      { level: 8, name: "المستوى 8", reqWords: 800, img: "rank-8.png" },
+      { level: 9, name: "المستوى 9", reqWords: 1000, img: "rank-9.png" },
+      { level: 10, name: "المستوى 10", reqWords: 1250, img: "rank-10.png" }
     ];
-
-    function renderCrestSVG(lvlObj, size = 76) {
-      const c = lvlObj.color;
-      const a = lvlObj.accent;
-      const centerGlyphs = {
-        hood: `<circle cx="40" cy="36" r="10" fill="#1E293B" stroke="${a}" stroke-width="2"/><path d="M27 52c2-9 24-9 26 0z" fill="${c}" stroke="${a}" stroke-width="1.5"/>`,
-        helm: `<path d="M28 24h24v16c0 8-6 13-12 15-6-2-12-7-12-15z" fill="#1E293B" stroke="${a}" stroke-width="2"/><path d="M40 24v16M33 36h14" stroke="${a}" stroke-width="2"/>`,
-        sword: `<path d="M40 18l4 24h-8z" fill="${a}"/><path d="M31 43h18M40 43v15" stroke="${a}" stroke-width="3" stroke-linecap="round"/>`,
-        wolf: `<path d="M26 24l7 8h14l7-8-2 22-12 9-12-9z" fill="#0F172A" stroke="${a}" stroke-width="2"/><circle cx="35" cy="38" r="2" fill="${a}"/><circle cx="45" cy="38" r="2" fill="${a}"/>`,
-        lion: `<circle cx="40" cy="39" r="14" fill="${c}" stroke="${a}" stroke-width="2.2"/><circle cx="40" cy="40" r="9" fill="#1E293B"/><circle cx="37" cy="38" r="1.6" fill="${a}"/><circle cx="43" cy="38" r="1.6" fill="${a}"/>`,
-        spartan: `<path d="M40 14c7 0 11 4 11 9H29c0-5 4-9 11-9z" fill="${c}"/><path d="M29 24h22v15c0 8-11 16-11 16s-11-8-11-16z" fill="#1E293B" stroke="${a}" stroke-width="2"/>`,
-        crownGem: `<path d="M25 46l4-20 11 9 11-9 4 20z" fill="${c}" stroke="${a}" stroke-width="2"/><polygon points="40,28 45,36 40,44 35,36" fill="${a}"/>`,
-        dragon: `<path d="M27 25l8 7h14l5-7-3 22-11 9-14-9z" fill="#450A0A" stroke="${a}" stroke-width="2.2"/><circle cx="36" cy="37" r="2.2" fill="${a}"/><circle cx="45" cy="37" r="2.2" fill="${a}"/>`,
-        royalCrown: `<path d="M24 47l3-22 13 10 13-10 3 22z" fill="${a}" stroke="#FEF08A" stroke-width="1.8"/><circle cx="40" cy="21" r="3" fill="#FEF08A"/>`,
-        phoenix: `<path d="M40 16c6 8 14 14 14 25 0 9-6 15-14 17-8-2-14-8-14-17 0-11 8-17 14-25z" fill="${c}" stroke="${a}" stroke-width="2.2"/><circle cx="40" cy="37" r="4" fill="#FEF08A"/>`
-      };
-      const glyph = centerGlyphs[lvlObj.motif] || centerGlyphs.hood;
-      return `
-        <svg width="${size}" height="${size}" viewBox="0 0 80 72" aria-label="${lvlObj.name}">
-          <path d="M18 22L6 14l6 18 8 6z" fill="${c}" opacity="0.85"/>
-          <path d="M62 22l12-8-6 18-8 6z" fill="${c}" opacity="0.85"/>
-          <path d="M22 14h36l4 24-22 24-22-24z" fill="#0B1220" stroke="${a}" stroke-width="2.5"/>
-          ${glyph}
-          <rect x="14" y="54" width="52" height="14" rx="4" fill="#090D16" stroke="${a}" stroke-width="1.5"/>
-          <text x="40" y="64" text-anchor="middle" fill="${a}" font-size="8.5" font-weight="900">LV.${lvlObj.level}</text>
-        </svg>
-      `;
-    }
 
     const STARTER_PACK = [
       { english: "Morning", arabic: "صباح", pronunciation: "مورنينغ", category: "الوقت", example: "I drink water every morning.", translation: "أشرب الماء كل صباح." },
@@ -646,12 +627,11 @@
       { english: "Change", arabic: "تغيير / يغيّر", pronunciation: "تشينج", category: "حياة يومية", example: "Positive habits change your life.", translation: "العادات الإيجابية تغيّر حياتك." }
     ];
 
-    const DB_NAME = 'Wordly10LevelsDB';
+    const DB_NAME = 'Wordly10LevelsImgsDB';
     let db = null;
     let vocab = [];
     let sessions = [];
     let reviews = [];
-    // levelLearnedIds tracks learned word IDs *independently per level* (e.g., { 1: ["id1", ...], 2: ["id51", ...] })
     let settings = {
       dailyTarget: 5,
       dir: 'rtl',
@@ -788,14 +768,17 @@
       const learnedInLevel = getCurrentLevelWordsCount();
       const readyForExam = learnedInLevel >= lvl.reqWords && nextLvl !== null;
 
-      document.getElementById('rank-crest').innerHTML = renderCrestSVG(lvl, 86);
+      const crestEl = document.getElementById('rank-crest');
+      crestEl.src = lvl.img;
+      crestEl.alt = lvl.name;
+
       document.getElementById('rank-level-label').textContent = 'المستوى ' + lvl.level + ' من 10 — يتطلب ' + lvl.reqWords + ' كلمة جديدة في هذا المستوى';
       document.getElementById('rank-name').textContent = lvl.name;
       document.getElementById('rank-words-progress').textContent = learnedInLevel + ' / ' + lvl.reqWords;
       document.getElementById('rank-progress-bar').style.width = Math.min(100, (learnedInLevel / lvl.reqWords) * 100) + '%';
 
       if (!nextLvl) {
-        document.getElementById('rank-next-info').textContent = 'لقد بلغت أعلى مستوى أسطوري (MYTHICAL). واصل المراجعة والتوسع.';
+        document.getElementById('rank-next-info').textContent = 'لقد بلغت المستوى العاشر والأخير. واصل المراجعة والتوسع.';
       } else if (readyForExam) {
         document.getElementById('rank-next-info').textContent = 'أكملت ' + lvl.reqWords + ' كلمة في هذا المستوى! اجتز الاختبار للترقية إلى ' + nextLvl.name + '.';
       } else {
@@ -828,10 +811,9 @@
         const countInLvl = Array.isArray(settings.levelLearnedIds[String(r.level)]) ? settings.levelLearnedIds[String(r.level)].length : 0;
         return `
           <div class="rank-tile ${isCurr ? 'current' : ''} ${isLocked ? 'locked' : ''}">
-            <div>${renderCrestSVG(r, 64)}</div>
-            <div style="font-weight:900; font-size:0.78rem; color:${r.accent}; margin-top:4px;">${r.name}</div>
-            <div class="muted" style="font-size:0.72rem;">المستوى ${r.level}</div>
-            <div style="font-size:0.76rem; font-weight:700; margin-top:4px;">${countInLvl} / ${r.reqWords} كلمة</div>
+            <img src="${r.img}" alt="${r.name}" />
+            <div style="font-weight:900; font-size:0.82rem; margin-top:6px;">${r.name}</div>
+            <div style="font-size:0.76rem; font-weight:700; color:#60A5FA; margin-top:2px;">${countInLvl} / ${r.reqWords} كلمة</div>
           </div>
         `;
       }).join('');
@@ -854,8 +836,8 @@
 
       if (lvl.level >= LEVELS_10.length) {
         box.innerHTML = `<div style="text-align:center; padding:16px;">
-          <div>${renderCrestSVG(lvl, 92)}</div>
-          <h2>أنت في أعلى مستوى: MYTHICAL</h2>
+          <img class="crest-img" style="margin:0 auto 10px; display:block;" src="${lvl.img}" alt="${lvl.name}" />
+          <h2>أنت في أعلى مستوى: ${lvl.name}</h2>
           <p class="muted">واصل مراجعة مفرداتك وجملك اليومية.</p>
         </div>`;
         return;
@@ -863,9 +845,9 @@
 
       if (learnedInLevel < lvl.reqWords) {
         box.innerHTML = `<div style="text-align:center; padding:16px;">
-          <div>${renderCrestSVG(lvl, 84)}</div>
+          <img class="crest-img" style="margin:0 auto 10px; display:block;" src="${lvl.img}" alt="${lvl.name}" />
           <h2>اختبار الترقية من ${lvl.name}</h2>
-          <p class="muted">يجب إكمال <strong>${lvl.reqWords}</strong> كلمة جديدة في المستوى ${lvl.level} لفتح هذا الاختبار. لديك حالياً <strong>${learnedInLevel}</strong> كلمات في هذا المستوى.</p>
+          <p class="muted">يجب إكمال <strong>${lvl.reqWords}</strong> كلمة جديدة في هذا المستوى لفتح هذا الاختبار. لديك حالياً <strong>${learnedInLevel}</strong> كلمات في هذا المستوى.</p>
           <button class="btn-primary" onclick="startLearn()">العودة للتعلّم</button>
         </div>`;
         return;
@@ -1012,7 +994,7 @@
           settings.levelLearnedIds[String(nextObj.level)] = [];
         }
         await putItem('settings', { key: 'cfg', value: settings });
-        showToast('ترقيت إلى المستوى ' + nextObj.level + ': ' + nextObj.name);
+        showToast('ترقيت إلى ' + nextObj.name);
         refreshAll();
       }
     }
