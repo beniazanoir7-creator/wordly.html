@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WORDLY - نظام المستويات والاختبارات</title>
+  <title>WORDLY - نظام المستويات العشرة</title>
   <style>
     :root {
       --bg-main: #070B14;
@@ -17,7 +17,6 @@
       --green: #10B981;
       --amber: #F59E0B;
       --red: #EF4444;
-      --purple: #8B5CF6;
     }
 
     * { box-sizing: border-box; }
@@ -40,7 +39,7 @@
     }
 
     .header-inner {
-      max-width: 980px;
+      max-width: 1000px;
       margin: 0 auto;
       display: flex;
       align-items: center;
@@ -109,7 +108,7 @@
     .btn-red { background: var(--red); color: #fff; padding: 8px 12px; font-weight: 700; }
 
     main {
-      max-width: 880px;
+      max-width: 900px;
       margin: 0 auto;
       padding: 16px;
     }
@@ -123,7 +122,7 @@
     }
 
     .rank-banner {
-      background: linear-gradient(135deg, rgba(37, 99, 235, 0.18), rgba(15, 23, 42, 0.95));
+      background: linear-gradient(145deg, rgba(17, 26, 46, 0.98), rgba(7, 11, 20, 0.98));
       border: 1px solid #334155;
       border-radius: 18px;
       padding: 18px;
@@ -134,20 +133,17 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 14px;
       flex-wrap: wrap;
     }
 
-    .rank-emblem {
-      width: 60px;
-      height: 60px;
-      border-radius: 16px;
-      background: #111A2E;
-      border: 1px solid #3B82F6;
+    .crest-box {
+      width: 92px;
+      height: 76px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2rem;
+      flex-shrink: 0;
     }
 
     .grid-4 {
@@ -231,19 +227,35 @@
       font-weight: 600;
     }
 
-    .choice-btn:hover {
+    .choice-btn:hover { border-color: #3B82F6; background: #16223B; }
+    .choice-btn.correct { border-color: var(--green); background: rgba(16, 185, 129, 0.18); }
+    .choice-btn.wrong { border-color: var(--red); background: rgba(239, 68, 68, 0.18); }
+
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    @media (min-width: 640px) {
+      .roadmap-grid { grid-template-columns: repeat(5, 1fr); }
+    }
+
+    .rank-tile {
+      background: #111A2E;
+      border: 1px solid #1E293B;
+      border-radius: 14px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .rank-tile.current {
       border-color: #3B82F6;
-      background: #16223B;
+      background: #142442;
     }
 
-    .choice-btn.correct {
-      border-color: var(--green);
-      background: rgba(16, 185, 129, 0.18);
-    }
-
-    .choice-btn.wrong {
-      border-color: var(--red);
-      background: rgba(239, 68, 68, 0.18);
+    .rank-tile.locked {
+      opacity: 0.55;
     }
 
     .modal-backdrop {
@@ -339,7 +351,7 @@
         <button class="nav-btn" data-tab="learn" onclick="startLearn()">📖 تعلّم</button>
         <button class="nav-btn" data-tab="exam" onclick="startExam()">🏆 اختبار الترقية</button>
         <button class="nav-btn" data-tab="vocab" onclick="goTab('vocab')">📚 كلماتي</button>
-        <button class="nav-btn" data-tab="stats" onclick="goTab('stats')">📊 الإحصائيات</button>
+        <button class="nav-btn" data-tab="stats" onclick="goTab('stats')">📊 المستويات</button>
         <button class="nav-btn" data-tab="settings" onclick="goTab('settings')">⚙️ الإعدادات</button>
       </div>
 
@@ -353,20 +365,20 @@
       <div class="rank-banner">
         <div class="rank-header">
           <div style="display:flex; align-items:center; gap:14px;">
-            <div class="rank-emblem" id="rank-icon">🪨</div>
+            <div class="crest-box" id="rank-crest"></div>
             <div>
-              <div class="muted" style="font-size:0.78rem;">رتبتك الحالية</div>
-              <h1 style="margin:2px 0; font-size:1.35rem;" id="rank-name">أساس 1</h1>
-              <div class="muted" id="rank-next-info">تحتاج 20 كلمة متعلمة + اجتياز الاختبار للترقية</div>
+              <div class="muted" style="font-size:0.78rem;" id="rank-level-label">المستوى 1 من 10</div>
+              <h1 style="margin:2px 0; font-size:1.3rem;" id="rank-name">BEGINNER</h1>
+              <div class="muted" id="rank-next-info">أكمل 50 كلمة جديدة في هذا المستوى ثم اجتز الاختبار للترقية</div>
             </div>
           </div>
-          <button class="btn-amber" id="exam-action-btn" onclick="startExam()">🏆 اختبار الترقية</button>
+          <button class="btn-amber" onclick="startExam()">🏆 اختبار الترقية</button>
         </div>
 
         <div style="margin-top:14px;">
           <div style="display:flex; justify-content:space-between; font-size:0.84rem; font-weight:700;">
-            <span>تقدم الكلمات نحو الاختبار (كل 20 كلمة)</span>
-            <span style="color:#60A5FA;" id="rank-words-progress">0 / 20</span>
+            <span>كلمات المستوى الحالي (مستقلة لكل مستوى)</span>
+            <span style="color:#60A5FA;" id="rank-words-progress">0 / 50</span>
           </div>
           <div class="progress-track">
             <div class="progress-fill" id="rank-progress-bar"></div>
@@ -375,11 +387,11 @@
       </div>
 
       <div class="card">
-        <p class="muted" style="margin:0 0 14px;">تعلّم الكلمات داخل جمل قصيرة، أكمل 20 كلمة، ثم اجتز اختباراً متنوعاً لترتقي برمز أقوى.</p>
+        <p class="muted" style="margin:0 0 14px;">تعلّم الكلمات داخل جمل قصيرة، أكمل حصتك المستقلة في المستوى الحالي، واجتز اختباراً متنوعاً للصعود للرتبة التالية.</p>
         <div class="flex-gap">
           <button class="btn-ai" onclick="generateDailySentences()">✨ توليد 5 جمل يومية</button>
           <button class="btn-primary" onclick="startLearn()">⚡ ابدأ جلسة تعلّم</button>
-          <button class="btn-secondary" id="home-review-btn" onclick="goTab('vocab')">🔄 مراجعة الكلمات المستحقة (0)</button>
+          <button class="btn-secondary" id="home-review-btn" onclick="goTab('vocab')">📚 الكلمات المستحقة (0)</button>
         </div>
       </div>
 
@@ -393,8 +405,8 @@
 
       <div class="grid-4">
         <div class="card" style="margin:0;">
-          <div class="stat-label">كلمات متعلمة / متقنة</div>
-          <div class="stat-val" style="color:var(--green);" id="h-learned">0</div>
+          <div class="stat-label">كلمات المستوى الحالي</div>
+          <div class="stat-val" style="color:#60A5FA;" id="h-level-words">0</div>
         </div>
         <div class="card" style="margin:0;">
           <div class="stat-label">إجمالي المحفوظة</div>
@@ -406,7 +418,7 @@
         </div>
         <div class="card" style="margin:0;">
           <div class="stat-label">سلسلة الأيام</div>
-          <div class="stat-val" style="color:#60A5FA;" id="h-streak">🔥 0</div>
+          <div class="stat-val" style="color:#10B981;" id="h-streak">🔥 0</div>
         </div>
       </div>
     </section>
@@ -442,14 +454,17 @@
       <div id="vocab-list"></div>
     </section>
 
-    <!-- 5. STATISTICS -->
+    <!-- 5. LEVELS & STATS -->
     <section id="page-stats" class="page">
-      <div class="card" id="ranks-roadmap"></div>
+      <div class="card">
+        <h3 style="margin:0 0 12px; font-size:1.05rem;">نظام المستويات العشرة والرموز</h3>
+        <div class="roadmap-grid" id="ranks-roadmap"></div>
+      </div>
 
       <div class="grid-4">
         <div class="card" style="margin:0;">
-          <div class="stat-label">الكلمات المتعلمة</div>
-          <div class="stat-val" style="color:#60A5FA;" id="s-learned">0</div>
+          <div class="stat-label">كلمات المستوى الحالي</div>
+          <div class="stat-val" style="color:#60A5FA;" id="s-level-words">0</div>
         </div>
         <div class="card" style="margin:0;">
           <div class="stat-label">إجمالي المحفوظة</div>
@@ -475,7 +490,7 @@
     <section id="page-settings" class="page">
       <div class="card">
         <h3 style="margin:0 0 12px; font-size:1.05rem;">الإعدادات</h3>
-        <label>الهدف اليومي لعدد الكلمات:</label>
+        <label>الهدف اليومي لعدد الكلمات في الجلسة:</label>
         <input type="number" id="set-target" min="1" max="50" onchange="saveSettings()" />
 
         <label>اتجاه / لغة الواجهة:</label>
@@ -557,22 +572,46 @@
   </nav>
 
   <script>
-    const RANKS = [
-      { id: 0, name: "أساس 1", icon: "🪨", reqWords: 20 },
-      { id: 1, name: "أساس 2", icon: "🪨", reqWords: 40 },
-      { id: 2, name: "أساس 3", icon: "🪨", reqWords: 60 },
-      { id: 3, name: "نصل 1", icon: "⚔️", reqWords: 80 },
-      { id: 4, name: "نصل 2", icon: "⚔️", reqWords: 100 },
-      { id: 5, name: "نصل 3", icon: "⚔️", reqWords: 120 },
-      { id: 6, name: "عاصفة 1", icon: "⚡", reqWords: 140 },
-      { id: 7, name: "عاصفة 2", icon: "⚡", reqWords: 160 },
-      { id: 8, name: "عاصفة 3", icon: "⚡", reqWords: 180 },
-      { id: 9, name: "عنقاء 1", icon: "🔥", reqWords: 200 },
-      { id: 10, name: "عنقاء 2", icon: "🔥", reqWords: 220 },
-      { id: 11, name: "تاج 1", icon: "👑", reqWords: 240 },
-      { id: 12, name: "تاج 2", icon: "👑", reqWords: 260 },
-      { id: 13, name: "الأسطورة", icon: "🐉", reqWords: 280 }
+    const LEVELS_10 = [
+      { level: 1, name: "BEGINNER", reqWords: 50, color: "#B45309", accent: "#F59E0B", motif: "hood" },
+      { level: 2, name: "NOVICE", reqWords: 100, color: "#64748B", accent: "#E2E8F0", motif: "helm" },
+      { level: 3, name: "INTERMEDIATE", reqWords: 150, color: "#0284C7", accent: "#38BDF8", motif: "sword" },
+      { level: 4, name: "UPPER-INTERMEDIATE", reqWords: 250, color: "#0D9488", accent: "#2DD4BF", motif: "wolf" },
+      { level: 5, name: "ADVANCED", reqWords: 350, color: "#CA8A04", accent: "#FACC15", motif: "lion" },
+      { level: 6, name: "EXPERT", reqWords: 450, color: "#DC2626", accent: "#FBBF24", motif: "spartan" },
+      { level: 7, name: "MASTER", reqWords: 600, color: "#7C3AED", accent: "#C084FC", motif: "crownGem" },
+      { level: 8, name: "GRANDMASTER", reqWords: 800, color: "#B91C1C", accent: "#F87171", motif: "dragon" },
+      { level: 9, name: "LEGENDARY", reqWords: 1000, color: "#D97706", accent: "#FDE047", motif: "royalCrown" },
+      { level: 10, name: "MYTHICAL", reqWords: 1250, color: "#E11D48", accent: "#FB923C", motif: "phoenix" }
     ];
+
+    function renderCrestSVG(lvlObj, size = 76) {
+      const c = lvlObj.color;
+      const a = lvlObj.accent;
+      const centerGlyphs = {
+        hood: `<circle cx="40" cy="36" r="10" fill="#1E293B" stroke="${a}" stroke-width="2"/><path d="M27 52c2-9 24-9 26 0z" fill="${c}" stroke="${a}" stroke-width="1.5"/>`,
+        helm: `<path d="M28 24h24v16c0 8-6 13-12 15-6-2-12-7-12-15z" fill="#1E293B" stroke="${a}" stroke-width="2"/><path d="M40 24v16M33 36h14" stroke="${a}" stroke-width="2"/>`,
+        sword: `<path d="M40 18l4 24h-8z" fill="${a}"/><path d="M31 43h18M40 43v15" stroke="${a}" stroke-width="3" stroke-linecap="round"/>`,
+        wolf: `<path d="M26 24l7 8h14l7-8-2 22-12 9-12-9z" fill="#0F172A" stroke="${a}" stroke-width="2"/><circle cx="35" cy="38" r="2" fill="${a}"/><circle cx="45" cy="38" r="2" fill="${a}"/>`,
+        lion: `<circle cx="40" cy="39" r="14" fill="${c}" stroke="${a}" stroke-width="2.2"/><circle cx="40" cy="40" r="9" fill="#1E293B"/><circle cx="37" cy="38" r="1.6" fill="${a}"/><circle cx="43" cy="38" r="1.6" fill="${a}"/>`,
+        spartan: `<path d="M40 14c7 0 11 4 11 9H29c0-5 4-9 11-9z" fill="${c}"/><path d="M29 24h22v15c0 8-11 16-11 16s-11-8-11-16z" fill="#1E293B" stroke="${a}" stroke-width="2"/>`,
+        crownGem: `<path d="M25 46l4-20 11 9 11-9 4 20z" fill="${c}" stroke="${a}" stroke-width="2"/><polygon points="40,28 45,36 40,44 35,36" fill="${a}"/>`,
+        dragon: `<path d="M27 25l8 7h14l5-7-3 22-11 9-14-9z" fill="#450A0A" stroke="${a}" stroke-width="2.2"/><circle cx="36" cy="37" r="2.2" fill="${a}"/><circle cx="45" cy="37" r="2.2" fill="${a}"/>`,
+        royalCrown: `<path d="M24 47l3-22 13 10 13-10 3 22z" fill="${a}" stroke="#FEF08A" stroke-width="1.8"/><circle cx="40" cy="21" r="3" fill="#FEF08A"/>`,
+        phoenix: `<path d="M40 16c6 8 14 14 14 25 0 9-6 15-14 17-8-2-14-8-14-17 0-11 8-17 14-25z" fill="${c}" stroke="${a}" stroke-width="2.2"/><circle cx="40" cy="37" r="4" fill="#FEF08A"/>`
+      };
+      const glyph = centerGlyphs[lvlObj.motif] || centerGlyphs.hood;
+      return `
+        <svg width="${size}" height="${size}" viewBox="0 0 80 72" aria-label="${lvlObj.name}">
+          <path d="M18 22L6 14l6 18 8 6z" fill="${c}" opacity="0.85"/>
+          <path d="M62 22l12-8-6 18-8 6z" fill="${c}" opacity="0.85"/>
+          <path d="M22 14h36l4 24-22 24-22-24z" fill="#0B1220" stroke="${a}" stroke-width="2.5"/>
+          ${glyph}
+          <rect x="14" y="54" width="52" height="14" rx="4" fill="#090D16" stroke="${a}" stroke-width="1.5"/>
+          <text x="40" y="64" text-anchor="middle" fill="${a}" font-size="8.5" font-weight="900">LV.${lvlObj.level}</text>
+        </svg>
+      `;
+    }
 
     const STARTER_PACK = [
       { english: "Morning", arabic: "صباح", pronunciation: "مورنينغ", category: "الوقت", example: "I drink water every morning.", translation: "أشرب الماء كل صباح." },
@@ -607,12 +646,21 @@
       { english: "Change", arabic: "تغيير / يغيّر", pronunciation: "تشينج", category: "حياة يومية", example: "Positive habits change your life.", translation: "العادات الإيجابية تغيّر حياتك." }
     ];
 
-    const DB_NAME = 'WordlyRanksDB';
+    const DB_NAME = 'Wordly10LevelsDB';
     let db = null;
     let vocab = [];
     let sessions = [];
     let reviews = [];
-    let settings = { dailyTarget: 5, dir: 'rtl', streak: 0, lastActiveDate: '', rankIndex: 0, examsPassed: 0 };
+    // levelLearnedIds tracks learned word IDs *independently per level* (e.g., { 1: ["id1", ...], 2: ["id51", ...] })
+    let settings = {
+      dailyTarget: 5,
+      dir: 'rtl',
+      streak: 0,
+      lastActiveDate: '',
+      levelIndex: 0,
+      examsPassed: 0,
+      levelLearnedIds: {}
+    };
 
     let editingId = null;
     let currentFilter = 'all';
@@ -699,7 +747,9 @@
       reviews = await getAllItems('reviews');
       const stList = await getAllItems('settings');
       const found = stList.find(x => x.key === 'cfg');
-      if (found && found.value) settings = { ...settings, ...found.value };
+      if (found && found.value) {
+        settings = { ...settings, ...found.value, levelLearnedIds: { ...(found.value.levelLearnedIds || {}) } };
+      }
 
       document.documentElement.dir = settings.dir || 'rtl';
       document.getElementById('set-target').value = settings.dailyTarget;
@@ -708,69 +758,83 @@
       refreshAll();
     }
 
-    function getLearnedWordsCount() {
-      return vocab.filter(w => w.status === 'learned' || w.status === 'mastered' || (w.interval || 0) >= 1).length;
+    function getCurrentLevelObj() {
+      const idx = Math.min(LEVELS_10.length - 1, Math.max(0, Number(settings.levelIndex) || 0));
+      return LEVELS_10[idx];
     }
 
-    function getCurrentRank() {
-      const idx = Math.min(RANKS.length - 1, Math.max(0, Number(settings.rankIndex) || 0));
-      return RANKS[idx];
+    function getCurrentLevelWordsCount() {
+      const lvl = getCurrentLevelObj();
+      const arr = Array.isArray(settings.levelLearnedIds[lvl.level]) ? settings.levelLearnedIds[lvl.level] : [];
+      return Math.min(lvl.reqWords, arr.length);
+    }
+
+    async function recordLearnedWordForCurrentLevel(wordId) {
+      const lvl = getCurrentLevelObj();
+      const key = String(lvl.level);
+      const currArr = Array.isArray(settings.levelLearnedIds[key]) ? [...settings.levelLearnedIds[key]] : [];
+      if (!currArr.includes(wordId) && currArr.length < lvl.reqWords) {
+        currArr.push(wordId);
+        settings.levelLearnedIds[key] = currArr;
+        await putItem('settings', { key: 'cfg', value: settings });
+      }
     }
 
     function refreshAll() {
       const t = todayStr();
       const due = vocab.filter(w => w.nextReviewDate && w.nextReviewDate <= t);
-      const learnedCount = getLearnedWordsCount();
-      const rank = getCurrentRank();
-      const nextRank = RANKS[Math.min(RANKS.length - 1, rank.id + 1)];
-      const prevReq = rank.id === 0 ? 0 : RANKS[rank.id - 1].reqWords;
-      const stepGoal = Math.max(1, rank.reqWords - prevReq);
-      const inCurrentStep = Math.max(0, Math.min(stepGoal, learnedCount - prevReq));
-      const canTakeExam = learnedCount >= rank.reqWords && rank.id < RANKS.length - 1;
+      const lvl = getCurrentLevelObj();
+      const nextLvl = LEVELS_10[lvl.level] || null;
+      const learnedInLevel = getCurrentLevelWordsCount();
+      const readyForExam = learnedInLevel >= lvl.reqWords && nextLvl !== null;
 
-      document.getElementById('rank-icon').textContent = rank.icon;
-      document.getElementById('rank-name').textContent = rank.name;
-      document.getElementById('rank-words-progress').textContent = inCurrentStep + ' / ' + stepGoal + ' (إجمالي المتعلمة: ' + learnedCount + ')';
-      document.getElementById('rank-progress-bar').style.width = Math.min(100, (inCurrentStep / stepGoal) * 100) + '%';
+      document.getElementById('rank-crest').innerHTML = renderCrestSVG(lvl, 86);
+      document.getElementById('rank-level-label').textContent = 'المستوى ' + lvl.level + ' من 10 — يتطلب ' + lvl.reqWords + ' كلمة جديدة في هذا المستوى';
+      document.getElementById('rank-name').textContent = lvl.name;
+      document.getElementById('rank-words-progress').textContent = learnedInLevel + ' / ' + lvl.reqWords;
+      document.getElementById('rank-progress-bar').style.width = Math.min(100, (learnedInLevel / lvl.reqWords) * 100) + '%';
 
-      if (rank.id >= RANKS.length - 1) {
-        document.getElementById('rank-next-info').textContent = 'لقد بلغت أعلى رتبة أسطورية في السلم.';
-      } else if (canTakeExam) {
-        document.getElementById('rank-next-info').textContent = 'أكملت 20 كلمة لهذه الرتبة! اجتز الاختبار للترقية إلى: ' + nextRank.name + ' ' + nextRank.icon;
+      if (!nextLvl) {
+        document.getElementById('rank-next-info').textContent = 'لقد بلغت أعلى مستوى أسطوري (MYTHICAL). واصل المراجعة والتوسع.';
+      } else if (readyForExam) {
+        document.getElementById('rank-next-info').textContent = 'أكملت ' + lvl.reqWords + ' كلمة في هذا المستوى! اجتز الاختبار للترقية إلى ' + nextLvl.name + '.';
       } else {
-        const rem = Math.max(0, rank.reqWords - learnedCount);
-        document.getElementById('rank-next-info').textContent = 'تبقّى ' + rem + ' كلمات لفتح اختبار الترقية إلى: ' + nextRank.name + ' ' + nextRank.icon;
+        const rem = Math.max(0, lvl.reqWords - learnedInLevel);
+        document.getElementById('rank-next-info').textContent = 'تبقّى ' + rem + ' كلمات جديدة في هذا المستوى لفتح اختبار الترقية إلى ' + nextLvl.name + '.';
       }
 
-      document.getElementById('h-learned').textContent = learnedCount;
+      document.getElementById('h-level-words').textContent = learnedInLevel + ' / ' + lvl.reqWords;
       document.getElementById('h-total').textContent = vocab.length;
       document.getElementById('h-due').textContent = due.length;
       document.getElementById('h-streak').textContent = '🔥 ' + (settings.streak || 0);
-      document.getElementById('home-review-btn').textContent = '📚 مراجعة الكلمات المستحقة (' + due.length + ')';
+      document.getElementById('home-review-btn').textContent = '📚 الكلمات المستحقة (' + due.length + ')';
 
-      document.getElementById('s-learned').textContent = learnedCount;
+      document.getElementById('s-level-words').textContent = learnedInLevel + ' / ' + lvl.reqWords;
       document.getElementById('s-total').textContent = vocab.length;
       document.getElementById('s-exams').textContent = settings.examsPassed || 0;
       document.getElementById('s-due').textContent = due.length;
 
-      renderRoadmap(rank.id);
+      renderRoadmap(lvl.level);
       renderVocabList();
       renderWeeklyChart(t);
     }
 
-    function renderRoadmap(activeId) {
+    function renderRoadmap(activeLevelNum) {
       const box = document.getElementById('ranks-roadmap');
       if (!box) return;
-      box.innerHTML = `<h3 style="margin:0 0 10px; font-size:1rem;">سلم الرتب والرموز</h3>` +
-        `<div class="flex-gap">` +
-        RANKS.map(r => {
-          const unlocked = r.id <= activeId;
-          const border = r.id === activeId ? '1px solid #3B82F6; background:#13223F;' : (unlocked ? '1px solid #1E293B; background:#111A2E;' : '1px solid #182032; background:#0A0F1C; opacity:0.6;');
-          return `<div style="padding:8px 12px; border-radius:12px; border:${border}; font-size:0.82rem;">
-            <span>${r.icon}</span> <strong>${r.name}</strong> <span class="muted">(${r.reqWords} كلمة)</span>
-          </div>`;
-        }).join('') +
-        `</div>`;
+      box.innerHTML = LEVELS_10.map(r => {
+        const isCurr = r.level === activeLevelNum;
+        const isLocked = r.level > activeLevelNum;
+        const countInLvl = Array.isArray(settings.levelLearnedIds[String(r.level)]) ? settings.levelLearnedIds[String(r.level)].length : 0;
+        return `
+          <div class="rank-tile ${isCurr ? 'current' : ''} ${isLocked ? 'locked' : ''}">
+            <div>${renderCrestSVG(r, 64)}</div>
+            <div style="font-weight:900; font-size:0.78rem; color:${r.accent}; margin-top:4px;">${r.name}</div>
+            <div class="muted" style="font-size:0.72rem;">المستوى ${r.level}</div>
+            <div style="font-size:0.76rem; font-weight:700; margin-top:4px;">${countInLvl} / ${r.reqWords} كلمة</div>
+          </div>
+        `;
+      }).join('');
     }
 
     function goTab(tab) {
@@ -785,24 +849,24 @@
     function startExam() {
       goTab('exam');
       const box = document.getElementById('exam-box');
-      const rank = getCurrentRank();
-      const learnedCount = getLearnedWordsCount();
+      const lvl = getCurrentLevelObj();
+      const learnedInLevel = getCurrentLevelWordsCount();
 
-      if (rank.id >= RANKS.length - 1) {
+      if (lvl.level >= LEVELS_10.length) {
         box.innerHTML = `<div style="text-align:center; padding:16px;">
-          <div style="font-size:2.5rem;">🐉</div>
-          <h2>أنت في رتبة الأسطورة</h2>
-          <p class="muted">واصل مراجعة كلماتك والحفاظ على سلسلتك اليومية.</p>
+          <div>${renderCrestSVG(lvl, 92)}</div>
+          <h2>أنت في أعلى مستوى: MYTHICAL</h2>
+          <p class="muted">واصل مراجعة مفرداتك وجملك اليومية.</p>
         </div>`;
         return;
       }
 
-      if (learnedCount < rank.reqWords) {
+      if (learnedInLevel < lvl.reqWords) {
         box.innerHTML = `<div style="text-align:center; padding:16px;">
-          <div style="font-size:2rem;">${rank.icon}</div>
-          <h2>اختبار الترقية من ${rank.name}</h2>
-          <p class="muted">تحتاج إلى <strong>${rank.reqWords}</strong> كلمة متعلمة لفتح هذا الاختبار. لديك حالياً <strong>${learnedCount}</strong> كلمات.</p>
-          <button class="btn-primary" onclick="startLearn()">اذهب للتعلّم الآن</button>
+          <div>${renderCrestSVG(lvl, 84)}</div>
+          <h2>اختبار الترقية من ${lvl.name}</h2>
+          <p class="muted">يجب إكمال <strong>${lvl.reqWords}</strong> كلمة جديدة في المستوى ${lvl.level} لفتح هذا الاختبار. لديك حالياً <strong>${learnedInLevel}</strong> كلمات في هذا المستوى.</p>
+          <button class="btn-primary" onclick="startLearn()">العودة للتعلّم</button>
         </div>`;
         return;
       }
@@ -810,62 +874,58 @@
       const pool = vocab.filter(w => w.status === 'learned' || w.status === 'mastered' || (w.interval || 0) >= 1);
       const source = pool.length >= 5 ? pool : vocab;
       if (source.length < 4) {
-        box.innerHTML = `<div style="text-align:center; padding:16px;"><p class="muted">أضف وتعلّم 4 كلمات على الأقل لتوليد أسئلة الاختبار.</p></div>`;
+        box.innerHTML = `<div style="text-align:center; padding:16px;"><p class="muted">تحتاج إلى 4 كلمات محفوظة على الأقل لتوليد أسئلة الاختبار.</p></div>`;
         return;
       }
 
       const count = Math.min(8, source.length);
-      const selected = [...source].sort(() => Math.random() - 0.5).slice(0, count);
+      const selected = shuffleArray(source).slice(0, count);
       const types = ['fill', 'meaning', 'audio', 'reverse'];
 
       examQuestions = selected.map((target, idx) => {
         const type = types[idx % types.length];
-        const distractors = source.filter(x => x.id !== target.id).sort(() => Math.random() - 0.5).slice(0, 3);
+        const distractors = shuffleArray(source.filter(x => x.id !== target.id)).slice(0, 3);
 
         if (type === 'fill' && target.example && target.example.toLowerCase().includes(target.english.toLowerCase())) {
           const masked = target.example.replace(new RegExp(escapeRegex(target.english), 'ig'), '_____');
-          const opts = shuffleArray([target.english, ...distractors.map(d => d.english)]);
           return {
             tag: 'إكمال الجملة من حفظك',
             prompt: 'اختر الكلمة المناسبة لإكمال الجملة:',
             sub: masked,
             speakText: '',
-            options: opts,
+            options: shuffleArray([target.english, ...distractors.map(d => d.english)]),
             answer: target.english
           };
         }
 
         if (type === 'audio') {
-          const opts = shuffleArray([target.arabic, ...distractors.map(d => d.arabic)]);
           return {
             tag: 'اختبار الاستماع والنطق',
             prompt: 'استمع إلى الكلمة ثم اختر معناها الصحيح:',
             sub: target.pronunciation ? 'النطق التقريبي: ' + target.pronunciation : 'اضغط زر الاستماع',
             speakText: target.english,
-            options: opts,
+            options: shuffleArray([target.arabic, ...distractors.map(d => d.arabic)]),
             answer: target.arabic
           };
         }
 
         if (type === 'reverse') {
-          const opts = shuffleArray([target.english, ...distractors.map(d => d.english)]);
           return {
             tag: 'ترجمة عكسية (عربي ← إنجليزي)',
             prompt: 'ما الكلمة الإنجليزية التي تعني:',
             sub: target.arabic,
             speakText: '',
-            options: opts,
+            options: shuffleArray([target.english, ...distractors.map(d => d.english)]),
             answer: target.english
           };
         }
 
-        const opts = shuffleArray([target.arabic, ...distractors.map(d => d.arabic)]);
         return {
           tag: 'المعنى في السياق',
           prompt: 'ما معنى الكلمة التالية؟',
           sub: target.english + (target.example ? ' — "' + target.example + '"' : ''),
           speakText: target.english,
-          options: opts,
+          options: shuffleArray([target.arabic, ...distractors.map(d => d.arabic)]),
           answer: target.arabic
         };
       });
@@ -884,14 +944,14 @@
         const pct = Math.round(ratio * 100);
 
         if (passed) {
-          promoteRank();
+          promoteLevel();
         }
 
         box.innerHTML = `<div style="text-align:center; padding:16px;">
           <div style="font-size:2.4rem;">${passed ? '🏆' : '⚔️'}</div>
-          <h2>${passed ? 'مبروك! اجتزت الاختبار وتمت ترقيتك' : 'لم تكتمل نسبة النجاح (المطلوب 80%)'}</h2>
+          <h2>${passed ? 'مبروك! اجتزت الاختبار وصعدت للمستوى التالي' : 'لم تكتمل نسبة النجاح (المطلوب 80%)'}</h2>
           <p style="font-size:1.2rem; font-weight:800; color:${passed ? '#10B981' : '#F59E0B'};">نتيجتك: ${examScore} من ${examQuestions.length} (${pct}%)</p>
-          <p class="muted">${passed ? 'رتبتك الجديدة مفعّلة الآن في الصفحة الرئيسية.' : 'راجع كلماتك وأعد المحاولة لتجاوز 80% والترقية.'}</p>
+          <p class="muted">${passed ? 'تم فتح المستوى الجديد وبدأ عدّاده المستقل من الصفر.' : 'راجع كلماتك وأعد المحاولة لتجاوز 80% والصعود.'}</p>
           <div class="flex-gap" style="justify-content:center; margin-top:12px;">
             <button class="btn-primary" onclick="startExam()">إعادة الاختبار</button>
             <button class="btn-secondary" onclick="goTab('home')">العودة للرئيسية</button>
@@ -943,13 +1003,16 @@
       renderExamQuestion();
     }
 
-    async function promoteRank() {
-      if (settings.rankIndex < RANKS.length - 1) {
-        settings.rankIndex = (Number(settings.rankIndex) || 0) + 1;
+    async function promoteLevel() {
+      if (settings.levelIndex < LEVELS_10.length - 1) {
+        settings.levelIndex = (Number(settings.levelIndex) || 0) + 1;
         settings.examsPassed = (Number(settings.examsPassed) || 0) + 1;
+        const nextObj = LEVELS_10[settings.levelIndex];
+        if (!Array.isArray(settings.levelLearnedIds[String(nextObj.level)])) {
+          settings.levelLearnedIds[String(nextObj.level)] = [];
+        }
         await putItem('settings', { key: 'cfg', value: settings });
-        const newRank = RANKS[settings.rankIndex];
-        showToast('ترقيت إلى رتبة ' + newRank.name + ' ' + newRank.icon);
+        showToast('ترقيت إلى المستوى ' + nextObj.level + ': ' + nextObj.name);
         refreshAll();
       }
     }
@@ -1222,6 +1285,10 @@
       await putItem('vocabulary', updated);
       vocab = vocab.map(x => x.id === updated.id ? updated : x);
 
+      if (choice === 'learned') {
+        await recordLearnedWordForCurrentLevel(w.id);
+      }
+
       const labelMap = { learned: 'تم التعلّم', difficult: 'صعبة', not_learned: 'غير متعلمة' };
       learnLog.push({ en: w.english, label: labelMap[choice] });
       learnIdx++;
@@ -1308,7 +1375,7 @@
               vocab = await getAllItems('vocabulary');
             }
             if (data.settings) {
-              settings = { ...settings, ...data.settings };
+              settings = { ...settings, ...data.settings, levelLearnedIds: { ...(data.settings.levelLearnedIds || {}) } };
               await putItem('settings', { key: 'cfg', value: settings });
             }
           }
