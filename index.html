@@ -109,6 +109,14 @@
 
     .btn-primary:hover { background: var(--blue-hover); }
 
+    .btn-ai {
+      background: linear-gradient(135deg, #2563EB, #7C3AED);
+      color: #fff;
+      padding: 10px 16px;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
     .btn-secondary {
       background: #1E293B;
       color: #fff;
@@ -304,9 +312,12 @@
     @media (min-width: 640px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
     .muted { color: var(--muted); font-size: 0.85rem; }
     .error-msg { background: #450A0A; border: 1px solid #991B1B; color: #FCA5A5; padding: 10px; border-radius: 10px; font-size: 0.85rem; margin-bottom: 10px; display: none; }
+    .toast { position: fixed; top: 72px; left: 50%; transform: translateX(-50%); background: #10B981; color: #fff; padding: 10px 18px; border-radius: 999px; font-weight: 700; font-size: 0.85rem; z-index: 60; display: none; box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
   </style>
 </head>
 <body>
+
+  <div id="toast" class="toast"></div>
 
   <header>
     <div class="header-inner">
@@ -333,11 +344,20 @@
     <section id="page-home" class="page active">
       <div class="card">
         <h1 style="margin:0 0 6px; font-size:1.4rem;">مرحباً بك في WORDLY</h1>
-        <p class="muted" style="margin:0 0 14px;">تعلّم المفردات الإنجليزية واحفظها بشكل دائم مع نظام التكرار المتباعد.</p>
+        <p class="muted" style="margin:0 0 14px;">تعلّم المفردات الإنجليزية من خلال جمل يومية بسيطة واحفظها بالتكرار المتباعد.</p>
         <div class="flex-gap">
-          <button class="btn-primary" onclick="startLearn()">⚡ ابدأ جلسة تعلّم (5 دقائق)</button>
+          <button class="btn-ai" onclick="generateDailySentences()">✨ توليد 5 جمل يومية للمبتدئين</button>
+          <button class="btn-primary" onclick="startLearn()">⚡ ابدأ جلسة تعلّم</button>
           <button class="btn-secondary" id="home-review-btn" onclick="goTab('review')">🔄 مراجعة الكلمات المستحقة (0)</button>
         </div>
+      </div>
+
+      <div id="daily-generated-card" class="card" style="display:none; border-color:#3B82F6;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <strong style="color:#60A5FA;">✨ جمل اليوم المقترحة (تم حفظها في قاموسك)</strong>
+          <button class="nav-btn" onclick="document.getElementById('daily-generated-card').style.display='none'">✕</button>
+        </div>
+        <div id="daily-generated-list"></div>
       </div>
 
       <div class="grid-4">
@@ -485,7 +505,7 @@
         <div class="grid-2">
           <div>
             <label>النطق (اختياري)</label>
-            <input type="text" id="f-pron" dir="ltr" placeholder="rɪˈzɪliənt" />
+            <input type="text" id="f-pron" dir="ltr" placeholder="ريزيليَنت" />
           </div>
           <div>
             <label>التصنيف (اختياري)</label>
@@ -520,6 +540,39 @@
   </nav>
 
   <script>
+    const STARTER_PACK = [
+      { english: "Morning", arabic: "صباح", pronunciation: "مورنينغ", category: "الوقت", example: "I drink water every morning.", translation: "أشرب الماء كل صباح." },
+      { english: "Improve", arabic: "يحسّن / يطوّر", pronunciation: "إمبروف", category: "أفعال", example: "I want to improve my English.", translation: "أريد أن أحسّن لغتي الإنجليزية." },
+      { english: "Strong", arabic: "قوي", pronunciation: "سترونغ", category: "صفات", example: "He is a strong young man.", translation: "هو شاب قوي." },
+      { english: "Focus", arabic: "يركّز / تركيز", pronunciation: "فوكَس", category: "دراسة", example: "You need to focus on your goal.", translation: "تحتاج أن تركّز على هدفك." },
+      { english: "Habit", arabic: "عادة", pronunciation: "هابيت", category: "حياة يومية", example: "Reading is a good daily habit.", translation: "القراءة عادة يومية جيدة." },
+      { english: "Patient", arabic: "صبور", pronunciation: "بيشَنت", category: "صفات", example: "Be patient and keep working hard.", translation: "كن صبوراً واستمر في العمل بجد." },
+      { english: "Success", arabic: "نجاح", pronunciation: "سَكسِس", category: "طموح", example: "Success takes time and effort.", translation: "النجاح يحتاج وقتاً وجهداً." },
+      { english: "Healthy", arabic: "صحي", pronunciation: "هيلثي", category: "صحة", example: "Eat healthy food every day.", translation: "تناول طعاماً صحياً كل يوم." },
+      { english: "Confidence", arabic: "ثقة", pronunciation: "كونفيدَنس", category: "شخصية", example: "Speak English with confidence.", translation: "تحدث الإنجليزية بثقة." },
+      { english: "Prepare", arabic: "يستعد / يحضّر", pronunciation: "بريبير", category: "دراسة", example: "I prepare my lessons at night.", translation: "أحضّر دروسي في الليل." },
+      { english: "Simple", arabic: "بسيط", pronunciation: "سيمبُل", category: "صفات", example: "This sentence is very simple.", translation: "هذه الجملة بسيطة جداً." },
+      { english: "Energy", arabic: "طاقة", pronunciation: "إنيرجي", category: "صحة", example: "Sleep gives your body energy.", translation: "النوم يعطي جسمك الطاقة." },
+      { english: "Remember", arabic: "يتذكر", pronunciation: "ريميمبَر", category: "أفعال", example: "I remember new words easily.", translation: "أتذكر الكلمات الجديدة بسهولة." },
+      { english: "Mistake", arabic: "خطأ", pronunciation: "ميستيك", category: "تعلّم", example: "Do not fear making a mistake.", translation: "لا تخف من ارتكاب خطأ." },
+      { english: "Progress", arabic: "تقدّم", pronunciation: "بروغريس", category: "طموح", example: "Small steps bring big progress.", translation: "الخطوات الصغيرة تجلب تقدماً كبيراً." },
+      { english: "Early", arabic: "مبكراً", pronunciation: "إيرلي", category: "الوقت", example: "She wakes up early every day.", translation: "هي تستيقظ مبكراً كل يوم." },
+      { english: "Important", arabic: "مهم", pronunciation: "إمبورتَنت", category: "صفات", example: "Time is very important.", translation: "الوقت مهم جداً." },
+      { english: "Listen", arabic: "يستمع", pronunciation: "ليسَن", category: "أفعال", example: "Listen carefully to the pronunciation.", translation: "استمع جيداً إلى النطق." },
+      { english: "Practice", arabic: "يمارس / يتدرب", pronunciation: "براكتيس", category: "تعلّم", example: "Practice makes you better.", translation: "الممارسة تجعلك أفضل." },
+      { english: "Future", arabic: "مستقبل", pronunciation: "فيوتشَر", category: "الوقت", example: "Build a bright future for yourself.", translation: "ابنِ مستقبلاً مشرقاً لنفسك." },
+      { english: "Calm", arabic: "هادئ", pronunciation: "كام", category: "صفات", example: "Stay calm during the exam.", translation: "ابقَ هادئاً أثناء الامتحان." },
+      { english: "Choice", arabic: "خيار / اختيار", pronunciation: "تشويس", category: "حياة يومية", example: "That was a smart choice.", translation: "كان ذلك اختياراً ذكياً." },
+      { english: "Advice", arabic: "نصيحة", pronunciation: "أدفايس", category: "تواصل", example: "Thank you for your good advice.", translation: "شكراً لك على نصيحتك الجيدة." },
+      { english: "Clear", arabic: "واضح", pronunciation: "كلير", category: "صفات", example: "Your voice is very clear.", translation: "صوتك واضح جداً." },
+      { english: "Continue", arabic: "يستمر / يواصل", pronunciation: "كونتينيو", category: "أفعال", example: "Continue learning every single day.", translation: "واصل التعلّم كل يوم." },
+      { english: "Goal", arabic: "هدف", pronunciation: "غول", category: "طموح", example: "My goal is to speak fluently.", translation: "هدفي هو التحدث بطلاقة." },
+      { english: "Effort", arabic: "مجهود", pronunciation: "إيفورت", category: "عمل", example: "Every effort brings results.", translation: "كل مجهود يجلب نتائج." },
+      { english: "Understand", arabic: "يفهم", pronunciation: "أندَرستاند", category: "أفعال", example: "Now I understand the meaning.", translation: "الآن أفهم المعنى." },
+      { english: "Ready", arabic: "مستعد / جاهز", pronunciation: "ريدي", category: "صفات", example: "Are you ready to start?", translation: "هل أنت مستعد للبدء؟" },
+      { english: "Change", arabic: "تغيير / يغيّر", pronunciation: "تشينج", category: "حياة يومية", example: "Positive habits change your life.", translation: "العادات الإيجابية تغيّر حياتك." }
+    ];
+
     const DB_NAME = 'WordlyCleanDB';
     let db = null;
     let vocab = [];
@@ -534,6 +587,13 @@
     let learnReveal = false;
     let learnLog = [];
     let reviewReveal = false;
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 3000);
+    }
 
     function todayStr() {
       return new Date().toISOString().split('T')[0];
@@ -550,7 +610,7 @@
       window.speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
       u.lang = 'en-US';
-      u.rate = 0.9;
+      u.rate = 0.88;
       window.speechSynthesis.speak(u);
     }
 
@@ -610,6 +670,64 @@
       document.getElementById('set-dir').value = settings.dir;
 
       refreshAll();
+    }
+
+    async function generateDailySentences() {
+      const existingSet = new Set(vocab.map(w => w.english.toLowerCase()));
+      const available = STARTER_PACK.filter(item => !existingSet.has(item.english.toLowerCase()));
+
+      if (!available.length) {
+        showToast('لقد أضفت جميع الجمل المدمجة! يمكنك إضافة كلمات جديدة يدوياً.');
+        return;
+      }
+
+      const shuffled = [...available].sort(() => Math.random() - 0.5);
+      const picked = shuffled.slice(0, 5);
+      const now = todayStr();
+
+      for (const p of picked) {
+        const item = {
+          id: Date.now().toString() + '_' + Math.random().toString(36).slice(2, 6),
+          english: p.english,
+          arabic: p.arabic,
+          pronunciation: p.pronunciation,
+          category: p.category,
+          example: p.example,
+          translation: p.translation,
+          notes: 'جملة يومية للمبتدئين',
+          status: 'new',
+          interval: 0,
+          dateCreated: now,
+          lastReviewedDate: null,
+          nextReviewDate: now
+        };
+        await putItem('vocabulary', item);
+        vocab.unshift(item);
+      }
+
+      const card = document.getElementById('daily-generated-card');
+      const list = document.getElementById('daily-generated-list');
+      list.innerHTML = picked.map(p => `
+        <div style="background:#111A2E; border:1px solid #1E293B; border-radius:12px; padding:12px; margin-bottom:8px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <strong style="font-size:1.1rem; color:#60A5FA;" dir="ltr">${escapeHtml(p.english)}</strong>
+              <span class="pill">${escapeHtml(p.pronunciation)}</span>
+              <span style="font-weight:700;">— ${escapeHtml(p.arabic)}</span>
+            </div>
+            <div class="flex-gap">
+              <button class="btn-secondary" style="padding:6px 10px;" onclick="speak('${escapeAttr(p.english)}')">🔊 الكلمة</button>
+              <button class="btn-primary" style="padding:6px 10px;" onclick="speak('${escapeAttr(p.example)}')">🔊 الجملة</button>
+            </div>
+          </div>
+          <div dir="ltr" style="margin-top:6px; font-size:0.95rem;">"${escapeHtml(p.example)}"</div>
+          <div class="muted" style="margin-top:2px;">${escapeHtml(p.translation)}</div>
+        </div>
+      `).join('');
+      card.style.display = 'block';
+
+      refreshAll();
+      showToast('تم توليد وحفظ ' + picked.length + ' جمل جديدة بنجاح!');
     }
 
     function refreshAll() {
@@ -758,9 +876,11 @@
           <div>
             <div>
               <strong style="font-size:1.1rem;" dir="ltr">${escapeHtml(w.english)}</strong>
+              ${w.pronunciation ? `<span class="pill">${escapeHtml(w.pronunciation)}</span>` : ''}
               ${w.category ? `<span class="pill">${escapeHtml(w.category)}</span>` : ''}
             </div>
             <div style="margin-top:4px;">${escapeHtml(w.arabic)}</div>
+            ${w.example ? `<div class="muted" dir="ltr" style="font-size:0.8rem; margin-top:4px;">"${escapeHtml(w.example)}"</div>` : ''}
             <div class="muted" style="font-size:0.75rem; margin-top:4px;">المراجعة القادمة: ${w.nextReviewDate || '-'}</div>
           </div>
           <div class="flex-gap">
@@ -788,8 +908,11 @@
       const box = document.getElementById('learn-box');
       if (!vocab.length) {
         box.innerHTML = `<div style="text-align:center; padding:20px;">
-          <p class="muted">لا توجد كلمات بعد. أضف كلماتك الأولى للبدء.</p>
-          <button class="btn-primary" onclick="openWordModal()">+ إضافة كلمة جديدة</button>
+          <p class="muted">لا توجد كلمات بعد. اضغط على زر توليد الجمل اليومية أو أضف كلماتك الأولى.</p>
+          <div class="flex-gap" style="justify-content:center;">
+            <button class="btn-ai" onclick="generateDailySentences()">✨ توليد 5 جمل يومية</button>
+            <button class="btn-primary" onclick="openWordModal()">+ إضافة كلمة</button>
+          </div>
         </div>`;
         return;
       }
@@ -816,15 +939,15 @@
             <h2 style="margin:0; font-size:2rem;" dir="ltr">${escapeHtml(w.english)}</h2>
             <button class="btn-secondary" onclick="speak('${escapeAttr(w.english)}')">🔊</button>
           </div>
-          ${w.pronunciation ? `<div class="muted" dir="ltr" style="margin-top:4px;">/${escapeHtml(w.pronunciation)}/</div>` : ''}
+          ${w.pronunciation ? `<div class="muted" style="margin-top:4px;">النطق: ${escapeHtml(w.pronunciation)}</div>` : ''}
         </div>
         <div style="text-align:center; margin-bottom:12px;">
-          <button class="btn-secondary" onclick="toggleLearnReveal()">${learnReveal ? 'إخفاء المعنى' : 'إظهار المعنى والترجمة'}</button>
+          <button class="btn-secondary" onclick="toggleLearnReveal()">${learnReveal ? 'إخفاء المعنى والجملة' : 'إظهار المعنى والجملة'}</button>
         </div>
         ${learnReveal ? `
           <div style="background:#111A2E; border:1px solid #1E293B; border-radius:12px; padding:14px; text-align:center; margin-bottom:14px;">
             <div style="font-size:1.3rem; font-weight:800; color:#34D399;">${escapeHtml(w.arabic)}</div>
-            ${w.example ? `<div dir="ltr" style="margin-top:8px;">"${escapeHtml(w.example)}"</div>` : ''}
+            ${w.example ? `<div dir="ltr" style="margin-top:8px;">"${escapeHtml(w.example)}" <button class="btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="speak('${escapeAttr(w.example)}')">🔊</button></div>` : ''}
             ${w.translation ? `<div class="muted" style="margin-top:4px;">${escapeHtml(w.translation)}</div>` : ''}
           </div>
         ` : ''}
@@ -886,6 +1009,7 @@
             <h2 style="margin:0; font-size:1.9rem;" dir="ltr">${escapeHtml(w.english)}</h2>
             <button class="btn-secondary" onclick="speak('${escapeAttr(w.english)}')">🔊</button>
           </div>
+          ${w.pronunciation ? `<div class="muted" style="margin-top:4px;">${escapeHtml(w.pronunciation)}</div>` : ''}
           ${!reviewReveal ? `
             <div style="margin-top:16px;">
               <button class="btn-primary" onclick="revealReview()">إظهار الإجابة</button>
@@ -894,6 +1018,7 @@
             <div style="background:#111A2E; border:1px solid #1E293B; border-radius:12px; padding:14px; margin:14px 0;">
               <div style="font-size:1.3rem; font-weight:800; color:#34D399;">${escapeHtml(w.arabic)}</div>
               ${w.example ? `<div dir="ltr" style="margin-top:8px;">"${escapeHtml(w.example)}"</div>` : ''}
+              ${w.translation ? `<div class="muted" style="margin-top:4px;">${escapeHtml(w.translation)}</div>` : ''}
             </div>
             <div class="flex-gap" style="justify-content:center;">
               <button class="btn-red" onclick="gradeReview('${w.id}', 'forgot')">نسيتها (1 يوم)</button>
