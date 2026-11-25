@@ -4,1348 +4,1062 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WORDLY - تعلم المفردات الإنجليزية</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <style>
-    body {
-      background-color: #070B14;
-      color: #F8FAFC;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    :root {
+      --bg-main: #070B14;
+      --bg-card: #0D1424;
+      --bg-input: #111A2E;
+      --border: #1E293B;
+      --blue: #2563EB;
+      --blue-hover: #3B82F6;
+      --text: #F8FAFC;
+      --muted: #94A3B8;
+      --green: #10B981;
+      --amber: #F59E0B;
+      --red: #EF4444;
     }
-    /* Custom scrollbar */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #0D1424; }
-    ::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #2563EB; }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg-main);
+      color: var(--text);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding-bottom: 84px;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(13, 20, 36, 0.96);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+    }
+
+    .header-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 900;
+      font-size: 1.2rem;
+    }
+
+    .brand-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.1rem;
+    }
+
+    .desktop-nav {
+      display: none;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    @media (min-width: 768px) {
+      .desktop-nav { display: flex; }
+      body { padding-bottom: 24px; }
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      border-radius: 10px;
+      transition: 0.2s;
+    }
+
+    .nav-btn {
+      background: transparent;
+      color: var(--muted);
+      padding: 8px 12px;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .nav-btn.active, .nav-btn:hover {
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .btn-primary {
+      background: var(--blue);
+      color: #fff;
+      padding: 10px 16px;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .btn-primary:hover { background: var(--blue-hover); }
+
+    .btn-secondary {
+      background: #1E293B;
+      color: #fff;
+      padding: 10px 16px;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .btn-green { background: var(--green); color: #fff; padding: 10px 14px; font-weight: 700; }
+    .btn-amber { background: var(--amber); color: #111; padding: 10px 14px; font-weight: 700; }
+    .btn-red { background: var(--red); color: #fff; padding: 8px 12px; font-weight: 700; }
+
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    @media (min-width: 768px) {
+      .grid-4 { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    .stat-label { color: var(--muted); font-size: 0.8rem; margin-bottom: 4px; }
+    .stat-val { font-size: 1.5rem; font-weight: 900; }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background: #1E293B;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--blue);
+      width: 0%;
+      transition: width 0.4s;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    input, select, textarea {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .word-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 10px;
+    }
+
+    .pill {
+      display: inline-block;
+      background: #1E293B;
+      color: #93C5FD;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-right: 6px;
+    }
+
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background: rgba(0, 0, 0, 0.78);
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      overflow-y: auto;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal-box {
+      background: var(--bg-card);
+      border: 1px solid #334155;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 520px;
+      padding: 20px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .mobile-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 30;
+      background: rgba(13, 20, 36, 0.98);
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      padding: 6px 4px;
+    }
+
+    @media (min-width: 768px) {
+      .mobile-nav { display: none; }
+    }
+
+    .m-btn {
+      background: transparent;
+      color: var(--muted);
+      padding: 6px 2px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 0.68rem;
+      font-weight: 700;
+      gap: 2px;
+    }
+
+    .m-btn.active { color: #60A5FA; }
+
+    .chart-bars {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      align-items: end;
+      height: 150px;
+      padding-top: 16px;
+    }
+
+    .bar-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 90px;
+      background: #1E293B;
+      border-radius: 8px 8px 0 0;
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      width: 100%;
+      background: var(--blue);
+      min-height: 4px;
+    }
+
+    .flex-gap { display: flex; gap: 8px; flex-wrap: wrap; }
+    .grid-2 { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    @media (min-width: 640px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+    .muted { color: var(--muted); font-size: 0.85rem; }
+    .error-msg { background: #450A0A; border: 1px solid #991B1B; color: #FCA5A5; padding: 10px; border-radius: 10px; font-size: 0.85rem; margin-bottom: 10px; display: none; }
   </style>
 </head>
 <body>
-  <div id="root"></div>
 
-  <script type="text/babel">
-    const { useState, useEffect, useMemo } = React;
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-badge">W</div>
+        <span>WORDLY</span>
+      </div>
 
-    // --- IndexedDB Persistent Storage Engine ---
-    const DB_NAME = 'WordlyDB';
-    const DB_VERSION = 1;
+      <div class="desktop-nav">
+        <button class="nav-btn active" data-tab="home" onclick="goTab('home')">🏠 الرئيسية</button>
+        <button class="nav-btn" data-tab="learn" onclick="startLearn()">📖 تعلّم</button>
+        <button class="nav-btn" data-tab="review" onclick="goTab('review')">🔄 المراجعة</button>
+        <button class="nav-btn" data-tab="vocab" onclick="goTab('vocab')">📚 كلماتي</button>
+        <button class="nav-btn" data-tab="stats" onclick="goTab('stats')">📊 الإحصائيات</button>
+        <button class="nav-btn" data-tab="settings" onclick="goTab('settings')">⚙️ الإعدادات</button>
+      </div>
+
+      <button class="btn-primary" onclick="openWordModal()">+ إضافة كلمة</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- 1. HOME -->
+    <section id="page-home" class="page active">
+      <div class="card">
+        <h1 style="margin:0 0 6px; font-size:1.4rem;">مرحباً بك في WORDLY</h1>
+        <p class="muted" style="margin:0 0 14px;">تعلّم المفردات الإنجليزية واحفظها بشكل دائم مع نظام التكرار المتباعد.</p>
+        <div class="flex-gap">
+          <button class="btn-primary" onclick="startLearn()">⚡ ابدأ جلسة تعلّم (5 دقائق)</button>
+          <button class="btn-secondary" id="home-review-btn" onclick="goTab('review')">🔄 مراجعة الكلمات المستحقة (0)</button>
+        </div>
+      </div>
+
+      <div class="grid-4">
+        <div class="card" style="margin:0;">
+          <div class="stat-label">إجمالي الكلمات المحفوظة</div>
+          <div class="stat-val" id="h-total">0</div>
+        </div>
+        <div class="card" style="margin:0;">
+          <div class="stat-label">كلمات متقنة</div>
+          <div class="stat-val" style="color:var(--green);" id="h-mastered">0</div>
+        </div>
+        <div class="card" style="margin:0;">
+          <div class="stat-label">بانتظار المراجعة</div>
+          <div class="stat-val" style="color:var(--amber);" id="h-due">0</div>
+        </div>
+        <div class="card" style="margin:0;">
+          <div class="stat-label">سلسلة الأيام</div>
+          <div class="stat-val" style="color:#60A5FA;" id="h-streak">🔥 0</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:700;">
+          <span>التقدم اليومي</span>
+          <span style="color:#60A5FA;" id="h-progress-text">0 / 5</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="h-progress-bar"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. LEARN -->
+    <section id="page-learn" class="page">
+      <div class="card" id="learn-box"></div>
+    </section>
+
+    <!-- 3. REVIEW -->
+    <section id="page-review" class="page">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <strong>نظام التكرار المتباعد (1, 3, 7, 14, 30 يوم)</strong>
+          <span class="pill" id="review-due-pill">المستحق اليوم: 0</span>
+        </div>
+      </div>
+      <div class="card" id="review-box"></div>
+    </section>
+
+    <!-- 4. MY VOCABULARY -->
+    <section id="page-vocab" class="page">
+      <div class="card">
+        <div class="grid-2">
+          <input type="text" id="search-input" placeholder="ابحث بالإنجليزية أو العربية..." oninput="renderVocabList()" style="margin:0;" />
+          <select id="sort-select" onchange="renderVocabList()" style="margin:0;">
+            <option value="newest">الأحدث إضافة</option>
+            <option value="alpha">ترتيب أبجدي (A-Z)</option>
+          </select>
+        </div>
+        <div class="flex-gap" style="margin-top:10px;">
+          <button class="nav-btn active" data-filter="all" onclick="setFilter('all', this)">الكل</button>
+          <button class="nav-btn" data-filter="learned" onclick="setFilter('learned', this)">متعلمة</button>
+          <button class="nav-btn" data-filter="difficult" onclick="setFilter('difficult', this)">صعبة</button>
+          <button class="nav-btn" data-filter="new" onclick="setFilter('new', this)">جديدة</button>
+          <button class="nav-btn" data-filter="due" onclick="setFilter('due', this)">مستحقة للمراجعة</button>
+        </div>
+      </div>
+      <div id="vocab-list"></div>
+    </section>
+
+    <!-- 5. STATISTICS -->
+    <section id="page-stats" class="page">
+      <div class="grid-4">
+        <div class="card" style="margin:0;">
+          <div class="stat-label">الكلمات المتعلمة</div>
+          <div class="stat-val" style="color:#60A5FA;" id="s-learned">0</div>
+        </div>
+        <div class="card" style="margin:0;">
+          <div class="stat-label">إجمالي المحفوظة</div>
+          <div class="stat-val" id="s-total">0</div>
+        </div>
+        <div class="card" style="margin:0;">
+          <div class="stat-label">كلمات متقنة</div>
+          <div class="stat-val" style="color:var(--green);" id="s-mastered">0</div>
+        </div>
+        <div class="card" style="margin:0;">
+          <div class="stat-label">تحتاج مراجعة</div>
+          <div class="stat-val" style="color:var(--amber);" id="s-due">0</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin:0 0 8px; font-size:1rem;">نشاط آخر 7 أيام</h3>
+        <div class="chart-bars" id="weekly-chart"></div>
+      </div>
+    </section>
+
+    <!-- 6. SETTINGS -->
+    <section id="page-settings" class="page">
+      <div class="card">
+        <h3 style="margin:0 0 12px; font-size:1.05rem;">الإعدادات</h3>
+        <label>الهدف اليومي لعدد الكلمات:</label>
+        <input type="number" id="set-target" min="1" max="50" onchange="saveSettings()" />
+
+        <label>اتجاه / لغة الواجهة:</label>
+        <select id="set-dir" onchange="saveSettings()">
+          <option value="rtl">العربية (RTL)</option>
+          <option value="ltr">English Layout (LTR)</option>
+        </select>
+      </div>
+
+      <div class="card">
+        <h3 style="margin:0 0 8px; font-size:1.05rem;">النسخ الاحتياطي وتصدير البيانات</h3>
+        <p class="muted">احفظ نسخة من كلماتك وسجلاتك أو استعدها في أي وقت.</p>
+        <div class="flex-gap">
+          <button class="btn-secondary" onclick="exportCSV()">📄 تصدير CSV</button>
+          <button class="btn-primary" onclick="exportJSON()">💾 نسخ احتياطي JSON</button>
+          <label class="btn-green" style="margin:0; border-radius:10px; font-size:0.9rem; display:inline-flex; align-items:center;">
+            📥 استيراد (JSON / CSV)
+            <input type="file" accept=".json,.csv" onchange="importFile(event)" style="display:none;" />
+          </label>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Add / Edit Word Modal -->
+  <div class="modal-backdrop" id="word-modal">
+    <div class="modal-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h3 style="margin:0;" id="modal-title">إضافة كلمة إنجليزية</h3>
+        <button class="nav-btn" onclick="closeWordModal()">✕</button>
+      </div>
+      <div class="error-msg" id="form-error"></div>
+      <form onsubmit="submitWordForm(event)">
+        <div class="grid-2">
+          <div>
+            <label>الكلمة الإنجليزية *</label>
+            <input type="text" id="f-english" dir="ltr" placeholder="Resilient" />
+          </div>
+          <div>
+            <label>المعنى بالعربية *</label>
+            <input type="text" id="f-arabic" placeholder="مرن / صامد" />
+          </div>
+        </div>
+        <div class="grid-2">
+          <div>
+            <label>النطق (اختياري)</label>
+            <input type="text" id="f-pron" dir="ltr" placeholder="rɪˈzɪliənt" />
+          </div>
+          <div>
+            <label>التصنيف (اختياري)</label>
+            <input type="text" id="f-cat" placeholder="صفات، عمل..." />
+          </div>
+        </div>
+        <label>جملة مثال بالإنجليزية (اختياري)</label>
+        <input type="text" id="f-ex" dir="ltr" placeholder="She is resilient under pressure." />
+
+        <label>ترجمة المثال بالعربية (اختياري)</label>
+        <input type="text" id="f-trans" placeholder="هي صامدة تحت الضغط." />
+
+        <label>ملاحظات (اختياري)</label>
+        <textarea id="f-notes" rows="2"></textarea>
+
+        <div class="flex-gap" style="justify-content:flex-end;">
+          <button type="button" class="btn-secondary" onclick="closeWordModal()">إلغاء</button>
+          <button type="submit" class="btn-primary">حفظ الكلمة</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Nav -->
+  <nav class="mobile-nav">
+    <button class="m-btn active" data-tab="home" onclick="goTab('home')"><span>🏠</span><span>الرئيسية</span></button>
+    <button class="m-btn" data-tab="learn" onclick="startLearn()"><span>📖</span><span>تعلّم</span></button>
+    <button class="m-btn" data-tab="review" onclick="goTab('review')"><span>🔄</span><span>المراجعة</span></button>
+    <button class="m-btn" data-tab="vocab" onclick="goTab('vocab')"><span>📚</span><span>كلماتي</span></button>
+    <button class="m-btn" data-tab="stats" onclick="goTab('stats')"><span>📊</span><span>الإحصاء</span></button>
+    <button class="m-btn" data-tab="settings" onclick="goTab('settings')"><span>⚙️</span><span>الإعدادات</span></button>
+  </nav>
+
+  <script>
+    const DB_NAME = 'WordlyCleanDB';
+    let db = null;
+    let vocab = [];
+    let sessions = [];
+    let reviews = [];
+    let settings = { dailyTarget: 5, dir: 'rtl', streak: 0, lastActiveDate: '' };
+
+    let editingId = null;
+    let currentFilter = 'all';
+    let learnQueue = [];
+    let learnIdx = 0;
+    let learnReveal = false;
+    let learnLog = [];
+    let reviewReveal = false;
+
+    function todayStr() {
+      return new Date().toISOString().split('T')[0];
+    }
+
+    function addDays(dateStr, days) {
+      const d = new Date(dateStr + 'T00:00:00');
+      d.setDate(d.getDate() + days);
+      return d.toISOString().split('T')[0];
+    }
+
+    function speak(text) {
+      if (!window.speechSynthesis || !text) return;
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US';
+      u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    }
 
     function openDB() {
       return new Promise((resolve, reject) => {
-        const req = indexedDB.open(DB_NAME, DB_VERSION);
+        const req = indexedDB.open(DB_NAME, 1);
         req.onupgradeneeded = (e) => {
-          const db = e.target.result;
-          if (!db.objectStoreNames.contains('vocabulary')) {
-            db.createObjectStore('vocabulary', { keyPath: 'id' });
-          }
-          if (!db.objectStoreNames.contains('sessions')) {
-            db.createObjectStore('sessions', { keyPath: 'id' });
-          }
-          if (!db.objectStoreNames.contains('reviews')) {
-            db.createObjectStore('reviews', { keyPath: 'id' });
-          }
-          if (!db.objectStoreNames.contains('settings')) {
-            db.createObjectStore('settings', { keyPath: 'key' });
-          }
+          const d = e.target.result;
+          if (!d.objectStoreNames.contains('vocabulary')) d.createObjectStore('vocabulary', { keyPath: 'id' });
+          if (!d.objectStoreNames.contains('sessions')) d.createObjectStore('sessions', { keyPath: 'id' });
+          if (!d.objectStoreNames.contains('reviews')) d.createObjectStore('reviews', { keyPath: 'id' });
+          if (!d.objectStoreNames.contains('settings')) d.createObjectStore('settings', { keyPath: 'key' });
         };
-        req.onsuccess = () => resolve(req.result);
+        req.onsuccess = () => { db = req.result; resolve(db); };
         req.onerror = () => reject(req.error);
       });
     }
 
-    async function dbGetAll(storeName) {
-      const db = await openDB();
+    function putItem(store, item) {
       return new Promise((resolve, reject) => {
-        const tx = db.transaction(storeName, 'readonly');
-        const store = tx.objectStore(storeName);
-        const req = store.getAll();
+        const tx = db.transaction(store, 'readwrite');
+        const req = tx.objectStore(store).put(item);
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    function delItem(store, id) {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(store, 'readwrite');
+        const req = tx.objectStore(store).delete(id);
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    function getAllItems(store) {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(store, 'readonly');
+        const req = tx.objectStore(store).getAll();
         req.onsuccess = () => resolve(req.result || []);
         req.onerror = () => reject(req.error);
       });
     }
 
-    async function dbPut(storeName, item) {
-      const db = await openDB();
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction(storeName, 'readwrite');
-        const store = tx.objectStore(storeName);
-        const req = store.put(item);
-        req.onsuccess = () => resolve(req.result);
-        req.onerror = () => reject(req.error);
-      });
+    async function initApp() {
+      await openDB();
+      vocab = await getAllItems('vocabulary');
+      sessions = await getAllItems('sessions');
+      reviews = await getAllItems('reviews');
+      const stList = await getAllItems('settings');
+      const found = stList.find(x => x.key === 'cfg');
+      if (found && found.value) settings = { ...settings, ...found.value };
+
+      document.documentElement.dir = settings.dir || 'rtl';
+      document.getElementById('set-target').value = settings.dailyTarget;
+      document.getElementById('set-dir').value = settings.dir;
+
+      refreshAll();
     }
 
-    async function dbDelete(storeName, id) {
-      const db = await openDB();
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction(storeName, 'readwrite');
-        const store = tx.objectStore(storeName);
-        const req = store.delete(id);
-        req.onsuccess = () => resolve();
-        req.onerror = () => reject(req.error);
-      });
+    function refreshAll() {
+      const t = todayStr();
+      const due = vocab.filter(w => w.nextReviewDate && w.nextReviewDate <= t);
+      const mastered = vocab.filter(w => (w.interval || 0) >= 14 || w.status === 'mastered');
+      const learnedCount = vocab.filter(w => w.status !== 'new').length;
+      const todayCount = sessions.filter(s => s.date === t).reduce((a, b) => a + (b.wordsCount || 0), 0);
+      const target = settings.dailyTarget || 5;
+
+      document.getElementById('h-total').textContent = vocab.length;
+      document.getElementById('h-mastered').textContent = mastered.length;
+      document.getElementById('h-due').textContent = due.length;
+      document.getElementById('h-streak').textContent = '🔥 ' + (settings.streak || 0);
+      document.getElementById('home-review-btn').textContent = '🔄 مراجعة الكلمات المستحقة (' + due.length + ')';
+      document.getElementById('h-progress-text').textContent = todayCount + ' / ' + target;
+      document.getElementById('h-progress-bar').style.width = Math.min(100, (todayCount / target) * 100) + '%';
+
+      document.getElementById('s-learned').textContent = learnedCount;
+      document.getElementById('s-total').textContent = vocab.length;
+      document.getElementById('s-mastered').textContent = mastered.length;
+      document.getElementById('s-due').textContent = due.length;
+      document.getElementById('review-due-pill').textContent = 'المستحق اليوم: ' + due.length;
+
+      renderVocabList();
+      renderReviewCard(due);
+      renderWeeklyChart(t);
     }
 
-    async function dbClear(storeName) {
-      const db = await openDB();
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction(storeName, 'readwrite');
-        const store = tx.objectStore(storeName);
-        const req = store.clear();
-        req.onsuccess = () => resolve();
-        req.onerror = () => reject(req.error);
+    function goTab(tab) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + tab).classList.add('active');
+      document.querySelectorAll('.nav-btn[data-tab], .m-btn[data-tab]').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-tab') === tab);
       });
+      if (tab === 'review') reviewReveal = false;
+      refreshAll();
     }
 
-    // --- Helper Functions ---
-    const getTodayStr = () => new Date().toISOString().split('T')[0];
+    function openWordModal(word = null) {
+      editingId = word ? word.id : null;
+      document.getElementById('modal-title').textContent = word ? 'تعديل الكلمة' : 'إضافة كلمة إنجليزية';
+      document.getElementById('form-error').style.display = 'none';
+      document.getElementById('f-english').value = word ? word.english : '';
+      document.getElementById('f-arabic').value = word ? word.arabic : '';
+      document.getElementById('f-pron').value = word ? (word.pronunciation || '') : '';
+      document.getElementById('f-cat').value = word ? (word.category || '') : '';
+      document.getElementById('f-ex').value = word ? (word.example || '') : '';
+      document.getElementById('f-trans').value = word ? (word.translation || '') : '';
+      document.getElementById('f-notes').value = word ? (word.notes || '') : '';
+      document.getElementById('word-modal').classList.add('open');
+    }
 
-    const addDays = (dateStr, days) => {
-      const d = new Date(dateStr);
-      d.setDate(d.getDate() + days);
-      return d.toISOString().split('T')[0];
-    };
+    function closeWordModal() {
+      document.getElementById('word-modal').classList.remove('open');
+    }
 
-    const speakWord = (text) => {
-      if (!window.speechSynthesis || !text) return;
-      window.speechSynthesis.cancel();
-      const utter = new SpeechSynthesisUtterance(text);
-      utter.lang = 'en-US';
-      utter.rate = 0.9;
-      window.speechSynthesis.speak(utter);
-    };
+    async function submitWordForm(e) {
+      e.preventDefault();
+      const en = document.getElementById('f-english').value.trim();
+      const ar = document.getElementById('f-arabic').value.trim();
+      const errEl = document.getElementById('form-error');
 
-    // --- Main Application ---
-    function App() {
-      const [activeTab, setActiveTab] = useState('home');
-      const [loading, setLoading] = useState(true);
-      const [vocab, setVocab] = useState([]);
-      const [sessions, setSessions] = useState([]);
-      const [reviews, setReviews] = useState([]);
-      const [settings, setSettings] = useState({
-        dailyTarget: 5,
-        lang: 'ar',
-        streak: 0,
-        lastActiveDate: ''
-      });
-
-      // Add / Edit Modal State
-      const [showModal, setShowModal] = useState(false);
-      const [editingWord, setEditingWord] = useState(null);
-      const [formError, setFormError] = useState('');
-      const [formData, setFormData] = useState({
-        english: '',
-        arabic: '',
-        pronunciation: '',
-        example: '',
-        translation: '',
-        category: '',
-        notes: ''
-      });
-
-      // Learn Session State
-      const [learnQueue, setLearnQueue] = useState([]);
-      const [learnIdx, setLearnIdx] = useState(0);
-      const [showTranslation, setShowTranslation] = useState(false);
-      const [sessionResults, setSessionResults] = useState([]);
-      const [sessionFinished, setSessionFinished] = useState(false);
-
-      // Review Session State
-      const [reviewIdx, setReviewIdx] = useState(0);
-      const [revealAnswer, setRevealAnswer] = useState(false);
-      const [reviewDone, setReviewDone] = useState(false);
-
-      // Vocabulary Filter/Sort State
-      const [searchQuery, setSearchQuery] = useState('');
-      const [filterStatus, setFilterStatus] = useState('all');
-      const [sortBy, setSortBy] = useState('newest');
-      const [selectedWordDetail, setSelectedWordDetail] = useState(null);
-
-      // Load Initial Data from IndexedDB
-      useEffect(() => {
-        async function init() {
-          try {
-            const [vData, sData, rData, stData] = await Promise.all([
-              dbGetAll('vocabulary'),
-              dbGetAll('sessions'),
-              dbGetAll('reviews'),
-              dbGetAll('settings')
-            ]);
-            setVocab(vData);
-            setSessions(sData);
-            setReviews(rData);
-
-            const savedSettings = stData.find(x => x.key === 'user_settings');
-            if (savedSettings && savedSettings.value) {
-              setSettings(savedSettings.value);
-            }
-          } catch (err) {
-            console.error('Database Error:', err);
-          } finally {
-            setLoading(false);
-          }
-        }
-        init();
-      }, []);
-
-      // Update Settings & Direction
-      useEffect(() => {
-        document.documentElement.dir = settings.lang === 'ar' ? 'rtl' : 'ltr';
-        document.documentElement.lang = settings.lang;
-      }, [settings.lang]);
-
-      const updateSettings = async (newFields) => {
-        const updated = { ...settings, ...newFields };
-        setSettings(updated);
-        await dbPut('settings', { key: 'user_settings', value: updated });
-      };
-
-      const recordActivityStreak = async () => {
-        const today = getTodayStr();
-        const yesterday = addDays(today, -1);
-        if (settings.lastActiveDate === today) return;
-
-        const newStreak = settings.lastActiveDate === yesterday ? (settings.streak || 0) + 1 : 1;
-        await updateSettings({ streak: newStreak, lastActiveDate: today });
-      };
-
-      // Computed Metrics
-      const today = getTodayStr();
-      const dueWords = useMemo(() => {
-        return vocab.filter(w => w.nextReviewDate && w.nextReviewDate <= today);
-      }, [vocab, today]);
-
-      const masteredWords = useMemo(() => {
-        return vocab.filter(w => (w.interval || 0) >= 14 || w.status === 'mastered');
-      }, [vocab]);
-
-      const todayLearnedCount = useMemo(() => {
-        return sessions
-          .filter(s => s.date === today)
-          .reduce((acc, s) => acc + (s.wordsCount || 0), 0);
-      }, [sessions, today]);
-
-      // --- Add / Edit Word Handlers ---
-      const openAddModal = () => {
-        setEditingWord(null);
-        setFormError('');
-        setFormData({
-          english: '',
-          arabic: '',
-          pronunciation: '',
-          example: '',
-          translation: '',
-          category: '',
-          notes: ''
-        });
-        setShowModal(true);
-      };
-
-      const openEditModal = (word) => {
-        setEditingWord(word);
-        setFormError('');
-        setFormData({
-          english: word.english || '',
-          arabic: word.arabic || '',
-          pronunciation: word.pronunciation || '',
-          example: word.example || '',
-          translation: word.translation || '',
-          category: word.category || '',
-          notes: word.notes || ''
-        });
-        setShowModal(true);
-      };
-
-      const handleSaveWord = async (e) => {
-        e.preventDefault();
-        const cleanEn = formData.english.trim();
-        const cleanAr = formData.arabic.trim();
-
-        if (!cleanEn || !cleanAr) {
-          setFormError(settings.lang === 'ar' ? 'يرجى إدخال الكلمة الإنجليزية ومعناها بالعربية.' : 'Please enter both English word and Arabic meaning.');
-          return;
-        }
-
-        // Prevent duplicate words
-        const duplicate = vocab.find(
-          w => w.english.toLowerCase() === cleanEn.toLowerCase() && (!editingWord || w.id !== editingWord.id)
-        );
-        if (duplicate) {
-          setFormError(settings.lang === 'ar' ? 'هذه الكلمة موجودة مسبقاً في قاموسك!' : 'This word already exists in your vocabulary!');
-          return;
-        }
-
-        const now = getTodayStr();
-        const record = editingWord
-          ? {
-              ...editingWord,
-              english: cleanEn,
-              arabic: cleanAr,
-              pronunciation: formData.pronunciation.trim(),
-              example: formData.example.trim(),
-              translation: formData.translation.trim(),
-              category: formData.category.trim(),
-              notes: formData.notes.trim()
-            }
-          : {
-              id: Date.now().toString(),
-              english: cleanEn,
-              arabic: cleanAr,
-              pronunciation: formData.pronunciation.trim(),
-              example: formData.example.trim(),
-              translation: formData.translation.trim(),
-              category: formData.category.trim(),
-              notes: formData.notes.trim(),
-              status: 'new',
-              interval: 0,
-              dateCreated: now,
-              lastReviewedDate: null,
-              nextReviewDate: now
-            };
-
-        await dbPut('vocabulary', record);
-        setVocab(prev =>
-          editingWord ? prev.map(w => (w.id === record.id ? record : w)) : [record, ...prev]
-        );
-        setShowModal(false);
-      };
-
-      const handleDeleteWord = async (id) => {
-        const msg = settings.lang === 'ar' ? 'هل أنت متأكد من حذف هذه الكلمة نهائياً؟' : 'Are you sure you want to delete this word?';
-        if (!window.confirm(msg)) return;
-        await dbDelete('vocabulary', id);
-        setVocab(prev => prev.filter(w => w.id !== id));
-        if (selectedWordDetail && selectedWordDetail.id === id) setSelectedWordDetail(null);
-      };
-
-      // --- Learn Session Logic ---
-      const startLearnSession = () => {
-        const target = Number(settings.dailyTarget) || 5;
-        const candidates = vocab.filter(w => w.status === 'new' || w.status === 'difficult');
-        const pool = candidates.length > 0 ? candidates : vocab;
-        const selected = pool.slice(0, target);
-
-        setLearnQueue(selected);
-        setLearnIdx(0);
-        setShowTranslation(false);
-        setSessionResults([]);
-        setSessionFinished(false);
-        setActiveTab('learn');
-      };
-
-      const markLearnWord = async (choice) => {
-        const current = learnQueue[learnIdx];
-        if (!current) return;
-
-        const now = getTodayStr();
-        let nextInterval = 1;
-        let newStatus = 'learned';
-
-        if (choice === 'learned') {
-          nextInterval = 1;
-          newStatus = 'learned';
-        } else if (choice === 'difficult') {
-          nextInterval = 1;
-          newStatus = 'difficult';
-        } else {
-          nextInterval = 0;
-          newStatus = 'new';
-        }
-
-        const updatedWord = {
-          ...current,
-          status: newStatus,
-          interval: nextInterval,
-          lastReviewedDate: now,
-          nextReviewDate: addDays(now, nextInterval)
-        };
-
-        await dbPut('vocabulary', updatedWord);
-        setVocab(prev => prev.map(w => (w.id === updatedWord.id ? updatedWord : w)));
-
-        const updatedResults = [...sessionResults, { word: current.english, choice }];
-        setSessionResults(updatedResults);
-
-        if (learnIdx + 1 < learnQueue.length) {
-          setLearnIdx(learnIdx + 1);
-          setShowTranslation(false);
-        } else {
-          const sessionRec = {
-            id: Date.now().toString(),
-            date: now,
-            wordsCount: learnQueue.length,
-            results: updatedResults
-          };
-          await dbPut('sessions', sessionRec);
-          setSessions(prev => [...prev, sessionRec]);
-          await recordActivityStreak();
-          setSessionFinished(true);
-        }
-      };
-
-      // --- Spaced Repetition Review Logic ---
-      const startReviewSession = () => {
-        setReviewIdx(0);
-        setRevealAnswer(false);
-        setReviewDone(false);
-        setActiveTab('review');
-      };
-
-      const handleReviewGrade = async (grade) => {
-        const current = dueWords[0]; // Always take first due word as list updates
-        if (!current) return;
-
-        const now = getTodayStr();
-        const intervals = [1, 3, 7, 14, 30];
-        const currInt = current.interval || 0;
-        let nextInt = 1;
-        let newStatus = current.status;
-
-        if (grade === 'forgot') {
-          nextInt = 1;
-          newStatus = 'difficult';
-        } else if (grade === 'hard') {
-          nextInt = Math.max(1, currInt);
-          newStatus = 'difficult';
-        } else if (grade === 'good') {
-          const idx = intervals.findIndex(x => x > currInt);
-          nextInt = idx === -1 ? 30 : intervals[idx];
-          newStatus = nextInt >= 14 ? 'mastered' : 'learned';
-        } else if (grade === 'easy') {
-          const idx = intervals.findIndex(x => x > currInt);
-          const nextIdx = idx === -1 ? intervals.length - 1 : Math.min(intervals.length - 1, idx + 1);
-          nextInt = intervals[nextIdx];
-          newStatus = nextInt >= 14 ? 'mastered' : 'learned';
-        }
-
-        const updatedWord = {
-          ...current,
-          status: newStatus,
-          interval: nextInt,
-          lastReviewedDate: now,
-          nextReviewDate: addDays(now, nextInt)
-        };
-
-        const reviewLog = {
-          id: Date.now().toString(),
-          wordId: current.id,
-          english: current.english,
-          grade,
-          date: now,
-          nextInterval: nextInt
-        };
-
-        await dbPut('vocabulary', updatedWord);
-        await dbPut('reviews', reviewLog);
-        await recordActivityStreak();
-
-        setVocab(prev => prev.map(w => (w.id === updatedWord.id ? updatedWord : w)));
-        setReviews(prev => [...prev, reviewLog]);
-        setRevealAnswer(false);
-
-        if (dueWords.length <= 1) {
-          setReviewDone(true);
-        }
-      };
-
-      // --- Export / Import / Backup ---
-      const exportJSON = () => {
-        const payload = { vocab, sessions, reviews, settings, exportedAt: new Date().toISOString() };
-        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `wordly-backup-${getTodayStr()}.json`;
-        a.click();
-      };
-
-      const exportCSV = () => {
-        const headers = ['English', 'Arabic', 'Pronunciation', 'Example', 'Translation', 'Category', 'Status', 'DateCreated', 'NextReview'];
-        const rows = vocab.map(w =>
-          [w.english, w.arabic, w.pronunciation, w.example, w.translation, w.category, w.status, w.dateCreated, w.nextReviewDate]
-            .map(v => `"${(v || '').replace(/"/g, '""')}"`)
-            .join(',')
-        );
-        const csv = '\uFEFF' + [headers.join(','), ...rows].join('\n');
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `wordly-vocabulary-${getTodayStr()}.csv`;
-        a.click();
-      };
-
-      const handleImportFile = (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = async (ev) => {
-          try {
-            const text = ev.target.result;
-            if (file.name.endsWith('.json')) {
-              const data = JSON.parse(text);
-              if (Array.isArray(data.vocab)) {
-                for (const item of data.vocab) {
-                  await dbPut('vocabulary', item);
-                }
-                if (Array.isArray(data.sessions)) {
-                  for (const s of data.sessions) await dbPut('sessions', s);
-                }
-                if (Array.isArray(data.reviews)) {
-                  for (const r of data.reviews) await dbPut('reviews', r);
-                }
-                if (data.settings) {
-                  await updateSettings(data.settings);
-                }
-                const allV = await dbGetAll('vocabulary');
-                setVocab(allV);
-                alert(settings.lang === 'ar' ? 'تم استيراد النسخة الاحتياطية بنجاح!' : 'Backup restored successfully!');
-              }
-            } else if (file.name.endsWith('.csv')) {
-              const lines = text.split('\n').slice(1).filter(Boolean);
-              const now = getTodayStr();
-              for (const line of lines) {
-                const cols = line.split(',').map(c => c.replace(/^"|"$/g, '').trim());
-                if (cols[0] && cols[1]) {
-                  const item = {
-                    id: Date.now().toString() + Math.random().toString(36).slice(2, 6),
-                    english: cols[0],
-                    arabic: cols[1],
-                    pronunciation: cols[2] || '',
-                    example: cols[3] || '',
-                    translation: cols[4] || '',
-                    category: cols[5] || '',
-                    notes: '',
-                    status: cols[6] || 'new',
-                    interval: 0,
-                    dateCreated: cols[7] || now,
-                    lastReviewedDate: null,
-                    nextReviewDate: cols[8] || now
-                  };
-                  await dbPut('vocabulary', item);
-                }
-              }
-              const allV = await dbGetAll('vocabulary');
-              setVocab(allV);
-              alert(settings.lang === 'ar' ? 'تم استيراد ملف CSV بنجاح!' : 'CSV imported successfully!');
-            }
-          } catch (err) {
-            alert(settings.lang === 'ar' ? 'حدث خطأ أثناء قراءة الملف.' : 'Error reading file.');
-          }
-        };
-        reader.readAsText(file);
-      };
-
-      // --- Filtered Vocabulary List ---
-      const filteredVocab = useMemo(() => {
-        return vocab
-          .filter(w => {
-            const q = searchQuery.toLowerCase();
-            const matchesSearch =
-              w.english.toLowerCase().includes(q) ||
-              w.arabic.toLowerCase().includes(q) ||
-              (w.category || '').toLowerCase().includes(q);
-            if (!matchesSearch) return false;
-
-            if (filterStatus === 'learned') return w.status === 'learned' || w.status === 'mastered';
-            if (filterStatus === 'difficult') return w.status === 'difficult';
-            if (filterStatus === 'new') return w.status === 'new';
-            if (filterStatus === 'due') return w.nextReviewDate && w.nextReviewDate <= today;
-            return true;
-          })
-          .sort((a, b) => {
-            if (sortBy === 'alpha') return a.english.localeCompare(b.english);
-            return Number(b.id) - Number(a.id);
-          });
-      }, [vocab, searchQuery, filterStatus, sortBy, today]);
-
-      // Last 7 days chart data
-      const last7DaysData = useMemo(() => {
-        const days = [];
-        for (let i = 6; i >= 0; i--) {
-          const d = addDays(today, -i);
-          const count =
-            sessions.filter(s => s.date === d).reduce((a, b) => a + (b.wordsCount || 0), 0) +
-            reviews.filter(r => r.date === d).length;
-          days.push({ date: d.slice(5), count });
-        }
-        return days;
-      }, [sessions, reviews, today]);
-
-      const isAr = settings.lang === 'ar';
-
-      if (loading) {
-        return (
-          <div className="min-h-screen flex items-center justify-center bg-[#070B14] text-blue-400 text-lg font-bold">
-            {isAr ? 'جاري تحميل قاعدة البيانات...' : 'Loading database...'}
-          </div>
-        );
+      if (!en || !ar) {
+        errEl.textContent = 'يرجى إدخال الكلمة الإنجليزية ومعناها بالعربية.';
+        errEl.style.display = 'block';
+        return;
       }
 
-      const navItems = [
-        { id: 'home', label: isAr ? 'الرئيسية' : 'Home', icon: '🏠' },
-        { id: 'learn', label: isAr ? 'تعلّم' : 'Learn', icon: '📖' },
-        { id: 'review', label: isAr ? 'المراجعة' : 'Review', icon: '🔄', badge: dueWords.length },
-        { id: 'vocab', label: isAr ? 'كلماتي' : 'My Vocabulary', icon: '📚' },
-        { id: 'stats', label: isAr ? 'الإحصائيات' : 'Statistics', icon: '📊' },
-        { id: 'settings', label: isAr ? 'الإعدادات' : 'Settings', icon: '⚙️' }
-      ];
+      const dup = vocab.find(w => w.english.toLowerCase() === en.toLowerCase() && w.id !== editingId);
+      if (dup) {
+        errEl.textContent = 'هذه الكلمة موجودة مسبقاً في قاموسك.';
+        errEl.style.display = 'block';
+        return;
+      }
 
-      return (
-        <div className="min-h-screen bg-[#070B14] text-slate-100 pb-24 md:pb-8">
-          {/* Top Header */}
-          <header className="sticky top-0 z-30 bg-[#0D1424]/95 backdrop-blur border-b border-slate-800 px-4 py-3">
-            <div className="max-w-5xl mx-auto flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center font-black text-white text-lg shadow-lg shadow-blue-600/30">
-                  W
-                </div>
-                <span className="text-xl font-extrabold tracking-wide text-white">WORDLY</span>
-              </div>
+      const now = todayStr();
+      const existing = editingId ? vocab.find(w => w.id === editingId) : null;
+      const item = {
+        id: editingId || (Date.now().toString() + '_' + Math.random().toString(36).slice(2, 5)),
+        english: en,
+        arabic: ar,
+        pronunciation: document.getElementById('f-pron').value.trim(),
+        category: document.getElementById('f-cat').value.trim(),
+        example: document.getElementById('f-ex').value.trim(),
+        translation: document.getElementById('f-trans').value.trim(),
+        notes: document.getElementById('f-notes').value.trim(),
+        status: existing ? existing.status : 'new',
+        interval: existing ? existing.interval : 0,
+        dateCreated: existing ? existing.dateCreated : now,
+        lastReviewedDate: existing ? existing.lastReviewedDate : null,
+        nextReviewDate: existing ? existing.nextReviewDate : now
+      };
 
-              {/* Desktop Navigation */}
-              <nav className="hidden md:flex items-center gap-1">
-                {navItems.map(item => (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      if (item.id === 'learn' && learnQueue.length === 0) startLearnSession();
-                      else setActiveTab(item.id);
-                    }}
-                    className={`px-3 py-2 rounded-xl text-sm font-semibold transition flex items-center gap-1.5 ${
-                      activeTab === item.id
-                        ? 'bg-blue-600 text-white shadow-md shadow-blue-600/25'
-                        : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-                    }`}
-                  >
-                    <span>{item.icon}</span>
-                    <span>{item.label}</span>
-                    {item.badge > 0 && (
-                      <span className="bg-rose-500 text-white text-xs px-1.5 py-0.5 rounded-full">
-                        {item.badge}
-                      </span>
-                    )}
-                  </button>
-                ))}
-              </nav>
-
-              <button
-                onClick={openAddModal}
-                className="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold px-3.5 py-2 rounded-xl shadow-lg shadow-blue-600/25 transition"
-              >
-                + {isAr ? 'إضافة كلمة' : 'Add Word'}
-              </button>
-            </div>
-          </header>
-
-          {/* Main Content */}
-          <main className="max-w-4xl mx-auto p-4 md:p-6">
-            {/* 1. HOME TAB */}
-            {activeTab === 'home' && (
-              <div className="space-y-6">
-                <div className="bg-gradient-to-l from-blue-900/40 via-[#0D1424] to-[#0D1424] border border-blue-800/40 rounded-2xl p-6">
-                  <h1 className="text-2xl font-bold text-white mb-1">
-                    {isAr ? 'مرحباً بك في WORDLY' : 'Welcome to WORDLY'}
-                  </h1>
-                  <p className="text-slate-400 text-sm">
-                    {isAr
-                      ? 'ابنِ حصيلتك اللغوية الإنجليزية خطوة بخطوة مع نظام التكرار المتباعد.'
-                      : 'Build your English vocabulary step by step with spaced repetition.'}
-                  </p>
-
-                  <div className="mt-5 flex flex-wrap gap-3">
-                    <button
-                      onClick={startLearnSession}
-                      className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-5 py-3 rounded-xl shadow-lg shadow-blue-600/30 transition flex items-center gap-2"
-                    >
-                      <span>⚡</span>
-                      <span>{isAr ? 'ابدأ جلسة تعلّم (5 دقائق)' : 'Start 5-Min Learning Session'}</span>
-                    </button>
-
-                    <button
-                      onClick={startReviewSession}
-                      className="bg-slate-800 hover:bg-slate-700 text-white font-bold px-5 py-3 rounded-xl border border-slate-700 transition flex items-center gap-2"
-                    >
-                      <span>🔄</span>
-                      <span>
-                        {isAr ? `مراجعة الكلمات المستحقة (${dueWords.length})` : `Review Due Words (${dueWords.length})`}
-                      </span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Stats Cards */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
-                  <div className="bg-[#0D1424] border border-slate-800 rounded-2xl p-4">
-                    <div className="text-slate-400 text-xs mb-1">{isAr ? 'إجمالي الكلمات المحفوظة' : 'Total Saved Words'}</div>
-                    <div className="text-2xl font-extrabold text-white">{vocab.length}</div>
-                  </div>
-                  <div className="bg-[#0D1424] border border-slate-800 rounded-2xl p-4">
-                    <div className="text-slate-400 text-xs mb-1">{isAr ? 'كلمات متقنة' : 'Mastered Words'}</div>
-                    <div className="text-2xl font-extrabold text-emerald-400">{masteredWords.length}</div>
-                  </div>
-                  <div className="bg-[#0D1424] border border-slate-800 rounded-2xl p-4">
-                    <div className="text-slate-400 text-xs mb-1">{isAr ? 'بانتظار المراجعة' : 'Waiting for Review'}</div>
-                    <div className="text-2xl font-extrabold text-amber-400">{dueWords.length}</div>
-                  </div>
-                  <div className="bg-[#0D1424] border border-slate-800 rounded-2xl p-4">
-                    <div className="text-slate-400 text-xs mb-1">{isAr ? 'سلسلة الأيام المتتالية' : 'Daily Streak'}</div>
-                    <div className="text-2xl font-extrabold text-blue-400">🔥 {settings.streak || 0}</div>
-                  </div>
-                </div>
-
-                {/* Daily Progress Bar */}
-                <div className="bg-[#0D1424] border border-slate-800 rounded-2xl p-5">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-bold text-sm text-white">
-                      {isAr ? 'هدف التعلّم اليومي' : 'Daily Learning Progress'}
-                    </span>
-                    <span className="text-xs font-bold text-blue-400">
-                      {todayLearnedCount} / {settings.dailyTarget} {isAr ? 'كلمات' : 'words'}
-                    </span>
-                  </div>
-                  <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-blue-600 rounded-full transition-all duration-500"
-                      style={{ width: `${Math.min(100, (todayLearnedCount / (settings.dailyTarget || 5)) * 100)}%` }}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* 2. LEARN TAB */}
-            {activeTab === 'learn' && (
-              <div className="space-y-4">
-                {vocab.length === 0 ? (
-                  <div className="bg-[#0D1424] border border-slate-800 rounded-2xl p-8 text-center">
-                    <p className="text-slate-400 mb-4">
-                      {isAr ? 'لا توجد كلمات محفوظة بعد. أضف كلماتك الأولى للبدء!' : 'No words saved yet. Add your first words to start!'}
-                    </p>
-                    <button
-                      onClick={openAddModal}
-                      className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-5 py-2.5 rounded-xl"
-                    >
-                      + {isAr ? 'إضافة كلمة جديدة' : 'Add New Word'}
-                    </button>
-                  </div>
-                ) : sessionFinished ? (
-                  <div className="bg-[#0D1424] border border-slate-800 rounded-2xl p-6 text-center space-y-4">
-                    <div className="text-4xl">🎉</div>
-                    <h2 className="text-xl font-bold text-white">
-                      {isAr ? 'أحسنت! أنهيت جلسة التعلّم' : 'Great job! Session completed'}
-                    </h2>
-                    <p className="text-slate-400 text-sm">
-                      {isAr
-                        ? `لقد راجعت وتعلمت ${sessionResults.length} كلمات في هذه الجلسة.`
-                        : `You practiced ${sessionResults.length} words in this session.`}
-                    </p>
-                    <div className="max-w-md mx-auto text-right space-y-2">
-                      {sessionResults.map((r, i) => (
-                        <div key={i} className="flex justify-between bg-slate-900 px-4 py-2 rounded-xl border border-slate-800 text-sm">
-                          <span className="font-bold text-white" dir="ltr">{r.word}</span>
-                          <span className="text-blue-400">
-                            {r.choice === 'learned' ? (isAr ? 'تم التعلّم' : 'Learned') : r.choice === 'difficult' ? (isAr ? 'صعبة' : 'Difficult') : (isAr ? 'غير متعلمة' : 'Not learned')}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                    <button
-                      onClick={startLearnSession}
-                      className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-2.5 rounded-xl"
-                    >
-                      {isAr ? 'بدء جلسة جديدة' : 'Start Another Session'}
-                    </button>
-                  </div>
-                ) : learnQueue[learnIdx] ? (
-                  <div className="bg-[#0D1424] border border-slate-800 rounded-2xl p-6 space-y-5">
-                    <div className="flex justify-between items-center text-xs text-slate-400">
-                      <span>{isAr ? 'جلسة التعلّم اليومية' : 'Daily Learning Session'}</span>
-                      <span className="font-bold text-blue-400">{learnIdx + 1} / {learnQueue.length}</span>
-                    </div>
-
-                    <div className="text-center py-4 space-y-2">
-                      <div className="flex items-center justify-center gap-3">
-                        <h2 className="text-3xl md:text-4xl font-black text-white tracking-wide" dir="ltr">
-                          {learnQueue[learnIdx].english}
-                        </h2>
-                        <button
-                          onClick={() => speakWord(learnQueue[learnIdx].english)}
-                          className="w-10 h-10 rounded-full bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white flex items-center justify-center transition"
-                          title="استماع للنطق"
-                        >
-                          🔊
-                        </button>
-                      </div>
-                      {learnQueue[learnIdx].pronunciation && (
-                        <div className="text-slate-400 text-sm" dir="ltr">/{learnQueue[learnIdx].pronunciation}/</div>
-                      )}
-                    </div>
-
-                    {/* Reveal / Hide Translation */}
-                    <div className="text-center">
-                      <button
-                        onClick={() => setShowTranslation(!showTranslation)}
-                        className="text-xs font-bold bg-slate-800 hover:bg-slate-700 text-blue-300 px-4 py-2 rounded-xl border border-slate-700"
-                      >
-                        {showTranslation
-                          ? (isAr ? 'إخفاء المعنى والترجمة 🙈' : 'Hide Translation 🙈')
-                          : (isAr ? 'إظهار المعنى والترجمة 👁️' : 'Reveal Translation 👁️')}
-                      </button>
-                    </div>
-
-                    {showTranslation && (
-                      <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-4 space-y-3 text-center">
-                        <div className="text-xl font-bold text-emerald-400">{learnQueue[learnIdx].arabic}</div>
-                        {learnQueue[learnIdx].example && (
-                          <div className="pt-2 border-t border-slate-800 space-y-1">
-                            <p className="text-sm text-slate-200" dir="ltr">"{learnQueue[learnIdx].example}"</p>
-                            {learnQueue[learnIdx].translation && (
-                              <p className="text-xs text-slate-400">{learnQueue[learnIdx].translation}</p>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Action Buttons */}
-                    <div className="grid grid-cols-3 gap-2.5 pt-2">
-                      <button
-                        onClick={() => markLearnWord('learned')}
-                        className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-sm transition"
-                      >
-                        ✅ {isAr ? 'تم التعلّم' : 'Learned'}
-                      </button>
-                      <button
-                        onClick={() => markLearnWord('difficult')}
-                        className="bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 rounded-xl text-sm transition"
-                      >
-                        ⚠️ {isAr ? 'صعبة' : 'Difficult'}
-                      </button>
-                      <button
-                        onClick={() => markLearnWord('not_learned')}
-                        className="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-xl text-sm transition"
-                      >
-                        ➡️ {isAr ? 'الكلمة التالية' : 'Next Word'}
-                      </button>
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-            )}
-
-            {/* 3. REVIEW TAB (SPACED REPETITION) */}
-            {activeTab === 'review' && (
-              <div className="space-y-4">
-                <div className="flex justify-between items-center bg-[#0D1424] border border-slate-800 rounded-2xl px-5 py-3.5">
-                  <span className="font-bold text-sm text-white">
-                    {isAr ? 'نظام التكرار المتباعد (Spaced Repetition)' : 'Spaced Repetition Review'}
-                  </span>
-                  <span className="text-xs font-bold bg-blue-600/20 text-blue-400 px-3 py-1 rounded-full">
-                    {isAr ? `المستحق اليوم: ${dueWords.length}` : `Due Today: ${dueWords.length}`}
-                  </span>
-                </div>
-
-                {dueWords.length === 0 || reviewDone ? (
-                  <div className="bg-[#0D1424] border border-slate-800 rounded-2xl p-8 text-center space-y-3">
-                    <div className="text-4xl">✨</div>
-                    <h2 className="text-xl font-bold text-white">
-                      {isAr ? 'لا توجد كلمات مستحقة للمراجعة حالياً!' : 'No words due for review right now!'}
-                    </h2>
-                    <p className="text-slate-400 text-sm">
-                      {isAr
-                        ? 'لقد أتممت جميع مراجعاتك المجدولة لهذا اليوم.'
-                        : 'You have completed all scheduled reviews for today.'}
-                    </p>
-                  </div>
-                ) : (
-                  <div className="bg-[#0D1424] border border-slate-800 rounded-2xl p-6 space-y-5 text-center">
-                    <p className="text-xs text-slate-400">
-                      {isAr ? 'حاول تذكّر معنى الكلمة قبل إظهار الإجابة:' : 'Try to recall the meaning before revealing:'}
-                    </p>
-
-                    <div className="flex items-center justify-center gap-3 py-3">
-                      <h2 className="text-3xl font-black text-white" dir="ltr">{dueWords[0].english}</h2>
-                      <button
-                        onClick={() => speakWord(dueWords[0].english)}
-                        className="w-10 h-10 rounded-full bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white flex items-center justify-center"
-                      >
-                        🔊
-                      </button>
-                    </div>
-
-                    {!revealAnswer ? (
-                      <button
-                        onClick={() => setRevealAnswer(true)}
-                        className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-3 rounded-xl shadow-lg shadow-blue-600/25"
-                      >
-                        {isAr ? 'إظهار الإجابة' : 'Reveal Answer'}
-                      </button>
-                    ) : (
-                      <div className="space-y-5">
-                        <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-2">
-                          <div className="text-2xl font-bold text-emerald-400">{dueWords[0].arabic}</div>
-                          {dueWords[0].pronunciation && (
-                            <div className="text-xs text-slate-400" dir="ltr">/{dueWords[0].pronunciation}/</div>
-                          )}
-                          {dueWords[0].example && (
-                            <p className="text-sm text-slate-300 pt-2 border-t border-slate-800" dir="ltr">
-                              "{dueWords[0].example}"
-                            </p>
-                          )}
-                        </div>
-
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
-                          <button
-                            onClick={() => handleReviewGrade('forgot')}
-                            className="bg-rose-600 hover:bg-rose-500 text-white font-bold py-3 rounded-xl text-sm"
-                          >
-                            {isAr ? 'نسيتها (1 يوم)' : 'Forgot (1d)'}
-                          </button>
-                          <button
-                            onClick={() => handleReviewGrade('hard')}
-                            className="bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 rounded-xl text-sm"
-                          >
-                            {isAr ? 'صعبة' : 'Hard'}
-                          </button>
-                          <button
-                            onClick={() => handleReviewGrade('good')}
-                            className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl text-sm"
-                          >
-                            {isAr ? 'جيدة' : 'Good'}
-                          </button>
-                          <button
-                            onClick={() => handleReviewGrade('easy')}
-                            className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-sm"
-                          >
-                            {isAr ? 'سهلة' : 'Easy'}
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* 4. MY VOCABULARY TAB */}
-            {activeTab === 'vocab' && (
-              <div className="space-y-4">
-                <div className="bg-[#0D1424] border border-slate-800 rounded-2xl p-4 space-y-3">
-                  <div className="flex flex-col md:flex-row gap-2.5">
-                    <input
-                      type="text"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder={isAr ? 'ابحث بالإنجليزية أو العربية...' : 'Search English or Arabic...'}
-                      className="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
-                    />
-                    <select
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value)}
-                      className="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white"
-                    >
-                      <option value="newest">{isAr ? 'الأحدث إضافة' : 'Date Added'}</option>
-                      <option value="alpha">{isAr ? 'ترتيب أبجدي (A-Z)' : 'Alphabetical'}</option>
-                    </select>
-                  </div>
-
-                  {/* Filter Pills */}
-                  <div className="flex flex-wrap gap-1.5">
-                    {[
-                      { id: 'all', label: isAr ? 'الكل' : 'All' },
-                      { id: 'learned', label: isAr ? 'متعلمة' : 'Learned' },
-                      { id: 'difficult', label: isAr ? 'صعبة' : 'Difficult' },
-                      { id: 'new', label: isAr ? 'جديدة' : 'New' },
-                      { id: 'due', label: isAr ? 'مستحقة للمراجعة' : 'Due for Review' }
-                    ].map(f => (
-                      <button
-                        key={f.id}
-                        onClick={() => setFilterStatus(f.id)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-                          filterStatus === f.id
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
-                        }`}
-                      >
-                        {f.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {filteredVocab.length === 0 ? (
-                  <div className="bg-[#0D1424] border border-slate-800 rounded-2xl p-8 text-center text-slate-400 text-sm">
-                    {isAr ? 'لا توجد كلمات مطابقة للبحث.' : 'No matching words found.'}
-                  </div>
-                ) : (
-                  <div className="space-y-2.5">
-                    {filteredVocab.map(word => (
-                      <div
-                        key={word.id}
-                        className="bg-[#0D1424] border border-slate-800 hover:border-blue-700/60 rounded-2xl p-4 flex items-center justify-between transition"
-                      >
-                        <div
-                          onClick={() => setSelectedWordDetail(word)}
-                          className="cursor-pointer flex-1"
-                        >
-                          <div className="flex items-center gap-2">
-                            <span className="font-extrabold text-lg text-white" dir="ltr">{word.english}</span>
-                            {word.category && (
-                              <span className="text-[11px] bg-slate-800 text-blue-300 px-2 py-0.5 rounded-md">
-                                {word.category}
-                              </span>
-                            )}
-                          </div>
-                          <div className="text-sm text-slate-300 mt-0.5">{word.arabic}</div>
-                          <div className="text-[11px] text-slate-500 mt-1">
-                            {isAr ? `المراجعة القادمة: ${word.nextReviewDate || '-'}` : `Next review: ${word.nextReviewDate || '-'}`}
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-1.5">
-                          <button
-                            onClick={() => speakWord(word.english)}
-                            className="p-2 rounded-lg bg-slate-800 hover:bg-blue-600 text-blue-400 hover:text-white text-sm"
-                            title="نطق"
-                          >
-                            🔊
-                          </button>
-                          <button
-                            onClick={() => openEditModal(word)}
-                            className="p-2 rounded-lg bg-slate-800 hover:bg-amber-600 text-amber-400 hover:text-white text-sm"
-                            title="تعديل"
-                          >
-                            ✏️
-                          </button>
-                          <button
-                            onClick={() => handleDeleteWord(word.id)}
-                            className="p-2 rounded-lg bg-slate-800 hover:bg-rose-600 text-rose-400 hover:text-white text-sm"
-                            title="حذف"
-                          >
-                            🗑️
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* 5. STATISTICS TAB */}
-            {activeTab === 'stats' && (
-              <div className="space-y-5">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
-                  <div className="bg-[#0D1424] border border-slate-800 rounded-2xl p-4">
-                    <div className="text-xs text-slate-400">{isAr ? 'الكلمات المتعلمة' : 'Total Learned'}</div>
-                    <div className="text-2xl font-extrabold text-blue-400 mt-1">
-                      {vocab.filter(w => w.status !== 'new').length}
-                    </div>
-                  </div>
-                  <div className="bg-[#0D1424] border border-slate-800 rounded-2xl p-4">
-                    <div className="text-xs text-slate-400">{isAr ? 'إجمالي المحفوظة' : 'Total Saved'}</div>
-                    <div className="text-2xl font-extrabold text-white mt-1">{vocab.length}</div>
-                  </div>
-                  <div className="bg-[#0D1424] border border-slate-800 rounded-2xl p-4">
-                    <div className="text-xs text-slate-400">{isAr ? 'كلمات متقنة' : 'Mastered'}</div>
-                    <div className="text-2xl font-extrabold text-emerald-400 mt-1">{masteredWords.length}</div>
-                  </div>
-                  <div className="bg-[#0D1424] border border-slate-800 rounded-2xl p-4">
-                    <div className="text-xs text-slate-400">{isAr ? 'تحتاج مراجعة' : 'Needing Review'}</div>
-                    <div className="text-2xl font-extrabold text-amber-400 mt-1">{dueWords.length}</div>
-                  </div>
-                </div>
-
-                {/* 7-Day Activity Bar Chart */}
-                <div className="bg-[#0D1424] border border-slate-800 rounded-2xl p-5">
-                  <h3 className="font-bold text-white text-sm mb-4">
-                    {isAr ? 'نشاط التعلّم والمراجعة خلال آخر 7 أيام' : '7-Day Learning & Review Activity'}
-                  </h3>
-                  <div className="grid grid-cols-7 gap-2 items-end h-40 pt-4">
-                    {last7DaysData.map((d, idx) => {
-                      const maxVal = Math.max(...last7DaysData.map(x => x.count), 5);
-                      const heightPct = Math.round((d.count / maxVal) * 100);
-                      return (
-                        <div key={idx} className="flex flex-col items-center gap-1.5 h-full justify-end">
-                          <span className="text-xs font-bold text-blue-400">{d.count}</span>
-                          <div className="w-full bg-slate-800 rounded-t-lg flex items-end h-24 overflow-hidden">
-                            <div
-                              className="w-full bg-blue-600 rounded-t-lg transition-all duration-500"
-                              style={{ height: `${Math.max(8, heightPct)}%` }}
-                            />
-                          </div>
-                          <span className="text-[11px] text-slate-400" dir="ltr">{d.date}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* 6. SETTINGS TAB */}
-            {activeTab === 'settings' && (
-              <div className="space-y-4">
-                <div className="bg-[#0D1424] border border-slate-800 rounded-2xl p-5 space-y-4">
-                  <h2 className="font-bold text-lg text-white">{isAr ? 'الإعدادات العامة' : 'General Settings'}</h2>
-
-                  <div>
-                    <label className="block text-xs text-slate-400 mb-1.5">
-                      {isAr ? 'الهدف اليومي لعدد الكلمات الجديدة:' : 'Daily New Words Target:'}
-                    </label>
-                    <input
-                      type="number"
-                      min="1"
-                      max="50"
-                      value={settings.dailyTarget}
-                      onChange={(e) => updateSettings({ dailyTarget: Number(e.target.value) || 5 })}
-                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs text-slate-400 mb-1.5">
-                      {isAr ? 'لغة واجهة التطبيق:' : 'Interface Language:'}
-                    </label>
-                    <select
-                      value={settings.lang}
-                      onChange={(e) => updateSettings({ lang: e.target.value })}
-                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm"
-                    >
-                      <option value="ar">العربية (RTL)</option>
-                      <option value="en">English (LTR)</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Backup & Export */}
-                <div className="bg-[#0D1424] border border-slate-800 rounded-2xl p-5 space-y-3">
-                  <h2 className="font-bold text-lg text-white">{isAr ? 'النسخ الاحتياطي وتصدير البيانات' : 'Backup & Export'}</h2>
-                  <p className="text-xs text-slate-400">
-                    {isAr
-                      ? 'قم بتصدير كلماتك أو استعادة نسخة احتياطية سابقة في أي وقت.'
-                      : 'Export your vocabulary or restore a previous backup anytime.'}
-                  </p>
-
-                  <div className="flex flex-wrap gap-2.5 pt-1">
-                    <button
-                      onClick={exportCSV}
-                      className="bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl border border-slate-700"
-                    >
-                      📄 {isAr ? 'تصدير CSV' : 'Export CSV'}
-                    </button>
-                    <button
-                      onClick={exportJSON}
-                      className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl"
-                    >
-                      💾 {isAr ? 'نسخ احتياطي JSON' : 'Backup JSON'}
-                    </button>
-                    <label className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl cursor-pointer">
-                      📥 {isAr ? 'استيراد (JSON / CSV)' : 'Import (JSON / CSV)'}
-                      <input type="file" accept=".json,.csv" onChange={handleImportFile} className="hidden" />
-                    </label>
-                  </div>
-                </div>
-              </div>
-            )}
-          </main>
-
-          {/* Word Detail Modal */}
-          {selectedWordDetail && (
-            <div className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4">
-              <div className="bg-[#0D1424] border border-slate-700 rounded-2xl max-w-md w-full p-6 space-y-4">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="text-2xl font-black text-white" dir="ltr">{selectedWordDetail.english}</h3>
-                    {selectedWordDetail.pronunciation && (
-                      <div className="text-xs text-slate-400" dir="ltr">/{selectedWordDetail.pronunciation}/</div>
-                    )}
-                  </div>
-                  <button
-                    onClick={() => setSelectedWordDetail(null)}
-                    className="text-slate-400 hover:text-white text-lg font-bold"
-                  >
-                    ✕
-                  </button>
-                </div>
-
-                <div className="text-lg font-bold text-emerald-400">{selectedWordDetail.arabic}</div>
-
-                {selectedWordDetail.example && (
-                  <div className="bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-1">
-                    <div className="text-sm text-white" dir="ltr">"{selectedWordDetail.example}"</div>
-                    {selectedWordDetail.translation && (
-                      <div className="text-xs text-slate-400">{selectedWordDetail.translation}</div>
-                    )}
-                  </div>
-                )}
-
-                {selectedWordDetail.notes && (
-                  <div className="text-xs text-slate-300 bg-slate-900/60 p-3 rounded-xl">
-                    <span className="font-bold text-blue-400">{isAr ? 'ملاحظات: ' : 'Notes: '}</span>
-                    {selectedWordDetail.notes}
-                  </div>
-                )}
-
-                <div className="text-xs text-slate-500 flex justify-between pt-2 border-t border-slate-800">
-                  <span>{isAr ? `أضيفت: ${selectedWordDetail.dateCreated}` : `Added: ${selectedWordDetail.dateCreated}`}</span>
-                  <span>{isAr ? `المراجعة: ${selectedWordDetail.nextReviewDate}` : `Review: ${selectedWordDetail.nextReviewDate}`}</span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Add / Edit Word Modal */}
-          {showModal && (
-            <div className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4 overflow-y-auto">
-              <form
-                onSubmit={handleSaveWord}
-                className="bg-[#0D1424] border border-slate-700 rounded-2xl max-w-lg w-full p-6 space-y-3.5 my-8"
-              >
-                <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-bold text-white">
-                    {editingWord ? (isAr ? 'تعديل الكلمة' : 'Edit Word') : (isAr ? 'إضافة كلمة إنجليزية جديدة' : 'Add New English Word')}
-                  </h3>
-                  <button type="button" onClick={() => setShowModal(false)} className="text-slate-400 hover:text-white">✕</button>
-                </div>
-
-                {formError && (
-                  <div className="bg-rose-950/80 border border-rose-700 text-rose-300 text-xs p-3 rounded-xl">
-                    {formError}
-                  </div>
-                )}
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs text-slate-400 mb-1">{isAr ? 'الكلمة الإنجليزية *' : 'English Word *'}</label>
-                    <input
-                      type="text"
-                      dir="ltr"
-                      value={formData.english}
-                      onChange={(e) => setFormData({ ...formData, english: e.target.value })}
-                      placeholder="e.g. Resilient"
-                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-slate-400 mb-1">{isAr ? 'المعنى بالعربية *' : 'Arabic Meaning *'}</label>
-                    <input
-                      type="text"
-                      value={formData.arabic}
-                      onChange={(e) => setFormData({ ...formData, arabic: e.target.value })}
-                      placeholder="مثال: مرن / صامد"
-                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs text-slate-400 mb-1">{isAr ? 'النطق الصوتي (اختياري)' : 'Pronunciation (Optional)'}</label>
-                    <input
-                      type="text"
-                      dir="ltr"
-                      value={formData.pronunciation}
-                      onChange={(e) => setFormData({ ...formData, pronunciation: e.target.value })}
-                      placeholder="rɪˈzɪliənt"
-                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-slate-400 mb-1">{isAr ? 'التصنيف (اختياري)' : 'Category (Optional)'}</label>
-                    <input
-                      type="text"
-                      value={formData.category}
-                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                      placeholder={isAr ? 'مثال: صفات، عمل، سفر' : 'e.g. Adjectives, Work'}
-                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs text-slate-400 mb-1">{isAr ? 'جملة مثال بالإنجليزية (اختياري)' : 'Example Sentence (Optional)'}</label>
-                  <input
-                    type="text"
-                    dir="ltr"
-                    value={formData.example}
-                    onChange={(e) => setFormData({ ...formData, example: e.target.value })}
-                    placeholder="She is resilient in the face of challenges."
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs text-slate-400 mb-1">{isAr ? 'ترجمة المثال بالعربية (اختياري)' : 'Arabic Example Translation (Optional)'}</label>
-                  <input
-                    type="text"
-                    value={formData.translation}
-                    onChange={(e) => setFormData({ ...formData, translation: e.target.value })}
-                    placeholder="هي صامدة في مواجهة التحديات."
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs text-slate-400 mb-1">{isAr ? 'ملاحظات إضافية (اختياري)' : 'Notes (Optional)'}</label>
-                  <textarea
-                    rows="2"
-                    value={formData.notes}
-                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white"
-                  />
-                </div>
-
-                <div className="flex justify-end gap-2 pt-2">
-                  <button
-                    type="button"
-                    onClick={() => setShowModal(false)}
-                    className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-sm font-bold"
-                  >
-                    {isAr ? 'إلغاء' : 'Cancel'}
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold"
-                  >
-                    {isAr ? 'حفظ الكلمة' : 'Save Word'}
-                  </button>
-                </div>
-              </form>
-            </div>
-          )}
-
-          {/* Mobile Bottom Navigation */}
-          <nav className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-[#0D1424]/95 backdrop-blur border-t border-slate-800 grid grid-cols-6 py-1.5">
-            {navItems.map(item => (
-              <button
-                key={item.id}
-                onClick={() => {
-                  if (item.id === 'learn' && learnQueue.length === 0) startLearnSession();
-                  else setActiveTab(item.id);
-                }}
-                className={`flex flex-col items-center justify-center py-1 relative ${
-                  activeTab === item.id ? 'text-blue-400' : 'text-slate-400'
-                }`}
-              >
-                <span className="text-lg">{item.icon}</span>
-                <span className="text-[10px] font-bold mt-0.5">{item.label}</span>
-                {item.badge > 0 && (
-                  <span className="absolute top-0.5 right-3 bg-rose-500 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center">
-                    {item.badge}
-                  </span>
-                )}
-              </button>
-            ))}
-          </nav>
-        </div>
-      );
+      await putItem('vocabulary', item);
+      if (editingId) {
+        vocab = vocab.map(w => w.id === editingId ? item : w);
+      } else {
+        vocab.unshift(item);
+      }
+      closeWordModal();
+      refreshAll();
     }
 
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
+    async function removeWord(id) {
+      if (!confirm('هل تريد حذف هذه الكلمة نهائياً؟')) return;
+      await delItem('vocabulary', id);
+      vocab = vocab.filter(w => w.id !== id);
+      refreshAll();
+    }
+
+    function setFilter(f, btn) {
+      currentFilter = f;
+      document.querySelectorAll('#page-vocab .nav-btn[data-filter]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderVocabList();
+    }
+
+    function renderVocabList() {
+      const q = (document.getElementById('search-input').value || '').toLowerCase().trim();
+      const sort = document.getElementById('sort-select').value;
+      const t = todayStr();
+
+      let list = vocab.filter(w => {
+        const match = w.english.toLowerCase().includes(q) || w.arabic.toLowerCase().includes(q) || (w.category || '').toLowerCase().includes(q);
+        if (!match) return false;
+        if (currentFilter === 'learned') return w.status === 'learned' || w.status === 'mastered';
+        if (currentFilter === 'difficult') return w.status === 'difficult';
+        if (currentFilter === 'new') return w.status === 'new';
+        if (currentFilter === 'due') return w.nextReviewDate && w.nextReviewDate <= t;
+        return true;
+      });
+
+      if (sort === 'alpha') {
+        list.sort((a, b) => a.english.localeCompare(b.english));
+      }
+
+      const box = document.getElementById('vocab-list');
+      if (!list.length) {
+        box.innerHTML = '<div class="card muted" style="text-align:center;">لا توجد كلمات مطابقة.</div>';
+        return;
+      }
+
+      box.innerHTML = list.map(w => `
+        <div class="word-row">
+          <div>
+            <div>
+              <strong style="font-size:1.1rem;" dir="ltr">${escapeHtml(w.english)}</strong>
+              ${w.category ? `<span class="pill">${escapeHtml(w.category)}</span>` : ''}
+            </div>
+            <div style="margin-top:4px;">${escapeHtml(w.arabic)}</div>
+            <div class="muted" style="font-size:0.75rem; margin-top:4px;">المراجعة القادمة: ${w.nextReviewDate || '-'}</div>
+          </div>
+          <div class="flex-gap">
+            <button class="btn-secondary" onclick="speak('${escapeAttr(w.english)}')">🔊</button>
+            <button class="btn-amber" onclick='openWordModal(${JSON.stringify(w).replace(/'/g, "&#39;")})'>✏️</button>
+            <button class="btn-red" onclick="removeWord('${w.id}')">🗑️</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function startLearn() {
+      goTab('learn');
+      const target = Number(settings.dailyTarget) || 5;
+      const pool = vocab.filter(w => w.status === 'new' || w.status === 'difficult');
+      const source = pool.length ? pool : vocab;
+      learnQueue = source.slice(0, target);
+      learnIdx = 0;
+      learnReveal = false;
+      learnLog = [];
+      renderLearnBox();
+    }
+
+    function renderLearnBox() {
+      const box = document.getElementById('learn-box');
+      if (!vocab.length) {
+        box.innerHTML = `<div style="text-align:center; padding:20px;">
+          <p class="muted">لا توجد كلمات بعد. أضف كلماتك الأولى للبدء.</p>
+          <button class="btn-primary" onclick="openWordModal()">+ إضافة كلمة جديدة</button>
+        </div>`;
+        return;
+      }
+
+      if (!learnQueue.length || learnIdx >= learnQueue.length) {
+        const itemsHtml = learnLog.map(x => `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #1E293B;"><span>${escapeHtml(x.en)}</span><span style="color:#60A5FA;">${x.label}</span></div>`).join('');
+        box.innerHTML = `<div style="text-align:center;">
+          <h2>🎉 انتهت الجلسة</h2>
+          <p class="muted">تمت ممارسة ${learnLog.length} كلمات.</p>
+          <div style="text-align:right; max-width:420px; margin:12px auto;">${itemsHtml}</div>
+          <button class="btn-primary" onclick="startLearn()">بدء جلسة جديدة</button>
+        </div>`;
+        return;
+      }
+
+      const w = learnQueue[learnIdx];
+      box.innerHTML = `
+        <div style="display:flex; justify-content:space-between; font-size:0.8rem;" class="muted">
+          <span>جلسة التعلّم</span>
+          <span>${learnIdx + 1} / ${learnQueue.length}</span>
+        </div>
+        <div style="text-align:center; padding:18px 0;">
+          <div style="display:inline-flex; align-items:center; gap:10px;">
+            <h2 style="margin:0; font-size:2rem;" dir="ltr">${escapeHtml(w.english)}</h2>
+            <button class="btn-secondary" onclick="speak('${escapeAttr(w.english)}')">🔊</button>
+          </div>
+          ${w.pronunciation ? `<div class="muted" dir="ltr" style="margin-top:4px;">/${escapeHtml(w.pronunciation)}/</div>` : ''}
+        </div>
+        <div style="text-align:center; margin-bottom:12px;">
+          <button class="btn-secondary" onclick="toggleLearnReveal()">${learnReveal ? 'إخفاء المعنى' : 'إظهار المعنى والترجمة'}</button>
+        </div>
+        ${learnReveal ? `
+          <div style="background:#111A2E; border:1px solid #1E293B; border-radius:12px; padding:14px; text-align:center; margin-bottom:14px;">
+            <div style="font-size:1.3rem; font-weight:800; color:#34D399;">${escapeHtml(w.arabic)}</div>
+            ${w.example ? `<div dir="ltr" style="margin-top:8px;">"${escapeHtml(w.example)}"</div>` : ''}
+            ${w.translation ? `<div class="muted" style="margin-top:4px;">${escapeHtml(w.translation)}</div>` : ''}
+          </div>
+        ` : ''}
+        <div class="flex-gap" style="justify-content:center;">
+          <button class="btn-green" onclick="chooseLearn('learned')">✅ تم التعلّم</button>
+          <button class="btn-amber" onclick="chooseLearn('difficult')">⚠️ صعبة</button>
+          <button class="btn-secondary" onclick="chooseLearn('not_learned')">➡️ التالية</button>
+        </div>
+      `;
+    }
+
+    function toggleLearnReveal() {
+      learnReveal = !learnReveal;
+      renderLearnBox();
+    }
+
+    async function chooseLearn(choice) {
+      const w = learnQueue[learnIdx];
+      if (!w) return;
+      const now = todayStr();
+      const updated = {
+        ...w,
+        status: choice === 'not_learned' ? 'new' : choice,
+        interval: choice === 'not_learned' ? 0 : 1,
+        lastReviewedDate: now,
+        nextReviewDate: addDays(now, choice === 'not_learned' ? 0 : 1)
+      };
+      await putItem('vocabulary', updated);
+      vocab = vocab.map(x => x.id === updated.id ? updated : x);
+
+      const labelMap = { learned: 'تم التعلّم', difficult: 'صعبة', not_learned: 'غير متعلمة' };
+      learnLog.push({ en: w.english, label: labelMap[choice] });
+      learnIdx++;
+      learnReveal = false;
+
+      if (learnIdx >= learnQueue.length) {
+        const sRec = { id: Date.now().toString(), date: now, wordsCount: learnQueue.length };
+        await putItem('sessions', sRec);
+        sessions.push(sRec);
+        await bumpStreak(now);
+      }
+
+      renderLearnBox();
+      refreshAll();
+    }
+
+    function renderReviewCard(due) {
+      const box = document.getElementById('review-box');
+      if (!box) return;
+      if (!due.length) {
+        box.innerHTML = '<div style="text-align:center; padding:16px;"><p class="muted" style="margin:0;">لا توجد كلمات مستحقة للمراجعة حالياً.</p></div>';
+        return;
+      }
+      const w = due[0];
+      box.innerHTML = `
+        <div style="text-align:center; padding:12px 0;">
+          <div class="muted" style="margin-bottom:8px;">حاول تذكّر المعنى قبل إظهار الإجابة</div>
+          <div style="display:inline-flex; align-items:center; gap:10px;">
+            <h2 style="margin:0; font-size:1.9rem;" dir="ltr">${escapeHtml(w.english)}</h2>
+            <button class="btn-secondary" onclick="speak('${escapeAttr(w.english)}')">🔊</button>
+          </div>
+          ${!reviewReveal ? `
+            <div style="margin-top:16px;">
+              <button class="btn-primary" onclick="revealReview()">إظهار الإجابة</button>
+            </div>
+          ` : `
+            <div style="background:#111A2E; border:1px solid #1E293B; border-radius:12px; padding:14px; margin:14px 0;">
+              <div style="font-size:1.3rem; font-weight:800; color:#34D399;">${escapeHtml(w.arabic)}</div>
+              ${w.example ? `<div dir="ltr" style="margin-top:8px;">"${escapeHtml(w.example)}"</div>` : ''}
+            </div>
+            <div class="flex-gap" style="justify-content:center;">
+              <button class="btn-red" onclick="gradeReview('${w.id}', 'forgot')">نسيتها (1 يوم)</button>
+              <button class="btn-amber" onclick="gradeReview('${w.id}', 'hard')">صعبة</button>
+              <button class="btn-primary" onclick="gradeReview('${w.id}', 'good')">جيدة</button>
+              <button class="btn-green" onclick="gradeReview('${w.id}', 'easy')">سهلة</button>
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    function revealReview() {
+      reviewReveal = true;
+      const due = vocab.filter(w => w.nextReviewDate && w.nextReviewDate <= todayStr());
+      renderReviewCard(due);
+    }
+
+    async function gradeReview(id, grade) {
+      const w = vocab.find(x => x.id === id);
+      if (!w) return;
+      const now = todayStr();
+      const steps = [1, 3, 7, 14, 30];
+      const curr = w.interval || 0;
+      let nextInt = 1;
+      let status = w.status;
+
+      if (grade === 'forgot') {
+        nextInt = 1;
+        status = 'difficult';
+      } else if (grade === 'hard') {
+        nextInt = Math.max(1, curr);
+        status = 'difficult';
+      } else if (grade === 'good') {
+        const idx = steps.findIndex(d => d > curr);
+        nextInt = idx === -1 ? 30 : steps[idx];
+        status = nextInt >= 14 ? 'mastered' : 'learned';
+      } else if (grade === 'easy') {
+        const idx = steps.findIndex(d => d > curr);
+        nextInt = idx === -1 ? 30 : steps[Math.min(steps.length - 1, idx + 1)];
+        status = nextInt >= 14 ? 'mastered' : 'learned';
+      }
+
+      const updated = { ...w, interval: nextInt, status, lastReviewedDate: now, nextReviewDate: addDays(now, nextInt) };
+      await putItem('vocabulary', updated);
+      await putItem('reviews', { id: Date.now().toString(), wordId: id, grade, date: now });
+      await bumpStreak(now);
+
+      vocab = vocab.map(x => x.id === id ? updated : x);
+      reviews.push({ id: Date.now().toString(), wordId: id, grade, date: now });
+      reviewReveal = false;
+      refreshAll();
+    }
+
+    async function bumpStreak(now) {
+      if (settings.lastActiveDate === now) return;
+      const yest = addDays(now, -1);
+      settings.streak = settings.lastActiveDate === yest ? (settings.streak || 0) + 1 : 1;
+      settings.lastActiveDate = now;
+      await putItem('settings', { key: 'cfg', value: settings });
+    }
+
+    async function saveSettings() {
+      settings.dailyTarget = Math.max(1, Number(document.getElementById('set-target').value) || 5);
+      settings.dir = document.getElementById('set-dir').value;
+      document.documentElement.dir = settings.dir;
+      await putItem('settings', { key: 'cfg', value: settings });
+      refreshAll();
+    }
+
+    function renderWeeklyChart(t) {
+      const box = document.getElementById('weekly-chart');
+      if (!box) return;
+      const days = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = addDays(t, -i);
+        const count = sessions.filter(s => s.date === d).reduce((a, b) => a + (b.wordsCount || 0), 0) + reviews.filter(r => r.date === d).length;
+        days.push({ label: d.slice(5), count });
+      }
+      const maxVal = Math.max(...days.map(x => x.count), 5);
+      box.innerHTML = days.map(x => {
+        const pct = Math.round((x.count / maxVal) * 100);
+        return `
+          <div class="bar-col">
+            <span style="font-size:0.75rem; font-weight:700; color:#60A5FA;">${x.count}</span>
+            <div class="bar-track"><div class="bar-fill" style="height:${pct}%;"></div></div>
+            <span class="muted" style="font-size:0.7rem;" dir="ltr">${x.label}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function exportJSON() {
+      const blob = new Blob([JSON.stringify({ vocab, sessions, reviews, settings }, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'wordly-backup-' + todayStr() + '.json';
+      a.click();
+    }
+
+    function exportCSV() {
+      const header = 'English,Arabic,Pronunciation,Example,Translation,Category,Status,DateCreated,NextReviewDate';
+      const rows = vocab.map(w => [w.english, w.arabic, w.pronunciation, w.example, w.translation, w.category, w.status, w.dateCreated, w.nextReviewDate].map(v => `"${String(v || '').replace(/"/g, '""')}"`).join(','));
+      const blob = new Blob(['\uFEFF' + [header, ...rows].join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'wordly-vocab-' + todayStr() + '.csv';
+      a.click();
+    }
+
+    function importFile(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async (ev) => {
+        try {
+          const txt = ev.target.result;
+          if (file.name.endsWith('.json')) {
+            const data = JSON.parse(txt);
+            if (Array.isArray(data.vocab)) {
+              for (const w of data.vocab) await putItem('vocabulary', w);
+              vocab = await getAllItems('vocabulary');
+            }
+          } else if (file.name.endsWith('.csv')) {
+            const lines = txt.split('\n').slice(1).filter(Boolean);
+            const now = todayStr();
+            for (const line of lines) {
+              const cols = line.split(',').map(c => c.replace(/^"|"$/g, '').trim());
+              if (cols[0] && cols[1]) {
+                await putItem('vocabulary', {
+                  id: Date.now().toString() + '_' + Math.random().toString(36).slice(2, 5),
+                  english: cols[0],
+                  arabic: cols[1],
+                  pronunciation: cols[2] || '',
+                  example: cols[3] || '',
+                  translation: cols[4] || '',
+                  category: cols[5] || '',
+                  notes: '',
+                  status: cols[6] || 'new',
+                  interval: 0,
+                  dateCreated: cols[7] || now,
+                  lastReviewedDate: null,
+                  nextReviewDate: cols[8] || now
+                });
+              }
+            }
+            vocab = await getAllItems('vocabulary');
+          }
+          refreshAll();
+          alert('تم الاستيراد بنجاح.');
+        } catch (err) {
+          alert('تعذر استيراد الملف.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function escapeHtml(s) {
+      return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function escapeAttr(s) {
+      return String(s || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    }
+
+    initApp();
   </script>
 </body>
 </html>
