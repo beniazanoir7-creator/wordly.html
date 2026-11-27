@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WORDLY - نظام المستويات العشرة</title>
+  <title>WORDLY - المستويات والمراجعة الصوتية</title>
   <style>
     :root {
       --bg-main: #070B14;
@@ -17,6 +17,7 @@
       --green: #10B981;
       --amber: #F59E0B;
       --red: #EF4444;
+      --purple: #7C3AED;
     }
 
     * { box-sizing: border-box; }
@@ -39,12 +40,13 @@
     }
 
     .header-inner {
-      max-width: 1000px;
+      max-width: 1020px;
       margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
     .brand {
@@ -89,9 +91,9 @@
     .nav-btn {
       background: transparent;
       color: var(--muted);
-      padding: 8px 12px;
+      padding: 8px 11px;
       font-weight: 700;
-      font-size: 0.85rem;
+      font-size: 0.83rem;
     }
 
     .nav-btn.active, .nav-btn:hover {
@@ -99,16 +101,23 @@
       color: #fff;
     }
 
-    .btn-primary { background: var(--blue); color: #fff; padding: 10px 16px; font-weight: 700; font-size: 0.9rem; }
+    .btn-primary { background: var(--blue); color: #fff; padding: 10px 15px; font-weight: 700; font-size: 0.88rem; }
     .btn-primary:hover { background: var(--blue-hover); }
-    .btn-ai { background: linear-gradient(135deg, #2563EB, #7C3AED); color: #fff; padding: 10px 16px; font-weight: 700; font-size: 0.9rem; }
-    .btn-secondary { background: #1E293B; color: #fff; padding: 10px 16px; font-weight: 700; font-size: 0.9rem; }
+    .btn-ai { background: linear-gradient(135deg, #2563EB, #7C3AED); color: #fff; padding: 10px 15px; font-weight: 700; font-size: 0.88rem; }
+    .btn-mic { background: linear-gradient(135deg, #059669, #10B981); color: #fff; padding: 10px 15px; font-weight: 700; font-size: 0.88rem; }
+    .btn-mic.listening { background: #DC2626; animation: pulse 1s infinite; }
+    .btn-secondary { background: #1E293B; color: #fff; padding: 10px 15px; font-weight: 700; font-size: 0.88rem; }
     .btn-green { background: var(--green); color: #fff; padding: 10px 14px; font-weight: 700; }
     .btn-amber { background: var(--amber); color: #111; padding: 10px 14px; font-weight: 700; }
     .btn-red { background: var(--red); color: #fff; padding: 8px 12px; font-weight: 700; }
 
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+
     main {
-      max-width: 900px;
+      max-width: 920px;
       margin: 0 auto;
       padding: 16px;
     }
@@ -119,6 +128,19 @@
       border-radius: 16px;
       padding: 18px;
       margin-bottom: 16px;
+    }
+
+    .bot-bar {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.16), rgba(37, 99, 235, 0.16));
+      border: 1px solid #4C1D95;
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
     .rank-banner {
@@ -258,14 +280,8 @@
       display: block;
     }
 
-    .rank-tile.current {
-      border-color: #3B82F6;
-      background: #142442;
-    }
-
-    .rank-tile.locked {
-      opacity: 0.55;
-    }
+    .rank-tile.current { border-color: #3B82F6; background: #142442; }
+    .rank-tile.locked { opacity: 0.55; }
 
     .modal-backdrop {
       display: none;
@@ -358,6 +374,7 @@
       <div class="desktop-nav">
         <button class="nav-btn active" data-tab="home" onclick="goTab('home')">🏠 الرئيسية</button>
         <button class="nav-btn" data-tab="learn" onclick="startLearn()">📖 تعلّم</button>
+        <button class="nav-btn" data-tab="weekly" onclick="startWeeklyVoiceReview()">🎙️ مراجعة أسبوعية</button>
         <button class="nav-btn" data-tab="exam" onclick="startExam()">🏆 اختبار الترقية</button>
         <button class="nav-btn" data-tab="vocab" onclick="goTab('vocab')">📚 كلماتي</button>
         <button class="nav-btn" data-tab="stats" onclick="goTab('stats')">📊 المستويات</button>
@@ -369,6 +386,21 @@
   </header>
 
   <main>
+    <!-- Top Voice Coach Bar -->
+    <div class="bot-bar">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span style="font-size:1.5rem;">🤖</span>
+        <div>
+          <strong style="font-size:0.95rem;">روبوت المراجعة الصوتية التفاعلي</strong>
+          <div class="muted" style="font-size:0.78rem;">يسألك بأسلوب طبيعي عن كلماتك وجملك، وتجيب أنت بصوتك عبر الميكروفون.</div>
+        </div>
+      </div>
+      <div class="flex-gap">
+        <button class="btn-ai" onclick="startVoiceCoach()">🗣️ ابدأ محادثة صوتية</button>
+        <button class="btn-mic" onclick="startWeeklyVoiceReview()">🎤 مراجعة أسبوعية</button>
+      </div>
+    </div>
+
     <!-- 1. HOME -->
     <section id="page-home" class="page active">
       <div class="rank-banner">
@@ -376,9 +408,9 @@
           <div style="display:flex; align-items:center; gap:14px;">
             <img id="rank-crest" class="crest-img" src="rank-1.png" alt="رتبة المستوى" />
             <div>
-              <div class="muted" style="font-size:0.78rem;" id="rank-level-label">المستوى 1 من 10 — يتطلب 50 كلمة جديدة في هذا المستوى</div>
+              <div class="muted" style="font-size:0.78rem;" id="rank-level-label">المستوى 1 من 10 — يتطلب 40 كلمة جديدة في هذا المستوى</div>
               <h1 style="margin:2px 0; font-size:1.3rem;" id="rank-name">المستوى 1</h1>
-              <div class="muted" id="rank-next-info">أكمل 50 كلمة جديدة في هذا المستوى ثم اجتز الاختبار للترقية</div>
+              <div class="muted" id="rank-next-info">أكمل 40 كلمة جديدة في هذا المستوى ثم اجتز الاختبار للترقية</div>
             </div>
           </div>
           <button class="btn-amber" onclick="startExam()">🏆 اختبار الترقية</button>
@@ -387,7 +419,7 @@
         <div style="margin-top:14px;">
           <div style="display:flex; justify-content:space-between; font-size:0.84rem; font-weight:700;">
             <span>كلمات المستوى الحالي (مستقلة لكل مستوى)</span>
-            <span style="color:#60A5FA;" id="rank-words-progress">0 / 50</span>
+            <span style="color:#60A5FA;" id="rank-words-progress">0 / 40</span>
           </div>
           <div class="progress-track">
             <div class="progress-fill" id="rank-progress-bar"></div>
@@ -396,11 +428,12 @@
       </div>
 
       <div class="card">
-        <p class="muted" style="margin:0 0 14px;">تعلّم الكلمات داخل جمل قصيرة، أكمل حصتك المستقلة في المستوى الحالي، واجتز اختباراً متنوعاً للصعود للرتبة التالية.</p>
+        <p class="muted" style="margin:0 0 14px;">تعلّم الكلمات داخل جمل قصيرة، راجع أسبوعياً بالمايك، وأكمل حصة مستواك لفتح اختبار الترقية.</p>
         <div class="flex-gap">
           <button class="btn-ai" onclick="generateDailySentences()">✨ توليد 5 جمل يومية</button>
           <button class="btn-primary" onclick="startLearn()">⚡ ابدأ جلسة تعلّم</button>
-          <button class="btn-secondary" id="home-review-btn" onclick="goTab('vocab')">📚 الكلمات المستحقة (0)</button>
+          <button class="btn-mic" onclick="startWeeklyVoiceReview()">🎤 مراجعة أسبوعية بالمايك</button>
+          <button class="btn-secondary" id="home-review-btn" onclick="goTab('vocab')">📚 الكلمات المحفوظة (0)</button>
         </div>
       </div>
 
@@ -422,8 +455,8 @@
           <div class="stat-val" id="h-total">0</div>
         </div>
         <div class="card" style="margin:0;">
-          <div class="stat-label">بانتظار المراجعة</div>
-          <div class="stat-val" style="color:var(--amber);" id="h-due">0</div>
+          <div class="stat-label">كلمات آخر 7 أيام</div>
+          <div class="stat-val" style="color:var(--amber);" id="h-weekly">0</div>
         </div>
         <div class="card" style="margin:0;">
           <div class="stat-label">سلسلة الأيام</div>
@@ -437,12 +470,17 @@
       <div class="card" id="learn-box"></div>
     </section>
 
-    <!-- 3. PROMOTION EXAM -->
+    <!-- 3. WEEKLY & VOICE BOT REVIEW -->
+    <section id="page-weekly" class="page">
+      <div class="card" id="voice-session-box"></div>
+    </section>
+
+    <!-- 4. PROMOTION EXAM -->
     <section id="page-exam" class="page">
       <div class="card" id="exam-box"></div>
     </section>
 
-    <!-- 4. MY VOCABULARY -->
+    <!-- 5. MY VOCABULARY -->
     <section id="page-vocab" class="page">
       <div class="card">
         <div class="grid-2">
@@ -457,16 +495,16 @@
           <button class="nav-btn" data-filter="learned" onclick="setFilter('learned', this)">متعلمة</button>
           <button class="nav-btn" data-filter="difficult" onclick="setFilter('difficult', this)">صعبة</button>
           <button class="nav-btn" data-filter="new" onclick="setFilter('new', this)">جديدة</button>
-          <button class="nav-btn" data-filter="due" onclick="setFilter('due', this)">مستحقة للمراجعة</button>
+          <button class="nav-btn" data-filter="week" onclick="setFilter('week', this)">آخر 7 أيام</button>
         </div>
       </div>
       <div id="vocab-list"></div>
     </section>
 
-    <!-- 5. LEVELS & STATS -->
+    <!-- 6. LEVELS & STATS -->
     <section id="page-stats" class="page">
       <div class="card">
-        <h3 style="margin:0 0 12px; font-size:1.05rem;">نظام المستويات العشرة والرموز</h3>
+        <h3 style="margin:0 0 12px; font-size:1.05rem;">نظام المستويات العشرة والرموز (بعد تخفيض 20%)</h3>
         <div class="roadmap-grid" id="ranks-roadmap"></div>
       </div>
 
@@ -484,8 +522,8 @@
           <div class="stat-val" style="color:var(--green);" id="s-exams">0</div>
         </div>
         <div class="card" style="margin:0;">
-          <div class="stat-label">تحتاج مراجعة</div>
-          <div class="stat-val" style="color:var(--amber);" id="s-due">0</div>
+          <div class="stat-label">كلمات آخر 7 أيام</div>
+          <div class="stat-val" style="color:var(--amber);" id="s-weekly">0</div>
         </div>
       </div>
 
@@ -495,12 +533,15 @@
       </div>
     </section>
 
-    <!-- 6. SETTINGS -->
+    <!-- 7. SETTINGS -->
     <section id="page-settings" class="page">
       <div class="card">
         <h3 style="margin:0 0 12px; font-size:1.05rem;">الإعدادات</h3>
         <label>الهدف اليومي لعدد الكلمات في الجلسة:</label>
         <input type="number" id="set-target" min="1" max="50" onchange="saveSettings()" />
+
+        <label>سرعة نبرة الصوت (0.6 بطيء - 1.2 سريع):</label>
+        <input type="number" id="set-rate" min="0.6" max="1.2" step="0.1" onchange="saveSettings()" />
 
         <label>اتجاه / لغة الواجهة:</label>
         <select id="set-dir" onchange="saveSettings()">
@@ -574,24 +615,25 @@
   <nav class="mobile-nav">
     <button class="m-btn active" data-tab="home" onclick="goTab('home')"><span>🏠</span><span>الرئيسية</span></button>
     <button class="m-btn" data-tab="learn" onclick="startLearn()"><span>📖</span><span>تعلّم</span></button>
+    <button class="m-btn" data-tab="weekly" onclick="startWeeklyVoiceReview()"><span>🎤</span><span>أسبوعية</span></button>
     <button class="m-btn" data-tab="exam" onclick="startExam()"><span>🏆</span><span>الاختبار</span></button>
     <button class="m-btn" data-tab="vocab" onclick="goTab('vocab')"><span>📚</span><span>كلماتي</span></button>
     <button class="m-btn" data-tab="stats" onclick="goTab('stats')"><span>📊</span><span>المستويات</span></button>
-    <button class="m-btn" data-tab="settings" onclick="goTab('settings')"><span>⚙️</span><span>الإعدادات</span></button>
   </nav>
 
   <script>
+    // 20% reduction applied from original requirements (50->40, 100->80, ..., 1250->1000)
     const LEVELS_10 = [
-      { level: 1, name: "المستوى 1", reqWords: 50, img: "rank-1.png" },
-      { level: 2, name: "المستوى 2", reqWords: 100, img: "rank-2.png" },
-      { level: 3, name: "المستوى 3", reqWords: 150, img: "rank-3.png" },
-      { level: 4, name: "المستوى 4", reqWords: 250, img: "rank-4.png" },
-      { level: 5, name: "المستوى 5", reqWords: 350, img: "rank-5.png" },
-      { level: 6, name: "المستوى 6", reqWords: 450, img: "rank-6.png" },
-      { level: 7, name: "المستوى 7", reqWords: 600, img: "rank-7.png" },
-      { level: 8, name: "المستوى 8", reqWords: 800, img: "rank-8.png" },
-      { level: 9, name: "المستوى 9", reqWords: 1000, img: "rank-9.png" },
-      { level: 10, name: "المستوى 10", reqWords: 1250, img: "rank-10.png" }
+      { level: 1, name: "المستوى 1", reqWords: 40, img: "rank-1.png" },
+      { level: 2, name: "المستوى 2", reqWords: 80, img: "rank-2.png" },
+      { level: 3, name: "المستوى 3", reqWords: 120, img: "rank-3.png" },
+      { level: 4, name: "المستوى 4", reqWords: 200, img: "rank-4.png" },
+      { level: 5, name: "المستوى 5", reqWords: 280, img: "rank-5.png" },
+      { level: 6, name: "المستوى 6", reqWords: 360, img: "rank-6.png" },
+      { level: 7, name: "المستوى 7", reqWords: 480, img: "rank-7.png" },
+      { level: 8, name: "المستوى 8", reqWords: 640, img: "rank-8.png" },
+      { level: 9, name: "المستوى 9", reqWords: 800, img: "rank-9.png" },
+      { level: 10, name: "المستوى 10", reqWords: 1000, img: "rank-10.png" }
     ];
 
     const STARTER_PACK = [
@@ -627,13 +669,14 @@
       { english: "Change", arabic: "تغيير / يغيّر", pronunciation: "تشينج", category: "حياة يومية", example: "Positive habits change your life.", translation: "العادات الإيجابية تغيّر حياتك." }
     ];
 
-    const DB_NAME = 'Wordly10LevelsImgsDB';
+    const DB_NAME = 'WordlyVoiceLevelsDB';
     let db = null;
     let vocab = [];
     let sessions = [];
     let reviews = [];
     let settings = {
       dailyTarget: 5,
+      rate: 0.9,
       dir: 'rtl',
       streak: 0,
       lastActiveDate: '',
@@ -648,6 +691,14 @@
     let learnIdx = 0;
     let learnReveal = false;
     let learnLog = [];
+
+    let voiceMode = 'weekly'; // 'weekly' or 'coach'
+    let voiceQueue = [];
+    let voiceIdx = 0;
+    let voiceScore = 0;
+    let voiceFeedback = '';
+    let spokenTranscript = '';
+    let isListening = false;
 
     let examQuestions = [];
     let examIdx = 0;
@@ -669,12 +720,16 @@
       return d.toISOString().split('T')[0];
     }
 
-    function speak(text) {
-      if (!window.speechSynthesis || !text) return;
+    function speak(text, onDone = null) {
+      if (!window.speechSynthesis || !text) {
+        if (onDone) onDone();
+        return;
+      }
       window.speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
       u.lang = 'en-US';
-      u.rate = 0.88;
+      u.rate = Number(settings.rate) || 0.9;
+      if (onDone) u.onend = onDone;
       window.speechSynthesis.speak(u);
     }
 
@@ -733,6 +788,7 @@
 
       document.documentElement.dir = settings.dir || 'rtl';
       document.getElementById('set-target').value = settings.dailyTarget;
+      document.getElementById('set-rate').value = settings.rate || 0.9;
       document.getElementById('set-dir').value = settings.dir;
 
       refreshAll();
@@ -760,9 +816,15 @@
       }
     }
 
+    function getWeeklyWords() {
+      const cutoff = addDays(todayStr(), -7);
+      const recent = vocab.filter(w => (w.lastReviewedDate || w.dateCreated || '') >= cutoff);
+      return recent.length ? recent : vocab.slice(0, 10);
+    }
+
     function refreshAll() {
       const t = todayStr();
-      const due = vocab.filter(w => w.nextReviewDate && w.nextReviewDate <= t);
+      const weeklyWords = getWeeklyWords();
       const lvl = getCurrentLevelObj();
       const nextLvl = LEVELS_10[lvl.level] || null;
       const learnedInLevel = getCurrentLevelWordsCount();
@@ -778,7 +840,7 @@
       document.getElementById('rank-progress-bar').style.width = Math.min(100, (learnedInLevel / lvl.reqWords) * 100) + '%';
 
       if (!nextLvl) {
-        document.getElementById('rank-next-info').textContent = 'لقد بلغت المستوى العاشر والأخير. واصل المراجعة والتوسع.';
+        document.getElementById('rank-next-info').textContent = 'لقد بلغت المستوى العاشر والأخير.';
       } else if (readyForExam) {
         document.getElementById('rank-next-info').textContent = 'أكملت ' + lvl.reqWords + ' كلمة في هذا المستوى! اجتز الاختبار للترقية إلى ' + nextLvl.name + '.';
       } else {
@@ -788,14 +850,14 @@
 
       document.getElementById('h-level-words').textContent = learnedInLevel + ' / ' + lvl.reqWords;
       document.getElementById('h-total').textContent = vocab.length;
-      document.getElementById('h-due').textContent = due.length;
+      document.getElementById('h-weekly').textContent = weeklyWords.length;
       document.getElementById('h-streak').textContent = '🔥 ' + (settings.streak || 0);
-      document.getElementById('home-review-btn').textContent = '📚 الكلمات المستحقة (' + due.length + ')';
+      document.getElementById('home-review-btn').textContent = '📚 الكلمات المحفوظة (' + vocab.length + ')';
 
       document.getElementById('s-level-words').textContent = learnedInLevel + ' / ' + lvl.reqWords;
       document.getElementById('s-total').textContent = vocab.length;
       document.getElementById('s-exams').textContent = settings.examsPassed || 0;
-      document.getElementById('s-due').textContent = due.length;
+      document.getElementById('s-weekly').textContent = weeklyWords.length;
 
       renderRoadmap(lvl.level);
       renderVocabList();
@@ -826,6 +888,164 @@
         b.classList.toggle('active', b.getAttribute('data-tab') === tab);
       });
       refreshAll();
+    }
+
+    function startWeeklyVoiceReview() {
+      voiceMode = 'weekly';
+      goTab('weekly');
+      const items = getWeeklyWords();
+      setupVoiceQueue(items, 'مراجعة أسبوعية بالمايك');
+    }
+
+    function startVoiceCoach() {
+      voiceMode = 'coach';
+      goTab('weekly');
+      const source = vocab.length ? shuffleArray(vocab).slice(0, 8) : [];
+      setupVoiceQueue(source, 'محادثة تفاعلية مع روبوت المراجعة');
+      if (voiceQueue.length) {
+        const first = voiceQueue[0];
+        speak("Hello! Let's review your word. What does " + first.english + " mean, or say it in a sentence.");
+      }
+    }
+
+    function setupVoiceQueue(items, title) {
+      voiceQueue = items;
+      voiceIdx = 0;
+      voiceScore = 0;
+      voiceFeedback = '';
+      spokenTranscript = '';
+      renderVoiceSession(title);
+    }
+
+    function renderVoiceSession(titleOverride = '') {
+      const box = document.getElementById('voice-session-box');
+      const heading = titleOverride || (voiceMode === 'coach' ? 'محادثة تفاعلية مع روبوت المراجعة' : 'مراجعة أسبوعية بالمايك');
+
+      if (!voiceQueue.length) {
+        box.innerHTML = `<div style="text-align:center; padding:18px;">
+          <h2>${heading}</h2>
+          <p class="muted">لا توجد كلمات كافية للمراجعة بعد. أضف كلمات أو ولّد جملاً يومية أولاً.</p>
+          <button class="btn-ai" onclick="generateDailySentences()">✨ توليد 5 جمل يومية</button>
+        </div>`;
+        return;
+      }
+
+      if (voiceIdx >= voiceQueue.length) {
+        box.innerHTML = `<div style="text-align:center; padding:18px;">
+          <div style="font-size:2.2rem;">🎙️</div>
+          <h2>اكتملت جلسة المراجعة الصوتية</h2>
+          <p style="font-size:1.15rem; font-weight:800; color:#10B981;">إجابات متطابقة صوتياً: ${voiceScore} من ${voiceQueue.length}</p>
+          <div class="flex-gap" style="justify-content:center; margin-top:12px;">
+            <button class="btn-primary" onclick="${voiceMode === 'coach' ? 'startVoiceCoach()' : 'startWeeklyVoiceReview()'}">إعادة الجلسة</button>
+            <button class="btn-secondary" onclick="goTab('home')">العودة للرئيسية</button>
+          </div>
+        </div>`;
+        return;
+      }
+
+      const w = voiceQueue[voiceIdx];
+      const targetToneText = w.example || w.english;
+
+      box.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <span class="pill">${heading}</span>
+          <span class="muted">${voiceIdx + 1} / ${voiceQueue.length}</span>
+        </div>
+
+        <div style="background:#111A2E; border:1px solid #1E293B; border-radius:14px; padding:16px; margin-bottom:14px;">
+          <div class="muted" style="margin-bottom:6px;">
+            ${voiceMode === 'coach'
+              ? '🤖 الروبوت يسألك: انطق الكلمة أو جملتها بوضوح بعد الاستماع لنبرة الجملة.'
+              : '📅 استمع لنبرة الجملة الصحيحة ثم انطق الكلمة أو الجملة في الميكروفون:'}
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+            <div>
+              <div style="font-size:1.8rem; font-weight:900;" dir="ltr">${escapeHtml(w.english)}</div>
+              <div style="color:#34D399; font-weight:700; margin-top:4px;">المعنى: ${escapeHtml(w.arabic)}</div>
+              ${w.example ? `<div dir="ltr" class="muted" style="margin-top:6px;">نبرة الجملة: "${escapeHtml(w.example)}"</div>` : ''}
+            </div>
+            <div class="flex-gap">
+              <button class="btn-secondary" onclick="speak('${escapeAttr(w.english)}')">🔊 الكلمة</button>
+              <button class="btn-primary" onclick="speak('${escapeAttr(targetToneText)}')">🔊 نبرة الجملة</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex-gap" style="justify-content:center; margin-bottom:12px;">
+          <button id="mic-trigger-btn" class="btn-mic ${isListening ? 'listening' : ''}" onclick="listenUserVoice()">
+            ${isListening ? '🔴 جاري الاستماع لصوتك...' : '🎤 اضغط وتحدث الآن'}
+          </button>
+          <button class="btn-secondary" onclick="nextVoiceItem()">➡️ التالي</button>
+        </div>
+
+        ${spokenTranscript ? `<div class="muted" style="text-align:center;">ما التقطه الميكروفون: <strong dir="ltr">"${escapeHtml(spokenTranscript)}"</strong></div>` : ''}
+        ${voiceFeedback ? `<div style="text-align:center; margin-top:8px; font-weight:700; color:#60A5FA;">${escapeHtml(voiceFeedback)}</div>` : ''}
+      `;
+    }
+
+    function listenUserVoice() {
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRec) {
+        voiceFeedback = 'متصفحك لا يدعم التعرّف الصوتي المباشر؛ استخدم زر الاستماع لنبرة الجملة ثم انتقل للتالي.';
+        renderVoiceSession();
+        return;
+      }
+
+      const w = voiceQueue[voiceIdx];
+      if (!w) return;
+
+      const rec = new SpeechRec();
+      rec.lang = 'en-US';
+      rec.interimResults = false;
+      rec.maxAlternatives = 1;
+
+      isListening = true;
+      voiceFeedback = '';
+      renderVoiceSession();
+
+      rec.onresult = (event) => {
+        const transcript = (event.results[0][0].transcript || '').trim();
+        spokenTranscript = transcript;
+        const cleanHeard = transcript.toLowerCase().replace(/[^a-z\s]/g, '');
+        const cleanWord = w.english.toLowerCase().replace(/[^a-z\s]/g, '');
+        const cleanEx = (w.example || '').toLowerCase().replace(/[^a-z\s]/g, '');
+
+        if (cleanHeard.includes(cleanWord) || (cleanEx && cleanEx.includes(cleanHeard) && cleanHeard.length > 3)) {
+          voiceScore++;
+          voiceFeedback = '✅ نطق ممتاز ومتطابق!';
+          if (voiceMode === 'coach') speak("Great pronunciation! Moving to the next one.");
+        } else {
+          voiceFeedback = '🎧 استمع لنبرة الجملة مجدداً وحاول نطق "' + w.english + '" بوضوح.';
+        }
+        isListening = false;
+        renderVoiceSession();
+      };
+
+      rec.onerror = () => {
+        isListening = false;
+        voiceFeedback = 'تعذر التقاط الصوت؛ تأكد من السماح للمتصفح باستخدام الميكروفون.';
+        renderVoiceSession();
+      };
+
+      rec.onend = () => {
+        if (isListening) {
+          isListening = false;
+          renderVoiceSession();
+        }
+      };
+
+      rec.start();
+    }
+
+    function nextVoiceItem() {
+      spokenTranscript = '';
+      voiceFeedback = '';
+      voiceIdx++;
+      renderVoiceSession();
+      if (voiceMode === 'coach' && voiceIdx < voiceQueue.length) {
+        const nxt = voiceQueue[voiceIdx];
+        speak("Next word: " + nxt.english + ". What does it mean?");
+      }
     }
 
     function startExam() {
@@ -1141,7 +1361,7 @@
     function renderVocabList() {
       const q = (document.getElementById('search-input').value || '').toLowerCase().trim();
       const sort = document.getElementById('sort-select').value;
-      const t = todayStr();
+      const weekCutoff = addDays(todayStr(), -7);
 
       let list = vocab.filter(w => {
         const match = w.english.toLowerCase().includes(q) || w.arabic.toLowerCase().includes(q) || (w.category || '').toLowerCase().includes(q);
@@ -1149,7 +1369,7 @@
         if (currentFilter === 'learned') return w.status === 'learned' || w.status === 'mastered';
         if (currentFilter === 'difficult') return w.status === 'difficult';
         if (currentFilter === 'new') return w.status === 'new';
-        if (currentFilter === 'due') return w.nextReviewDate && w.nextReviewDate <= t;
+        if (currentFilter === 'week') return (w.lastReviewedDate || w.dateCreated || '') >= weekCutoff;
         return true;
       });
 
@@ -1297,6 +1517,7 @@
 
     async function saveSettings() {
       settings.dailyTarget = Math.max(1, Number(document.getElementById('set-target').value) || 5);
+      settings.rate = Math.min(1.2, Math.max(0.6, Number(document.getElementById('set-rate').value) || 0.9));
       settings.dir = document.getElementById('set-dir').value;
       document.documentElement.dir = settings.dir;
       await putItem('settings', { key: 'cfg', value: settings });
