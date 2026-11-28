@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WORDLY - التعلّم والتحدث وإنجليزية الأفلام</title>
+  <title>WORDLY - التعلّم والتحدث والألعاب التفاعلية</title>
   <style>
     :root {
       --bg-main: #070B14;
@@ -40,7 +40,7 @@
     }
 
     .header-inner {
-      max-width: 1060px;
+      max-width: 1080px;
       margin: 0 auto;
       display: flex;
       align-items: center;
@@ -71,7 +71,7 @@
 
     .desktop-nav {
       display: none;
-      gap: 6px;
+      gap: 5px;
       flex-wrap: wrap;
     }
 
@@ -91,9 +91,9 @@
     .nav-btn {
       background: transparent;
       color: var(--muted);
-      padding: 8px 11px;
+      padding: 8px 10px;
       font-weight: 700;
-      font-size: 0.83rem;
+      font-size: 0.82rem;
     }
 
     .nav-btn.active, .nav-btn:hover {
@@ -317,8 +317,8 @@
       background: rgba(13, 20, 36, 0.98);
       border-top: 1px solid var(--border);
       display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      padding: 6px 4px;
+      grid-template-columns: repeat(7, 1fr);
+      padding: 6px 2px;
     }
 
     @media (min-width: 768px) {
@@ -328,11 +328,11 @@
     .m-btn {
       background: transparent;
       color: var(--muted);
-      padding: 6px 2px;
+      padding: 6px 1px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      font-size: 0.68rem;
+      font-size: 0.62rem;
       font-weight: 700;
       gap: 2px;
     }
@@ -359,6 +359,9 @@
     .error-msg { background: #450A0A; border: 1px solid #991B1B; color: #FCA5A5; padding: 10px; border-radius: 10px; font-size: 0.85rem; margin-bottom: 10px; display: none; }
     .toast { position: fixed; top: 72px; left: 50%; transform: translateX(-50%); background: #10B981; color: #fff; padding: 10px 18px; border-radius: 999px; font-weight: 700; font-size: 0.85rem; z-index: 60; display: none; box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
     .detail-box { background: #111A2E; border: 1px solid #1E293B; border-radius: 14px; padding: 14px; margin-bottom: 14px; }
+    .feedback-ok { background: rgba(16, 185, 129, 0.14); border: 1px solid #10B981; color: #6EE7B7; border-radius: 12px; padding: 12px; margin-top: 10px; font-weight: 700; }
+    .feedback-err { background: rgba(239, 68, 68, 0.14); border: 1px solid #EF4444; color: #FCA5A5; border-radius: 12px; padding: 12px; margin-top: 10px; font-weight: 700; }
+    .scene-box { background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(124, 58, 237, 0.12)); border: 1px solid #334155; border-radius: 14px; padding: 14px; margin-bottom: 14px; }
   </style>
 </head>
 <body>
@@ -375,7 +378,8 @@
       <div class="desktop-nav">
         <button class="nav-btn active" data-tab="home" onclick="goTab('home')">🏠 الرئيسية</button>
         <button class="nav-btn" data-tab="learn" onclick="startLearn()">📖 للتعلّم</button>
-        <button class="nav-btn" data-tab="weekly" onclick="startSentenceBuilder()">🗣️ تحدّث</button>
+        <button class="nav-btn" data-tab="weekly" onclick="startWeeklyVoiceReview()">🎤 مراجعة النطق</button>
+        <button class="nav-btn" data-tab="games" onclick="openGamesTab()">🎮 الألعاب</button>
         <button class="nav-btn" data-tab="exam" onclick="startExam()">🏆 اختبار الترقية</button>
         <button class="nav-btn" data-tab="vocab" onclick="goTab('vocab')">📚 كلماتي</button>
         <button class="nav-btn" data-tab="stats" onclick="goTab('stats')">📊 المستويات</button>
@@ -387,19 +391,19 @@
   </header>
 
   <main>
-    <!-- Top Speaking & Voice Coach Bar -->
+    <!-- Top Speaking & Pronunciation Correction Bar -->
     <div class="bot-bar">
       <div style="display:flex; align-items:center; gap:10px;">
-        <span style="font-size:1.5rem;">🎙️</span>
+        <span style="font-size:1.5rem;">🎬</span>
         <div>
-          <strong style="font-size:0.95rem;">مدرّب التحدث والمحادثة الصوتية</strong>
-          <div class="muted" style="font-size:0.78rem;">درّب لسانك على تكوين جمل من تأليفك، وخُض مواقف حوارية حقيقية بصوتك.</div>
+          <strong style="font-size:0.95rem;">لقطات الأفلام، استجواب المحقق، والرد الساخر</strong>
+          <div class="muted" style="font-size:0.78rem;">مواقف أكشن وكوميديا وغموض وحوارات متجددة باستمرار مع التحدث بالمايك.</div>
         </div>
       </div>
       <div class="flex-gap">
-        <button class="btn-ai" onclick="startSentenceBuilder()">🗣️ كوّن جملة بصوتك</button>
-        <button class="btn-mic" onclick="startDialoguePractice()">💬 مواقف حوارية</button>
-        <button class="btn-secondary" onclick="startWeeklyVoiceReview()">📅 مراجعة أسبوعية</button>
+        <button class="btn-ai" onclick="startMovieSceneGame('all')">🎬 لقطات الأفلام</button>
+        <button class="btn-mic" onclick="startDetectiveGame()">🕵️‍♂️ استجواب المحقق</button>
+        <button class="btn-secondary" onclick="openGamesTab()">🎮 كل الألعاب</button>
       </div>
     </div>
 
@@ -430,18 +434,18 @@
       </div>
 
       <div class="card">
-        <p class="muted" style="margin:0 0 14px;">قائمة «للتعلّم» تعرض الكلمات التي لم تتعلمها بعد بكامل تفاصيلها، وعند إتقان أي كلمة تنتقل مباشرة إلى قسم «المتعلّمة».</p>
+        <p class="muted" style="margin:0 0 14px;" id="home-level-guide">المستوى 1 خفيف وسهل جداً: كلمات وعبارات قصيرة سهلة النطق ومستخدمة بكثرة في الأفلام والحوارات اليومية.</p>
         <div class="flex-gap">
-          <button class="btn-ai" onclick="generateDailySentences()">✨ توليد 5 كلمات شائعة</button>
+          <button class="btn-ai" onclick="generateDailySentences()" id="btn-gen-level">✨ توليد 5 كلمات للمستوى 1</button>
           <button class="btn-primary" onclick="startLearn()" id="home-learn-btn">📖 قائمة للتعلّم (0)</button>
-          <button class="btn-mic" onclick="startSentenceBuilder()">🗣️ كوّن جملة بصوتك</button>
-          <button class="btn-secondary" id="home-learned-btn" onclick="goTab('vocab')">✅ المتعلّمة / المحفوظة (0)</button>
+          <button class="btn-mic" onclick="startMovieSceneGame('all')">🎬 لقطات الأفلام</button>
+          <button class="btn-secondary" id="home-learned-btn" onclick="goTab('vocab')">✅ المتعلّمة (0)</button>
         </div>
       </div>
 
       <div id="daily-generated-card" class="card" style="display:none; border-color:#3B82F6;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <strong style="color:#60A5FA;">✨ كلمات شائعة وصحيحة في الكلام (أُضيفت إلى قائمة للتعلّم)</strong>
+          <strong style="color:#60A5FA;" id="daily-generated-title">✨ كلمات شائعة ومناسبة لمستواك (أُضيفت إلى قائمة للتعلّم)</strong>
           <button class="nav-btn" onclick="document.getElementById('daily-generated-card').style.display='none'">✕</button>
         </div>
         <div id="daily-generated-list"></div>
@@ -457,8 +461,8 @@
           <div class="stat-val" style="color:#10B981;" id="h-learned">0</div>
         </div>
         <div class="card" style="margin:0;">
-          <div class="stat-label">كلمات المستوى الحالي</div>
-          <div class="stat-val" style="color:#60A5FA;" id="h-level-words">0</div>
+          <div class="stat-label">نقاط الألعاب</div>
+          <div class="stat-val" style="color:#60A5FA;" id="h-game-points">0</div>
         </div>
         <div class="card" style="margin:0;">
           <div class="stat-label">سلسلة الأيام</div>
@@ -467,29 +471,47 @@
       </div>
     </section>
 
-    <!-- 2. LEARN (ONLY UNLEARNED / TO-LEARN QUEUE) -->
+    <!-- 2. LEARN -->
     <section id="page-learn" class="page">
       <div class="card" id="learn-box"></div>
     </section>
 
-    <!-- 3. SPEAKING, SENTENCE BUILDER & VOICE REVIEW -->
+    <!-- 3. SPEAKING & STRICT PRONUNCIATION REVIEW -->
     <section id="page-weekly" class="page">
       <div class="card" style="padding:12px;">
         <div class="flex-gap">
+          <button class="btn-mic" onclick="startWeeklyVoiceReview()">🎤 مراجعة أسبوعية للنطق</button>
           <button class="btn-ai" onclick="startSentenceBuilder()">🗣️ كوّن جملة بصوتك</button>
-          <button class="btn-mic" onclick="startDialoguePractice()">💬 مواقف حوارية للتحدث</button>
-          <button class="btn-secondary" onclick="startWeeklyVoiceReview()">📅 مراجعة الأسبوع بالمايك</button>
+          <button class="btn-secondary" onclick="startDialoguePractice()">💬 مواقف حوارية</button>
         </div>
       </div>
       <div class="card" id="voice-session-box"></div>
     </section>
 
-    <!-- 4. PROMOTION EXAM -->
+    <!-- 4. GAMES TAB -->
+    <section id="page-games" class="page">
+      <div class="card" style="padding:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+          <h2 style="margin:0; font-size:1.1rem;">🎮 خانة الألعاب التفاعلية</h2>
+          <span class="pill" style="font-size:0.85rem; padding:4px 10px;">⭐ رصيد النقاط: <span id="games-total-points">0</span></span>
+        </div>
+        <div class="flex-gap">
+          <button class="btn-ai" onclick="startMovieSceneGame('all')">🎬 لقطات الأفلام</button>
+          <button class="btn-mic" onclick="startDetectiveGame()">🕵️‍♂️ استجواب المحقق</button>
+          <button class="btn-amber" onclick="startWittyReplyGame()">😂 الرد الساخر أو الطريف</button>
+          <button class="btn-primary" onclick="startUnderstandNoTransGame()">🎧 افهم بدون ترجمة</button>
+          <button class="btn-secondary" onclick="startBeatMicGame()">⚡ مبارزة النطق السريع</button>
+        </div>
+      </div>
+      <div class="card" id="games-stage-box"></div>
+    </section>
+
+    <!-- 5. PROMOTION EXAM -->
     <section id="page-exam" class="page">
       <div class="card" id="exam-box"></div>
     </section>
 
-    <!-- 5. MY VOCABULARY (SEPARATED: TO LEARN vs LEARNED) -->
+    <!-- 6. MY VOCABULARY -->
     <section id="page-vocab" class="page">
       <div class="card">
         <div class="grid-2">
@@ -509,10 +531,10 @@
       <div id="vocab-list"></div>
     </section>
 
-    <!-- 6. LEVELS & STATS -->
+    <!-- 7. LEVELS & STATS -->
     <section id="page-stats" class="page">
       <div class="card">
-        <h3 style="margin:0 0 12px; font-size:1.05rem;">نظام المستويات العشرة والرموز (بعد تخفيض 20%)</h3>
+        <h3 style="margin:0 0 12px; font-size:1.05rem;">نظام المستويات العشرة وتدرّج النطق (بعد تخفيض 20%)</h3>
         <div class="roadmap-grid" id="ranks-roadmap"></div>
       </div>
 
@@ -541,7 +563,7 @@
       </div>
     </section>
 
-    <!-- 7. SETTINGS -->
+    <!-- 8. SETTINGS -->
     <section id="page-settings" class="page">
       <div class="card">
         <h3 style="margin:0 0 12px; font-size:1.05rem;">الإعدادات</h3>
@@ -585,31 +607,31 @@
         <div class="grid-2">
           <div>
             <label>الكلمة أو العبارة الإنجليزية *</label>
-            <input type="text" id="f-english" dir="ltr" placeholder="Make up your mind" />
+            <input type="text" id="f-english" dir="ltr" placeholder="Go" />
           </div>
           <div>
             <label>المعنى بالعربية *</label>
-            <input type="text" id="f-arabic" placeholder="يقرّر / يحسم أمره" />
+            <input type="text" id="f-arabic" placeholder="اذهب / ينطلق" />
           </div>
         </div>
         <div class="grid-2">
           <div>
             <label>النطق التقريبي (اختياري)</label>
-            <input type="text" id="f-pron" dir="ltr" placeholder="ميك أب يور مايند" />
+            <input type="text" id="f-pron" dir="ltr" placeholder="غو" />
           </div>
           <div>
             <label>التصنيف (اختياري)</label>
-            <input type="text" id="f-cat" placeholder="كلام يومي، أفلام..." />
+            <input type="text" id="f-cat" placeholder="سهل وشائع، أفلام..." />
           </div>
         </div>
-        <label>جملة صحيحة وشائعة بالإنجليزية (اختياري)</label>
-        <input type="text" id="f-ex" dir="ltr" placeholder="Have you made up your mind yet?" />
+        <label>جملة شائعة وسهلة بالإنجليزية (اختياري)</label>
+        <input type="text" id="f-ex" dir="ltr" placeholder="Let's go inside." />
 
         <label>ترجمة الجملة بالعربية (اختياري)</label>
-        <input type="text" id="f-trans" placeholder="هل حسمت قرارك بعد؟" />
+        <input type="text" id="f-trans" placeholder="هيا ندخل إلى الداخل." />
 
-        <label>ملاحظة لفهم المعنى واستخدامه في الجملة (اختياري)</label>
-        <textarea id="f-notes" rows="2" placeholder="تُستخدم عندما يتردد شخص في اتخاذ قرار..."></textarea>
+        <label>ملاحظة بسيطة للنطق والفهم (اختياري)</label>
+        <textarea id="f-notes" rows="2" placeholder="كلمة قصيرة جداً وشائعة في الحوارات والأفلام."></textarea>
 
         <div class="flex-gap" style="justify-content:flex-end;">
           <button type="button" class="btn-secondary" onclick="closeWordModal()">إلغاء</button>
@@ -623,7 +645,8 @@
   <nav class="mobile-nav">
     <button class="m-btn active" data-tab="home" onclick="goTab('home')"><span>🏠</span><span>الرئيسية</span></button>
     <button class="m-btn" data-tab="learn" onclick="startLearn()"><span>📖</span><span>للتعلّم</span></button>
-    <button class="m-btn" data-tab="weekly" onclick="startSentenceBuilder()"><span>🗣️</span><span>تحدّث</span></button>
+    <button class="m-btn" data-tab="weekly" onclick="startWeeklyVoiceReview()"><span>🎤</span><span>النطق</span></button>
+    <button class="m-btn" data-tab="games" onclick="openGamesTab()"><span>🎮</span><span>الألعاب</span></button>
     <button class="m-btn" data-tab="exam" onclick="startExam()"><span>🏆</span><span>الاختبار</span></button>
     <button class="m-btn" data-tab="vocab" onclick="goTab('vocab')"><span>📚</span><span>كلماتي</span></button>
     <button class="m-btn" data-tab="stats" onclick="goTab('stats')"><span>📊</span><span>المستويات</span></button>
@@ -631,168 +654,219 @@
 
   <script>
     const LEVELS_10 = [
-      { level: 1, name: "المستوى 1", reqWords: 40, img: "rank-1.png" },
-      { level: 2, name: "المستوى 2", reqWords: 80, img: "rank-2.png" },
-      { level: 3, name: "المستوى 3", reqWords: 120, img: "rank-3.png" },
-      { level: 4, name: "المستوى 4", reqWords: 200, img: "rank-4.png" },
-      { level: 5, name: "المستوى 5", reqWords: 280, img: "rank-5.png" },
-      { level: 6, name: "المستوى 6", reqWords: 360, img: "rank-6.png" },
-      { level: 7, name: "المستوى 7", reqWords: 480, img: "rank-7.png" },
-      { level: 8, name: "المستوى 8", reqWords: 640, img: "rank-8.png" },
-      { level: 9, name: "المستوى 9", reqWords: 800, img: "rank-9.png" },
-      { level: 10, name: "المستوى 10", reqWords: 1000, img: "rank-10.png" }
+      { level: 1, name: "المستوى 1", reqWords: 40, img: "rank-1.png", tier: "easy", guide: "المستوى 1 خفيف وسهل جداً: كلمات وعبارات قصيرة سهلة النطق ومستخدمة بكثرة في الأفلام والحوارات اليومية." },
+      { level: 2, name: "المستوى 2", reqWords: 80, img: "rank-2.png", tier: "light", guide: "المستوى 2 خفيف أيضاً: عبارات وكلمات شائعة جداً وسهلة النطق والفهم في الكلام اليومي." },
+      { level: 3, name: "المستوى 3", reqWords: 120, img: "rank-3.png", tier: "medium", guide: "المستوى 3: كلمات وعبارات شائعة جداً في الأفلام والمحادثات مع نطق أوسع قليلاً." },
+      { level: 4, name: "المستوى 4", reqWords: 200, img: "rank-4.png", tier: "medium", guide: "المستوى 4: تعابير شائعة في الحوارات اليومية تتطلب تركيزاً أوضح في نطق المقاطع." },
+      { level: 5, name: "المستوى 5", reqWords: 280, img: "rank-5.png", tier: "higher", guide: "المستوى 5: كلمات شائعة جداً في الكلام الطبيعي مع نطق أطول ومقاطع أكثر." },
+      { level: 6, name: "المستوى 6", reqWords: 360, img: "rank-6.png", tier: "higher", guide: "المستوى 6: مفردات وعبارات متكررة في الأفلام والحديث اليومي بنطق أدق." },
+      { level: 7, name: "المستوى 7", reqWords: 480, img: "rank-7.png", tier: "higher", guide: "المستوى 7: كلمات مستخدمة بكثرة في الحوارات مع تشديد صوتي أوضح في النطق." },
+      { level: 8, name: "المستوى 8", reqWords: 640, img: "rank-8.png", tier: "higher", guide: "المستوى 8: عبارات ومفردات شائعة في الأفلام والنقاشات اليومية ذات نطق أطول قليلاً." },
+      { level: 9, name: "المستوى 9", reqWords: 800, img: "rank-9.png", tier: "higher", guide: "المستوى 9: كلمات شائعة ومتداولة في الكلام الحقيقي تحتاج دقة في نطق حروفها ومقاطعها." },
+      { level: 10, name: "المستوى 10", reqWords: 1000, img: "rank-10.png", tier: "higher", guide: "المستوى 10: مفردات شائعة جداً في اللغة المنطوقة والأفلام بنطق متقدم قليلاً دون تعقيد نادر." }
     ];
 
-    // Logically & grammatically natural spoken English + movie phrases with usage tips
-    const NATURAL_SPOKEN_PACK = [
+    const LEVEL_PACKS = {
+      easy: [
+        { english: "Go", arabic: "اذهب / انطلق", pronunciation: "غو", category: "المستوى 1 • سهل وشائع", example: "Let's go right now.", translation: "لنذهب الآن.", tip: "كلمة قصيرة جداً وسهلة في النطق؛ تُقال في كل فيلم وحوار." },
+        { english: "Come", arabic: "تعالَ / اقترب", pronunciation: "كَم", category: "المستوى 1 • سهل وشائع", example: "Come here for a second.", translation: "تعالَ إلى هنا لثانية.", tip: "تُنطق مثل «كَم» بفتحة خفيفة؛ سهلة جداً وشائعة جداً." },
+        { english: "Help", arabic: "ساعد / مساعدة", pronunciation: "هيلب", category: "المستوى 1 • سهل وشائع", example: "Help me with this.", translation: "ساعدني في هذا.", tip: "نطقها مباشر وسهل؛ من أكثر الكلمات استخداماً في المواقف اليومية." },
+        { english: "Stop", arabic: "توقف / قف", pronunciation: "ستوب", category: "المستوى 1 • سهل وشائع", example: "Stop talking for a minute.", translation: "توقف عن الكلام لدقيقة.", tip: "واضحة جداً وسريعة النطق في الحوارات والأفلام." },
+        { english: "Look", arabic: "انظر", pronunciation: "لوك (قصيرة)", category: "المستوى 1 • سهل وشائع", example: "Look at the screen.", translation: "انظر إلى الشاشة.", tip: "تُنطق قصيرة وخفيفة؛ تُستخدم دائماً لتوجيه الانتباه." },
+        { english: "Wait", arabic: "انتظر", pronunciation: "ويت", category: "المستوى 1 • سهل وشائع", example: "Wait a minute.", translation: "انتظر دقيقة.", tip: "سهلة جداً في النطق وتُسمع باستمرار في الأفلام." },
+        { english: "Say", arabic: "قل / يقول", pronunciation: "سَي", category: "المستوى 1 • سهل وشائع", example: "Say it again.", translation: "قلها مرة أخرى.", tip: "مقطع واحد واضح؛ أساسية في الكلام اليومي." },
+        { english: "See", arabic: "أرى / أفهم", pronunciation: "سي", category: "المستوى 1 • سهل وشائع", example: "I see what you mean.", translation: "أرى ما تقصده.", tip: "سهلة جداً؛ في الكلام تُستخدم أحياناً بمعنى «فهمت»." }
+      ],
+      light: [
+        { english: "No problem", arabic: "لا مشكلة", pronunciation: "نو بروبلم", category: "المستوى 2 • خفيف وشائع", example: "No problem, I can do it.", translation: "لا مشكلة، يمكنني فعل ذلك.", tip: "عبارة خفيفة وسهلة جداً في النطق؛ تُستخدم يومياً للرد بلطف." },
+        { english: "Right now", arabic: "الآن فوراً", pronunciation: "رايت ناو", category: "المستوى 2 • خفيف وشائع", example: "I need it right now.", translation: "أحتاجها الآن.", tip: "سهلة ومباشرة؛ شائعة جداً في الحوارات السريعة." },
+        { english: "Be careful", arabic: "كن حذراً / انتبه", pronunciation: "بي كيرفُل", category: "المستوى 2 • خفيف وشائع", example: "Be careful on the stairs.", translation: "انتبه على الدرج.", tip: "واضحة وسهلة النطق؛ تُقال كثيراً في الأفلام والحياة اليومية." },
+        { english: "Listen", arabic: "استمع", pronunciation: "ليسَن (الـ T صامتة)", category: "المستوى 2 • خفيف وشائع", example: "Listen to me carefully.", translation: "استمع إليّ جيداً.", tip: "سهلة الفهم، وانتبه فقط أن حرف T في الوسط لا يُنطق." },
+        { english: "Tell me", arabic: "أخبرني", pronunciation: "تيل مي", category: "المستوى 2 • خفيف وشائع", example: "Tell me what happened.", translation: "أخبرني ماذا حدث.", tip: "عبارة قصيرة وواضحة النطق؛ من أكثر العبارات شيوعاً في الأفلام." },
+        { english: "Good idea", arabic: "فكرة جيدة", pronunciation: "غود أيديا", category: "المستوى 2 • خفيف وشائع", example: "That sounds like a good idea.", translation: "تبدو فكرة جيدة.", tip: "سهلة النطق ومفيدة جداً في المحادثات اليومية." }
+      ],
+      medium: [
+        { english: "Understand", arabic: "يفهم", pronunciation: "أندَرستاند", category: "شائع • نطق أوسع قليلاً", example: "I don't understand this part.", translation: "لا أفهم هذا الجزء.", tip: "كلمة شائعة جداً؛ تتكون من مقطعين واضحين (أندَر + ستاند)." },
+        { english: "Actually", arabic: "في الواقع / بالحقيقة", pronunciation: "أكتشُوالي", category: "شائع في الأفلام • نطق أوسع", example: "Actually, I changed my mind.", translation: "في الواقع، غيرت رأيي.", tip: "تُقال كثيراً في الأفلام لتصحيح فكرة؛ انتبه لنطق مقاطعها بهدوء." },
+        { english: "Seriously", arabic: "بجدية / حقاً", pronunciation: "سيريَزلي", category: "شائع في الأفلام • نطق أوسع", example: "Are you seriously going out now?", translation: "هل ستخرج بجدية الآن؟", tip: "شائعة جداً في الحوارات؛ قسّمها إلى أربعة مقاطع بسيطة عند النطق." },
+        { english: "Figure out", arabic: "يكتشف الحل / يفهم الأمر", pronunciation: "فيغَر أوت", category: "شائع في الكلام • نطق أوسع", example: "We will figure it out together.", translation: "سنكتشف الحل معاً.", tip: "تُستخدم كثيراً عندما تحاول فهم مشكلة أو إيجاد حل عملي." },
+        { english: "Make sure", arabic: "تأكد", pronunciation: "ميك شور", category: "شائع في الكلام • نطق أوسع", example: "Make sure you lock the door.", translation: "تأكد من إغلاق الباب.", tip: "عبارة شائعة جداً للتنبيه والتأكد من شيء مهم." }
+      ],
+      higher: [
+        { english: "Definitely", arabic: "بالتأكيد / قطعا", pronunciation: "ديفِنتلي", category: "شائع جداً • نطق أطول قليلاً", example: "I'm definitely watching that movie.", translation: "سأشاهد هذا الفيلم بالتأكيد.", tip: "كلمة شائعة في الكلام؛ في النطق السريع تُخفّف بعض حروف الوسط (ديفِنتلي)." },
+        { english: "Comfortable", arabic: "مرتاح / مريح", pronunciation: "كَمفْرتَبُل", category: "شائع جداً • نطق أطول قليلاً", example: "Take a seat and get comfortable.", translation: "خذ مقعداً واسترح.", tip: "رغم طول حروفها مكتوبة، نطقها المنطوق أقصر من شكلها (كَمفْرتَبُل)." },
+        { english: "Embarrassed", arabic: "محرج / يشعر بالإحراج", pronunciation: "إمبَارَست", category: "شائع في الأفلام • نطق أطول قليلاً", example: "I felt a little embarrassed.", translation: "شعرت بقليل من الإحراج.", tip: "تُستخدم كثيراً في المواقف الاجتماعية؛ انتبه لنطق الراء ومقطع النهاية." },
+        { english: "Unfortunately", arabic: "لسوء الحظ", pronunciation: "أنفورتشُنَتلي", category: "شائع في الكلام • نطق أطول قليلاً", example: "Unfortunately, we missed the start.", translation: "لسوء الحظ، فاتتنا البداية.", tip: "كلمة شائعة جداً في الحوارات؛ انطقها على مقاطع لتثبيت لسانك." },
+        { english: "Honestly", arabic: "بصراحة", pronunciation: "أونِستلي", category: "شائع جداً • نطق أطول قليلاً", example: "Honestly, I like this one better.", translation: "بصراحة، أعجبني هذا أكثر.", tip: "حرف H في البداية لا يُنطق (أونِستلي)؛ شائعة جداً في الكلام." }
+      ]
+    };
+
+    // Rich base movie scenes across Action, Comedy, Mystery, and Everyday Dialogue
+    const BASE_MOVIE_SCENES = [
+      { genre: "action", genreLabel: "أكشن", mood: "مطاردة ومهمة عاجلة", desc: "البطل يندفع نحو المخرج ويشير لرفيقه بالتحرك فوراً قبل إغلاق الباب.", line: "Let's go right now!", arabic: "لنذهب الآن فوراً!", pron: "ليتس غو رايت ناو", tip: "انطقها بحماس وحسم كأن كل ثانية تفرق." },
+      { genre: "action", genreLabel: "أكشن", mood: "تحذير في لحظة خطر", desc: "صوت يرن في سماعة الاتصال يحذّر الفريق من خطوة غير محسوبة.", line: "Be careful, don't move.", arabic: "كن حذراً، لا تتحرك.", pron: "بي كيرفُل، دونت موف", tip: "تُقال بنبرة منخفضة وحازمة لزيادة التوتر في المشهد." },
+      { genre: "action", genreLabel: "أكشن", mood: "تأكيد جاهزية الفريق", desc: "أفراد المهمة يقفون في مواقعهم والمدير يسأل عن الاستعداد.", line: "I'm ready, tell me what to do.", arabic: "أنا مستعد، أخبرني ماذا أفعل.", pron: "آيم ريدي، تيل مي وات تو دو", tip: "عبارة مباشرة وواضحة جداً في مشاهد الحركة." },
+      { genre: "action", genreLabel: "أكشن", mood: "توقف مفاجئ", desc: "البطل يرفع يده فجأة ليوقف زملاءه قبل دخول مكان مشبوه.", line: "Stop right here and listen.", arabic: "توقف هنا واستمع.", pron: "ستوب رايت هير أند ليسَن", tip: "تذكّر أن حرف T في listen لا يُنطق." },
+      { genre: "comedy", genreLabel: "كوميديا", mood: "موقف محرج ومضحك", desc: "شخصية تحاول إخفاء خطأ طريف أمام الجميع ثم تعترف بخفة دم.", line: "Honestly, I have no idea how that happened.", arabic: "بصراحة، ليس لدي أي فكرة كيف حدث ذلك.", pron: "أونِستلي، آي هاف نو أيديا هاو ذات هابَند", tip: "انطقها ببراءة وطرافة لتناسب الموقف الكوميدي." },
+      { genre: "comedy", genreLabel: "كوميديا", mood: "سخرية خفيفة وصدمة مضحكة", desc: "صديق يرى خطة غريبة جداً ويسأل بنبرة ساخرة لطيفة.", line: "Are you seriously telling me that's the plan?", arabic: "هل تخبرني بجدية أن هذه هي الخطة؟", pron: "آر يو سيريَزلي تيلينغ مي ذاتس ذَ بلان", tip: "شدّد على كلمة seriously لإبراز الدهشة الطريفة." },
+      { genre: "comedy", genreLabel: "كوميديا", mood: "تراجع سريع عن فكرة مجنونة", desc: "بعد لحظة تفكير قصيرة، يغيّر رأيه بوضوح أمام الجميع.", line: "Actually, forget what I just said.", arabic: "في الواقع، انسَ ما قلته للتو.", pron: "أكتشُوالي، فورغِت وات آي جَست سيد", tip: "عبارة كوميدية طبيعية جداً تُقال عند التراجع السريع." },
+      { genre: "comedy", genreLabel: "كوميديا", mood: "رد بارد ومريح", desc: "شخص يسبب فوضى صغيرة ثم يبتسم ويقول إن الأمر بسيط.", line: "No problem, we can fix it later.", arabic: "لا مشكلة، يمكننا إصلاحه لاحقاً.", pron: "نو بروبلم، وي كان فيكس إت ليتر", tip: "تعطي إحساساً بالهدوء واللامبالاة الطريفة." },
+      { genre: "mystery", genreLabel: "غموض", mood: "اكتشاف خيط سري", desc: "المحقق يلاحظ تفصيلاً صغيراً في الغرفة ويهمس لنفسه.", line: "I see something nobody else noticed.", arabic: "أرى شيئاً لم يلاحظه أحد غيري.", pron: "آي سي سَمثينغ نوبَدي إلس نوتِست", tip: "انطقها بتركيز وهدوء كأنك اكتشفت سراً." },
+      { genre: "mystery", genreLabel: "غموض", mood: "محاولة كشف الحقيقة", desc: "المحققة تنظر في عيني الشاهد وتطلب منه قول الحقيقة كاملة.", line: "Tell me the truth, I know you're hiding something.", arabic: "أخبرني بالحقيقة، أعرف أنك تخفي شيئاً.", pron: "تيل مي ذَ تروث، آي نو يور هايدينغ سَمثينغ", tip: "جملة درامية مشهورة في أفلام الغموض والتحقيق." },
+      { genre: "mystery", genreLabel: "غموض", mood: "حل اللغز في اللحظة الأخيرة", desc: "بعد ساعات من البحث، تتضح الصورة فجأة أمام الفريق.", line: "Now I understand the whole mystery.", arabic: "الآن أفهم اللغز بالكامل.", pron: "ناو آي أندَرستاند ذَ هول ميستَري", tip: "انطقها بوضوح وكأن قطعة الأحجية اكتملت." },
+      { genre: "mystery", genreLabel: "غموض", mood: "شك وريبة في المشهد", desc: "شخص يسمع صوتاً غريباً في الممر المظلم ويحذّر رفيقه.", line: "Listen, did you hear that sound?", arabic: "استمع، هل سمعت ذلك الصوت؟", pron: "ليسَن، ديد يو هير ذات ساوند", tip: "تُقال بصوت خافت ومشدود في لحظات التشويق." },
+      { genre: "dialogue", genreLabel: "حوارات", mood: "حديث يومي بين صديقين", desc: "صديقان يتحدثان عن خطة المساء ويحسمان قرارهما بسهولة.", line: "That sounds like a good idea to me.", arabic: "تبدو فكرة جيدة بالنسبة لي.", pron: "ذات ساوندز لايك أ غود أيديا تو مي", tip: "عبارة يومية طبيعية جداً للموافقة بلطف." },
+      { genre: "dialogue", genreLabel: "حوارات", mood: "طلب مهلة قصيرة للتفكير", desc: "شخص يطلب استراحة قصيرة قبل اتخاذ قرار مهم.", line: "Wait a minute, I need to think.", arabic: "انتظر دقيقة، أحتاج أن أفكر.", pron: "ويت أ مينِت، آي نيد تو ثينك", tip: "سهلة جداً وتُستخدم يومياً في الحوارات الواقعية." },
+      { genre: "dialogue", genreLabel: "حوارات", mood: "تأكيد الفهم في المحادثة", desc: "المتحدث يوضح نقطته ويطمئن أن الطرف الآخر استوعبها.", line: "Do you understand what I mean?", arabic: "هل تفهم ما أعنيه؟", pron: "دو يو أندَرستاند وات آي مين", tip: "سؤال شائع جداً في الأفلام والنقاشات اليومية." },
+      { genre: "dialogue", genreLabel: "حوارات", mood: "تعاون لحل مشكلة يومية", desc: "شخصان يواجهان صعوبة بسيطة ويقرران إيجاد حل معاً.", line: "Don't worry, we will figure it out.", arabic: "لا تقلق، سنجد لها حلاً.", pron: "دونت ووري، وي ويل فيغَر إت أوت", tip: "عبارة مشجعة وطبيعية جداً في الكلام اليومي." }
+    ];
+
+    // Combinatorial generator so the user has an endless stream of varied movie scenes
+    const SCENE_CHARACTERS = [
+      { en: "in the dark hallway", ar: "في الممر المظلم" },
+      { en: "on the rooftop", ar: "على سطح المبنى" },
+      { en: "inside the quiet cafe", ar: "داخل المقهى الهادئ" },
+      { en: "at the last second", ar: "في اللحظة الأخيرة" },
+      { en: "during a tense meeting", ar: "أثناء اجتماع مشحون" },
+      { en: "right before the finale", ar: "قبل النهاية مباشرة" }
+    ];
+
+    const SCENE_TAGS = [
+      { prefix: "Quickly,", arPrefix: "بسرعة،", genre: "action", genreLabel: "أكشن" },
+      { prefix: "Honestly,", arPrefix: "بصراحة،", genre: "comedy", genreLabel: "كوميديا" },
+      { prefix: "Listen,", arPrefix: "استمع،", genre: "mystery", genreLabel: "غموض" },
+      { prefix: "Well,", arPrefix: "حسناً،", genre: "dialogue", genreLabel: "حوارات" }
+    ];
+
+    function generateEndlessMovieScenes(genreFilter = 'all', count = 12) {
+      const pool = genreFilter === 'all'
+        ? BASE_MOVIE_SCENES
+        : BASE_MOVIE_SCENES.filter(s => s.genre === genreFilter);
+      const source = pool.length ? pool : BASE_MOVIE_SCENES;
+      const generated = [];
+
+      for (let i = 0; i < count; i++) {
+        const base = source[Math.floor(Math.random() * source.length)];
+        const loc = SCENE_CHARACTERS[Math.floor(Math.random() * SCENE_CHARACTERS.length)];
+        const tag = SCENE_TAGS[Math.floor(Math.random() * SCENE_TAGS.length)];
+        const useTag = i % 2 === 1 && !base.line.startsWith(tag.prefix);
+        const line = useTag ? `${tag.prefix} ${base.line.charAt(0).toLowerCase() + base.line.slice(1)}` : base.line;
+        const arabic = useTag ? `${tag.arPrefix} ${base.arabic}` : base.arabic;
+
+        generated.push({
+          genre: base.genre,
+          genreLabel: base.genreLabel,
+          mood: `${base.mood} • ${loc.ar}`,
+          desc: `${base.desc} (${loc.ar}).`,
+          line,
+          arabic,
+          pron: base.pron,
+          tip: base.tip
+        });
+      }
+      return generated;
+    }
+
+    const DETECTIVE_CASES = [
       {
-        english: "Make up your mind",
-        arabic: "يقرّر / يحسم قراره",
-        pronunciation: "ميك أب يور مايند",
-        category: "كلام يومي وأفلام",
-        example: "You need to make up your mind before noon.",
-        translation: "تحتاج أن تحسم قرارك قبل الظهر.",
-        tip: "تُقال في الكلام اليومي عندما يطول تردد الشخص في اختيار شيء واضح."
+        caseTitle: "قضية المفتاح المفقود",
+        clue: "الباب كان مغلقاً من الداخل، لكن النافذة المفتوحة تشير لشيء آخر. ماذا يقول المحقق؟",
+        questionAr: "ما الجملة الأنسب لكشف الحقيقة؟",
+        options: [
+          "Tell me the truth, I know you're hiding something.",
+          "Let's go right now!",
+          "No problem, we can fix it later."
+        ],
+        answer: "Tell me the truth, I know you're hiding something.",
+        arabicAnswer: "أخبرني بالحقيقة، أعرف أنك تخفي شيئاً.",
+        voiceTarget: "Tell me the truth"
       },
       {
-        english: "Run out of",
-        arabic: "ينفد منه / يخلص",
-        pronunciation: "رَن أوت أَف",
-        category: "كلام يومي وأفلام",
-        example: "We ran out of time before finishing the scene.",
-        translation: "نفد منا الوقت قبل إنهاء المشهد.",
-        tip: "تأتي دائماً متبوعة بالشيء الذي انتهى (وقت، بطارية، مال، صبر)."
+        caseTitle: "لغز الساعة المتوقفة",
+        clue: "الساعة توقفت عند العاشرة تماماً، وهناك أثر أقدام خفيف قرب الطاولة.",
+        questionAr: "اختر أو انطق جملة المحقق لاكتشاف الخيط:",
+        options: [
+          "I see something nobody else noticed.",
+          "That sounds like a good idea to me.",
+          "Wait a minute, I need to think."
+        ],
+        answer: "I see something nobody else noticed.",
+        arabicAnswer: "أرى شيئاً لم يلاحظه أحد غيري.",
+        voiceTarget: "I see something"
       },
       {
-        english: "Keep in touch",
-        arabic: "يبقى على تواصل",
-        pronunciation: "كيب إن تاتش",
-        category: "كلام يومي وأفلام",
-        example: "Text me when you get home so we keep in touch.",
-        translation: "راسلني عندما تصل إلى البيت لنبقى على تواصل."
-      ,
-        tip: "عبارة شائعة جداً في نهاية الحوارات أو الوداع بين الأصدقاء."
+        caseTitle: "همس في الظلام",
+        clue: "المحقق يسمع خطوات تقترب في الممر المظلم قبل بدء الاستجواب.",
+        questionAr: "ماذا يقول لرفيقه قبل التحرك؟",
+        options: [
+          "Listen, did you hear that sound?",
+          "Honestly, I have no idea how that happened.",
+          "No problem, I can do it."
+        ],
+        answer: "Listen, did you hear that sound?",
+        arabicAnswer: "استمع، هل سمعت ذلك الصوت؟",
+        voiceTarget: "Listen, did you hear that sound"
       },
       {
-        english: "Take a break",
-        arabic: "يأخذ استراحة",
-        pronunciation: "تيك أ بريك",
-        category: "كلام يومي",
-        example: "Let's take a break for ten minutes.",
-        translation: "لنأخذ استراحة لمدة عشر دقائق.",
-        tip: "تُستخدم للراحة القصيرة أثناء العمل أو الدراسة أو المشاهدة."
-      },
-      {
-        english: "Get along",
-        arabic: "ينسجم / يتفاهم مع شخص",
-        pronunciation: "غِت ألونغ",
-        category: "أفلام وحوار",
-        example: "Do you get along with your teammates?",
-        translation: "هل تنسجم مع أفراد فريقك؟",
-        tip: "تُستخدم للسؤال عن مدى التفاهم والانسجام بين شخصين أو أكثر."
-      },
-      {
-        english: "By the way",
-        arabic: "بالمناسبة / على فكرة",
-        pronunciation: "باي ذَ وي",
-        category: "أفلام وحوار",
-        example: "By the way, did you see the message I sent?",
-        translation: "بالمناسبة، هل رأيت الرسالة التي أرسلتها؟",
-        tip: "أداة انتقال طبيعية جداً في الكلام لتغيير الموضوع أو إضافة معلومة مفاجئة."
-      },
-      {
-        english: "Find out",
-        arabic: "يكتشف / يعرف الحقيقة",
-        pronunciation: "فايند أوت",
-        category: "أفلام وحوار",
-        example: "I will find out who took the keys.",
-        translation: "سأكتشف مَن أخذ المفاتيح.",
-        tip: "تُستخدم عندما يكتشف الشخص حقيقة أو معلومة لم تكن معروفة لديه."
-      },
-      {
-        english: "Settle down",
-        arabic: "يهدأ / يستقر",
-        pronunciation: "سِتُل داون",
-        category: "أفلام وحوار",
-        example: "Settle down, everyone, we're starting now.",
-        translation: "اهدؤوا يا جماعة، سنبدأ الآن.",
-        tip: "تُقال لتهدئة مجموعة أو شخص متوتر أو مشتت."
-      },
-      {
-        english: "Count on",
-        arabic: "يعتمد على",
-        pronunciation: "كاونت أون",
-        category: "أفلام وحوار",
-        example: "You can always count on me when things get tough.",
-        translation: "يمكنك دائماً الاعتماد عليّ عندما تصبح الأمور صعبة.",
-        tip: "تعبّر عن الثقة بأن شخصاً سيساندك وقت الحاجة."
-      },
-      {
-        english: "Show up",
-        arabic: "يحضر / يظهر في موعد",
-        pronunciation: "شو أب",
-        category: "كلام يومي وأفلام",
-        example: "He didn't show up to the meeting this morning.",
-        translation: "لم يحضر إلى الاجتماع هذا الصباح.",
-        tip: "تُستخدم بكثرة في الكلام اليومي بمعنى الحضور أو الظهور في مكان أو موعد."
-      },
-      {
-        english: "Look forward to",
-        arabic: "يتطلع بحماس إلى",
-        pronunciation: "لوك فوروارد تو",
-        category: "كلام يومي",
-        example: "I'm really looking forward to the weekend.",
-        translation: "أتطلع بحماس شديد إلى عطلة نهاية الأسبوع.",
-        tip: "تُستعمل لترقب حدث قادم يسعدك أو يثير حماسك."
-      },
-      {
-        english: "Give someone a hand",
-        arabic: "يساعد شخصاً",
-        pronunciation: "غيف سَموَن أ هاند",
-        category: "كلام يومي وأفلام",
-        example: "Could you give me a hand with these bags?",
-        translation: "هل يمكنك مساعدتي في حمل هذه الحقائب؟",
-        tip: "طريقة ودية وطبيعية جداً لطلب أو تقديم مساعدة عملية."
+        caseTitle: "لحظة الحقيقة في التحقيق",
+        clue: "بعد جمع كل الأدلة، تتضح الصورة كاملة أمام المحقق.",
+        questionAr: "اختر الجملة التي تعبّر عن فهم اللغز:",
+        options: [
+          "Now I understand the whole mystery.",
+          "Stop talking for a minute.",
+          "Come here for a second."
+        ],
+        answer: "Now I understand the whole mystery.",
+        arabicAnswer: "الآن أفهم اللغز بالكامل.",
+        voiceTarget: "Now I understand"
       }
     ];
 
-    const DIALOGUE_SCENARIOS = [
+    const WITTY_SCENES = [
       {
-        situation: "في مقهى أو مطعم — طلب شيء بلباقة",
-        botPrompt: "Hi there! What can I get started for you today?",
-        botArabic: "مرحباً! ماذا تحب أن أجهّز لك اليوم؟",
-        hint: "ابدأ بـ: Can I get... أو I'd like...",
-        sampleReply: "Can I get a cup of coffee, please?",
-        replyArabic: "هل يمكنني الحصول على كوب قهوة، من فضلك؟",
-        keywords: ["like", "get", "want", "please", "coffee", "water", "tea"]
+        setup: "صديقك ينسى مفتاح السيارة داخلها وهي تعمل ويقول: «الخطأ لم يكن خطأي»!",
+        promptAr: "اختر أو انطق الرد الطريف والساخر بخفة:",
+        options: [
+          "Are you seriously telling me that's the plan?",
+          "Listen, did you hear that sound?",
+          "Now I understand the whole mystery."
+        ],
+        answer: "Are you seriously telling me that's the plan?",
+        arabicAnswer: "هل تخبرني بجدية أن هذه هي الخطة؟",
+        voiceTarget: "Are you seriously telling me"
       },
       {
-        situation: "حوار مع صديق — إبداء الرأي في فيلم",
-        botPrompt: "So, what did you think about the movie last night?",
-        botArabic: "حسناً، ما رأيك في الفيلم الليلة الماضية؟",
-        hint: "استخدم: I think it was... أو I really liked...",
-        sampleReply: "I think it was really engaging from start to finish.",
-        replyArabic: "أعتقد أنه كان مشوقاً حقاً من البداية إلى النهاية.",
-        keywords: ["think", "movie", "good", "great", "amazing", "liked", "engaging", "boring"]
+        setup: "طباخ مبتدئ يحرق الفطور ثم يسألك بثقة: «هل نبدأ من جديد؟»",
+        promptAr: "اختر الرد الكوميدي المناسب:",
+        options: [
+          "Actually, forget what I just said.",
+          "Be careful, don't move.",
+          "Tell me the truth."
+        ],
+        answer: "Actually, forget what I just said.",
+        arabicAnswer: "في الواقع، انسَ ما قلته للتو.",
+        voiceTarget: "Actually, forget what I just said"
       },
       {
-        situation: "حديث يومي — التخطيط والقرار",
-        botPrompt: "Are you ready to make up your mind about today's plan?",
-        botArabic: "هل أنت مستعد لتحسم قرارك بشأن خطة اليوم؟",
-        hint: "قل: Let's take a break first أو I think we should...",
-        sampleReply: "Let's take a quick break and then decide.",
-        replyArabic: "لنأخذ استراحة سريعة ثم نقرر.",
-        keywords: ["break", "decide", "think", "plan", "ready", "sure", "let"]
-      },
-      {
-        situation: "تعارف وحديث — هدفك في الإنجليزية",
-        botPrompt: "Why are you practicing English every day?",
-        botArabic: "لماذا تتدرب على الإنجليزية كل يوم؟",
-        hint: "قل: I want to understand movies and speak naturally...",
-        sampleReply: "I want to understand English movies and speak naturally.",
-        replyArabic: "أريد أن أفهم الأفلام الإنجليزية وأتحدث بشكل طبيعي.",
-        keywords: ["want", "movies", "speak", "understand", "english", "practice", "naturally"]
+        setup: "شخص يسكب القهوة على الورق بالخطأ ثم ينظر إليك بابتسامة محرجة.",
+        promptAr: "ردّ بخفة دم وهدوء:",
+        options: [
+          "Honestly, I have no idea how that happened.",
+          "Stop right here and listen.",
+          "I see something nobody else noticed."
+        ],
+        answer: "Honestly, I have no idea how that happened.",
+        arabicAnswer: "بصراحة، ليس لدي أي فكرة كيف حدث ذلك.",
+        voiceTarget: "Honestly, I have no idea"
       }
+    ];
+
+    const NO_TRANSLATION_PACK = [
+      { sentence: "Don't worry, we will figure it out.", guessOptions: ["لا تقلق، سنجد لها حلاً.", "اذهب الآن فوراً.", "هل سمعت ذلك الصوت؟"], answer: "لا تقلق، سنجد لها حلاً.", focusWord: "figure it out" },
+      { sentence: "Be careful on the stairs.", guessOptions: ["انتبه على الدرج.", "أنا مستعد للبدء.", "هذا صحيح تماماً."], answer: "انتبه على الدرج.", focusWord: "Be careful" },
+      { sentence: "Do you understand what I mean?", guessOptions: ["هل تفهم ما أعنيه؟", "متى سنصل إلى هناك؟", "لماذا تأخرت كثيراً؟"], answer: "هل تفهم ما أعنيه؟", focusWord: "understand" },
+      { sentence: "I need a minute to think.", guessOptions: ["أحتاج دقيقة لأفكر.", "أريد أن أشاهد هذا الفيلم.", "لا مشكلة أبداً."], answer: "أحتاج دقيقة لأفكر.", focusWord: "think" },
+      { sentence: "Tell me what happened.", guessOptions: ["أخبرني ماذا حدث.", "أين وضعت المفاتيح؟", "لنأخذ استراحة قصيرة."], answer: "أخبرني ماذا حدث.", focusWord: "Tell me" }
     ];
 
     const DB_NAME = 'WordlyVoiceLevelsDB';
@@ -808,6 +882,7 @@
       lastActiveDate: '',
       levelIndex: 0,
       examsPassed: 0,
+      gamePoints: 0,
       levelLearnedIds: {}
     };
 
@@ -817,13 +892,29 @@
     let learnIdx = 0;
     let learnLog = [];
 
-    let voiceMode = 'builder';
+    let voiceMode = 'weekly';
     let voiceQueue = [];
     let voiceIdx = 0;
     let voiceScore = 0;
     let voiceFeedback = '';
+    let voiceFeedbackType = 'err';
     let spokenTranscript = '';
     let isListening = false;
+
+    // Games state
+    let activeGame = 'movie'; // movie | detective | witty | notrans | beat
+    let movieGenreFilter = 'all';
+    let gameItems = [];
+    let gameIdx = 0;
+    let gameRoundPoints = 0;
+    let gameFeedback = '';
+    let gameFeedbackType = 'err';
+    let gameTranscript = '';
+    let gameListening = false;
+    let beatTimerId = null;
+    let beatSecondsLeft = 8;
+    let gameChoiceAnswered = false;
+    let noTransRevealed = false;
 
     let examQuestions = [];
     let examIdx = 0;
@@ -931,6 +1022,15 @@
       refreshAll();
     }
 
+    async function addGamePoints(pts) {
+      settings.gamePoints = (Number(settings.gamePoints) || 0) + pts;
+      gameRoundPoints += pts;
+      await putItem('settings', { key: 'cfg', value: settings });
+      document.getElementById('h-game-points').textContent = settings.gamePoints;
+      const gpEl = document.getElementById('games-total-points');
+      if (gpEl) gpEl.textContent = settings.gamePoints;
+    }
+
     function getCurrentLevelObj() {
       const idx = Math.min(LEVELS_10.length - 1, Math.max(0, Number(settings.levelIndex) || 0));
       return LEVELS_10[idx];
@@ -977,6 +1077,8 @@
       document.getElementById('rank-name').textContent = lvl.name;
       document.getElementById('rank-words-progress').textContent = learnedInLevel + ' / ' + lvl.reqWords;
       document.getElementById('rank-progress-bar').style.width = Math.min(100, (learnedInLevel / lvl.reqWords) * 100) + '%';
+      document.getElementById('home-level-guide').textContent = lvl.guide;
+      document.getElementById('btn-gen-level').textContent = '✨ توليد 5 كلمات لـ ' + lvl.name;
 
       if (!nextLvl) {
         document.getElementById('rank-next-info').textContent = 'لقد بلغت المستوى العاشر والأخير.';
@@ -989,10 +1091,13 @@
 
       document.getElementById('h-to-learn').textContent = toLearnList.length;
       document.getElementById('h-learned').textContent = learnedList.length;
-      document.getElementById('h-level-words').textContent = learnedInLevel + ' / ' + lvl.reqWords;
+      document.getElementById('h-game-points').textContent = settings.gamePoints || 0;
       document.getElementById('h-streak').textContent = '🔥 ' + (settings.streak || 0);
       document.getElementById('home-learn-btn').textContent = '📖 قائمة للتعلّم (' + toLearnList.length + ')';
       document.getElementById('home-learned-btn').textContent = '✅ المتعلّمة (' + learnedList.length + ')';
+
+      const gpEl = document.getElementById('games-total-points');
+      if (gpEl) gpEl.textContent = settings.gamePoints || 0;
 
       document.getElementById('s-to-learn').textContent = toLearnList.length;
       document.getElementById('s-learned').textContent = learnedList.length;
@@ -1022,12 +1127,467 @@
     }
 
     function goTab(tab) {
+      clearBeatTimer();
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById('page-' + tab).classList.add('active');
       document.querySelectorAll('.nav-btn[data-tab], .m-btn[data-tab]').forEach(b => {
         b.classList.toggle('active', b.getAttribute('data-tab') === tab);
       });
       refreshAll();
+    }
+
+    function openGamesTab() {
+      goTab('games');
+      if (!gameItems.length) {
+        startMovieSceneGame('all');
+      } else {
+        renderGameStage();
+      }
+    }
+
+    function clearBeatTimer() {
+      if (beatTimerId) {
+        clearInterval(beatTimerId);
+        beatTimerId = null;
+      }
+    }
+
+    function startMovieSceneGame(genre = movieGenreFilter) {
+      clearBeatTimer();
+      goTab('games');
+      activeGame = 'movie';
+      movieGenreFilter = genre || 'all';
+      gameItems = generateEndlessMovieScenes(movieGenreFilter, 12);
+      gameIdx = 0;
+      gameRoundPoints = 0;
+      gameFeedback = '';
+      gameTranscript = '';
+      gameChoiceAnswered = false;
+      renderGameStage();
+    }
+
+    function appendMoreEndlessScenes() {
+      const extra = generateEndlessMovieScenes(movieGenreFilter, 10);
+      gameItems.push(...extra);
+      showToast('تمت إضافة 10 لقطات سينمائية جديدة للمكتبة!');
+      renderGameStage();
+    }
+
+    function startDetectiveGame() {
+      clearBeatTimer();
+      goTab('games');
+      activeGame = 'detective';
+      gameItems = shuffleArray(DETECTIVE_CASES);
+      gameIdx = 0;
+      gameRoundPoints = 0;
+      gameFeedback = '';
+      gameTranscript = '';
+      gameChoiceAnswered = false;
+      renderGameStage();
+    }
+
+    function startWittyReplyGame() {
+      clearBeatTimer();
+      goTab('games');
+      activeGame = 'witty';
+      gameItems = shuffleArray(WITTY_SCENES);
+      gameIdx = 0;
+      gameRoundPoints = 0;
+      gameFeedback = '';
+      gameTranscript = '';
+      gameChoiceAnswered = false;
+      renderGameStage();
+    }
+
+    function startUnderstandNoTransGame() {
+      clearBeatTimer();
+      goTab('games');
+      activeGame = 'notrans';
+      gameItems = shuffleArray(NO_TRANSLATION_PACK).map(item => ({
+        ...item,
+        shuffledOptions: shuffleArray(item.guessOptions)
+      }));
+      gameIdx = 0;
+      gameRoundPoints = 0;
+      gameFeedback = '';
+      gameTranscript = '';
+      gameChoiceAnswered = false;
+      noTransRevealed = false;
+      renderGameStage();
+      if (gameItems.length) {
+        speak(gameItems[0].sentence);
+      }
+    }
+
+    function startBeatMicGame() {
+      clearBeatTimer();
+      goTab('games');
+      activeGame = 'beat';
+      const source = vocab.length ? shuffleArray(vocab).slice(0, 6) : shuffleArray(LEVEL_PACKS.easy).slice(0, 6);
+      gameItems = source;
+      gameIdx = 0;
+      gameRoundPoints = 0;
+      gameFeedback = '';
+      gameTranscript = '';
+      armBeatTimer();
+      renderGameStage();
+    }
+
+    function armBeatTimer() {
+      clearBeatTimer();
+      beatSecondsLeft = 8;
+      beatTimerId = setInterval(() => {
+        if (gameListening) return;
+        beatSecondsLeft--;
+        const tEl = document.getElementById('beat-timer-val');
+        if (tEl) tEl.textContent = beatSecondsLeft + ' ث';
+        if (beatSecondsLeft <= 0) {
+          clearBeatTimer();
+          gameFeedbackType = 'err';
+          gameFeedback = '⏱️ انتهى الوقت! اضغط «التالي» أو جرّب نطق الكلمة مرة أخرى.';
+          renderGameStage();
+        }
+      }, 1000);
+    }
+
+    function renderGameStage() {
+      const box = document.getElementById('games-stage-box');
+      if (!box) return;
+
+      if (gameIdx >= gameItems.length) {
+        const replayMap = {
+          movie: `startMovieSceneGame('${movieGenreFilter}')`,
+          detective: 'startDetectiveGame()',
+          witty: 'startWittyReplyGame()',
+          notrans: 'startUnderstandNoTransGame()',
+          beat: 'startBeatMicGame()'
+        };
+        box.innerHTML = `<div style="text-align:center; padding:18px;">
+          <div style="font-size:2.4rem;">🏆</div>
+          <h2>انتهت الجولة!</h2>
+          <p style="font-size:1.15rem; font-weight:800; color:#10B981;">نقاط هذه الجولة: +${gameRoundPoints} نقطة</p>
+          <p class="muted">إجمالي نقاطك في الألعاب: <strong>${settings.gamePoints || 0}</strong></p>
+          <div class="flex-gap" style="justify-content:center; margin-top:12px;">
+            <button class="btn-ai" onclick="${replayMap[activeGame] || 'startMovieSceneGame()'}">🔁 جولة جديدة</button>
+            <button class="btn-secondary" onclick="openGamesTab()">🎮 قائمة الألعاب</button>
+          </div>
+        </div>`;
+        return;
+      }
+
+      if (activeGame === 'movie') {
+        const sc = gameItems[gameIdx];
+        const genres = [
+          { key: 'all', label: 'الكل' },
+          { key: 'action', label: '🔥 أكشن' },
+          { key: 'comedy', label: '😂 كوميديا' },
+          { key: 'mystery', label: '🕵️‍♂️ غموض' },
+          { key: 'dialogue', label: '💬 حوارات' }
+        ];
+        box.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+            <div class="flex-gap">
+              ${genres.map(g => `<button class="nav-btn ${movieGenreFilter === g.key ? 'active' : ''}" onclick="startMovieSceneGame('${g.key}')">${g.label}</button>`).join('')}
+            </div>
+            <span class="muted">لقطة ${gameIdx + 1} من ${gameItems.length} (متجددة باستمرار)</span>
+          </div>
+
+          <div class="scene-box">
+            <div class="pill" style="background:#312E81; color:#C4B5FD; margin-bottom:8px;">🎥 ${escapeHtml(sc.genreLabel)} — ${escapeHtml(sc.mood)}</div>
+            <p style="margin:0 0 12px; font-size:0.95rem;">${escapeHtml(sc.desc)}</p>
+            <div style="background:#0B1120; border:1px solid #1E293B; border-radius:12px; padding:12px;">
+              <div style="font-size:1.35rem; font-weight:900; color:#60A5FA;" dir="ltr">"${escapeHtml(sc.line)}"</div>
+              <div style="color:#34D399; font-weight:700; margin-top:4px;">${escapeHtml(sc.arabic)}</div>
+              <div class="muted" style="margin-top:4px;">🗣️ النطق: ${escapeHtml(sc.pron)}</div>
+            </div>
+            <div style="margin-top:10px; font-size:0.84rem; color:#FBBF24;">🎭 إحساس المشهد: ${escapeHtml(sc.tip)}</div>
+          </div>
+
+          <div class="flex-gap" style="justify-content:center; margin-bottom:12px;">
+            <button class="btn-primary" onclick="speak('${escapeAttr(sc.line)}')">🔊 استمع للقطة</button>
+            <button class="btn-mic ${gameListening ? 'listening' : ''}" onclick="listenGameVoice()">
+              ${gameListening ? '🔴 جاري الاستماع...' : '🎤 مثّل اللقطة بصوتك'}
+            </button>
+            <button class="btn-secondary" onclick="nextGameItem()">➡️ اللقطة التالية</button>
+            <button class="btn-ai" onclick="appendMoreEndlessScenes()">♾️ +10 لقطات إضافية</button>
+          </div>
+
+          ${gameTranscript ? `<div class="muted" style="text-align:center;">ما سمعه الميكروفون: <strong dir="ltr">"${escapeHtml(gameTranscript)}"</strong></div>` : ''}
+          ${gameFeedback ? `<div class="${gameFeedbackType === 'ok' ? 'feedback-ok' : 'feedback-err'}">${escapeHtml(gameFeedback)}</div>` : ''}
+        `;
+        return;
+      }
+
+      if (activeGame === 'detective') {
+        const c = gameItems[gameIdx];
+        box.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <span class="pill">🕵️‍♂️ لعبة استجواب المحقق (غموض)</span>
+            <span class="muted">قضية ${gameIdx + 1} من ${gameItems.length}</span>
+          </div>
+
+          <div class="scene-box">
+            <div class="pill" style="background:#1E1B4B; color:#93C5FD; margin-bottom:8px;">🔍 ${escapeHtml(c.caseTitle)}</div>
+            <p style="margin:0 0 8px; font-size:0.96rem;">${escapeHtml(c.clue)}</p>
+            <div style="font-weight:700; color:#FBBF24;">${escapeHtml(c.questionAr)}</div>
+          </div>
+
+          <div id="game-choices">
+            ${c.options.map(opt => `<button class="choice-btn" dir="ltr" onclick="pickChoiceGame('${escapeAttr(opt)}', this)">${escapeHtml(opt)}</button>`).join('')}
+          </div>
+
+          <div class="flex-gap" style="justify-content:center; margin-top:12px;">
+            <button class="btn-primary" onclick="speak('${escapeAttr(c.answer)}')">🔊 استمع لجملة المحقق</button>
+            <button class="btn-mic ${gameListening ? 'listening' : ''}" onclick="listenGameVoice()">
+              ${gameListening ? '🔴 جاري الاستماع...' : '🎤 انطق الجملة بالمايك'}
+            </button>
+            <button class="btn-secondary" onclick="nextGameItem()">➡️ القضية التالية</button>
+          </div>
+
+          ${gameTranscript ? `<div class="muted" style="text-align:center; margin-top:8px;">ما سمعه الميكروفون: <strong dir="ltr">"${escapeHtml(gameTranscript)}"</strong></div>` : ''}
+          ${gameFeedback ? `<div class="${gameFeedbackType === 'ok' ? 'feedback-ok' : 'feedback-err'}">${escapeHtml(gameFeedback)}</div>` : ''}
+        `;
+        return;
+      }
+
+      if (activeGame === 'witty') {
+        const w = gameItems[gameIdx];
+        box.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <span class="pill">😂 لعبة الرد الساخر أو الطريف (كوميديا)</span>
+            <span class="muted">مشهد ${gameIdx + 1} من ${gameItems.length}</span>
+          </div>
+
+          <div class="scene-box">
+            <div class="pill" style="background:#451A03; color:#FCD34D; margin-bottom:8px;">🎭 موقف كوميدي</div>
+            <p style="margin:0 0 8px; font-size:0.96rem;">${escapeHtml(w.setup)}</p>
+            <div style="font-weight:700; color:#34D399;">${escapeHtml(w.promptAr)}</div>
+          </div>
+
+          <div id="game-choices">
+            ${w.options.map(opt => `<button class="choice-btn" dir="ltr" onclick="pickChoiceGame('${escapeAttr(opt)}', this)">${escapeHtml(opt)}</button>`).join('')}
+          </div>
+
+          <div class="flex-gap" style="justify-content:center; margin-top:12px;">
+            <button class="btn-primary" onclick="speak('${escapeAttr(w.answer)}')">🔊 استمع للرد الطريف</button>
+            <button class="btn-mic ${gameListening ? 'listening' : ''}" onclick="listenGameVoice()">
+              ${gameListening ? '🔴 جاري الاستماع...' : '🎤 قل الرد بالمايك'}
+            </button>
+            <button class="btn-secondary" onclick="nextGameItem()">➡️ المشهد التالي</button>
+          </div>
+
+          ${gameTranscript ? `<div class="muted" style="text-align:center; margin-top:8px;">ما سمعه الميكروفون: <strong dir="ltr">"${escapeHtml(gameTranscript)}"</strong></div>` : ''}
+          ${gameFeedback ? `<div class="${gameFeedbackType === 'ok' ? 'feedback-ok' : 'feedback-err'}">${escapeHtml(gameFeedback)}</div>` : ''}
+        `;
+        return;
+      }
+
+      if (activeGame === 'notrans') {
+        const item = gameItems[gameIdx];
+        box.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <span class="pill">🎧 لعبة افهم بدون ترجمة</span>
+            <span class="muted">${gameIdx + 1} / ${gameItems.length}</span>
+          </div>
+
+          <div class="detail-box">
+            <div class="muted" style="margin-bottom:6px;">استمع واقرأ الجملة الإنجليزية بدون ترجمة مسبقة وخمّن معناها:</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+              <div>
+                <div style="font-size:1.35rem; font-weight:900; color:#60A5FA;" dir="ltr">"${escapeHtml(item.sentence)}"</div>
+                <div class="muted" style="margin-top:4px;">كلمة مفتاحية للمساعدة في الفهم: <strong dir="ltr" style="color:#FBBF24;">${escapeHtml(item.focusWord)}</strong></div>
+              </div>
+              <button class="btn-primary" onclick="speak('${escapeAttr(item.sentence)}')">🔊 استمع مرة أخرى</button>
+            </div>
+          </div>
+
+          <div id="game-choices">
+            ${item.shuffledOptions.map(opt => `<button class="choice-btn" onclick="pickChoiceGame('${escapeAttr(opt)}', this)">${escapeHtml(opt)}</button>`).join('')}
+          </div>
+
+          <div class="flex-gap" style="justify-content:center; margin-top:12px;">
+            <button class="btn-mic ${gameListening ? 'listening' : ''}" onclick="listenGameVoice()">
+              ${gameListening ? '🔴 جاري الاستماع...' : '🎤 انطق الجملة بالمايك'}
+            </button>
+            <button class="btn-secondary" onclick="nextGameItem()">➡️ التالي</button>
+          </div>
+
+          ${gameTranscript ? `<div class="muted" style="text-align:center; margin-top:8px;">ما سمعه الميكروفون: <strong dir="ltr">"${escapeHtml(gameTranscript)}"</strong></div>` : ''}
+          ${gameFeedback ? `<div class="${gameFeedbackType === 'ok' ? 'feedback-ok' : 'feedback-err'}">${escapeHtml(gameFeedback)}</div>` : ''}
+        `;
+        return;
+      }
+
+      // Beat the mic
+      const w = gameItems[gameIdx];
+      box.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <span class="pill">⚡ مبارزة النطق السريع</span>
+          <span class="pill" style="background:#451A03; color:#FCD34D;">⏱️ الوقت: <span id="beat-timer-val">${beatSecondsLeft} ث</span></span>
+        </div>
+
+        <div class="detail-box" style="text-align:center;">
+          <div class="muted">انطق الكلمة بوضوح قبل انتهاء الوقت (+15 نقطة):</div>
+          <div style="font-size:2.1rem; font-weight:900; color:#60A5FA; margin:8px 0;" dir="ltr">${escapeHtml(w.english)}</div>
+          ${w.pronunciation ? `<div style="color:#FBBF24; font-weight:700;">النطق: ${escapeHtml(w.pronunciation)}</div>` : ''}
+          <div style="color:#34D399; font-weight:700; margin-top:4px;">المعنى: ${escapeHtml(w.arabic)}</div>
+        </div>
+
+        <div class="flex-gap" style="justify-content:center; margin-bottom:12px;">
+          <button class="btn-secondary" onclick="speak('${escapeAttr(w.english)}')">🔊 استمع</button>
+          <button class="btn-mic ${gameListening ? 'listening' : ''}" onclick="listenGameVoice()">
+            ${gameListening ? '🔴 جاري الاستماع...' : '🎤 انطق الآن'}
+          </button>
+          <button class="btn-secondary" onclick="nextGameItem()">➡️ التالي</button>
+        </div>
+
+        ${gameTranscript ? `<div class="muted" style="text-align:center;">ما سمعه الميكروفون: <strong dir="ltr">"${escapeHtml(gameTranscript)}"</strong></div>` : ''}
+        ${gameFeedback ? `<div class="${gameFeedbackType === 'ok' ? 'feedback-ok' : 'feedback-err'}">${escapeHtml(gameFeedback)}</div>` : ''}
+      `;
+    }
+
+    function pickChoiceGame(chosen, btnEl) {
+      if (gameChoiceAnswered) return;
+      const item = gameItems[gameIdx];
+      const correctAns = activeGame === 'notrans' ? item.answer : item.answer;
+      gameChoiceAnswered = true;
+
+      document.querySelectorAll('#game-choices .choice-btn').forEach(b => {
+        if (b.textContent === correctAns) b.classList.add('correct');
+      });
+
+      if (chosen === correctAns) {
+        btnEl.classList.add('correct');
+        addGamePoints(15);
+        gameFeedbackType = 'ok';
+        if (activeGame === 'notrans') {
+          noTransRevealed = true;
+          gameFeedback = '✅ فهمت بدون ترجمة! المعنى الصحيح: "' + item.answer + '" (+15 نقطة).';
+        } else {
+          gameFeedback = '✅ اختيار ممتاز! الترجمة: "' + item.arabicAnswer + '" (+15 نقطة). جرّب نطقها بالمايك أيضاً!';
+        }
+      } else {
+        btnEl.classList.add('wrong');
+        gameFeedbackType = 'err';
+        if (activeGame === 'notrans') {
+          gameFeedback = '❌ المعنى الصحيح للجملة هو: "' + item.answer + '".';
+        } else {
+          gameFeedback = '❌ الأنسب في هذا الموقف: "' + item.answer + '" (' + item.arabicAnswer + ').';
+        }
+      }
+      renderGameStage();
+    }
+
+    function listenGameVoice() {
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRec) {
+        gameFeedbackType = 'err';
+        gameFeedback = 'متصفحك لا يدعم التعرّف الصوتي المباشر؛ استمع للعبارة وكرّرها بصوت واضح.';
+        renderGameStage();
+        return;
+      }
+
+      const item = gameItems[gameIdx];
+      if (!item) return;
+
+      const rec = new SpeechRec();
+      rec.lang = 'en-US';
+      rec.interimResults = false;
+      rec.maxAlternatives = 1;
+
+      gameListening = true;
+      gameFeedback = '';
+      renderGameStage();
+
+      rec.onresult = async (event) => {
+        const transcript = (event.results[0][0].transcript || '').trim();
+        gameTranscript = transcript;
+        const cleanHeard = normalizeForSpeech(transcript);
+
+        if (activeGame === 'movie') {
+          const ok = evaluateTargetInSpeech(cleanHeard, item.line);
+          if (ok) {
+            await addGamePoints(20);
+            gameFeedbackType = 'ok';
+            gameFeedback = '🎬 أداء رائع! نطقت لقطة الفيلم بوضوح (+20 نقطة) — سمع الميكروفون: "' + transcript + '".';
+          } else {
+            gameFeedbackType = 'err';
+            gameFeedback = '❌ لم يطابق نطق اللقطة المطلوبة ("' + item.line + '"). سمع الميكروفون: "' + transcript + '". استمع للقطة وأعد المحاولة.';
+          }
+        } else if (activeGame === 'detective' || activeGame === 'witty') {
+          const targetPhrase = item.voiceTarget || item.answer;
+          const ok = evaluateTargetInSpeech(cleanHeard, targetPhrase);
+          if (ok) {
+            await addGamePoints(20);
+            gameFeedbackType = 'ok';
+            gameFeedback = '✅ نطق واضح ومطابق (+20 نقطة)! الترجمة: "' + item.arabicAnswer + '" — سمع الميكروفون: "' + transcript + '".';
+          } else {
+            gameFeedbackType = 'err';
+            gameFeedback = '❌ نطق غير مطابق (المطلوب: "' + targetPhrase + '"، وسمع الميكروفون: "' + transcript + '"). استمع وأعد المحاولة.';
+          }
+        } else if (activeGame === 'notrans') {
+          const ok = evaluateTargetInSpeech(cleanHeard, item.sentence) || evaluateTargetInSpeech(cleanHeard, item.focusWord);
+          if (ok) {
+            await addGamePoints(15);
+            gameFeedbackType = 'ok';
+            gameFeedback = '🎧 ممتاز! نطقت الجملة بوضوح (+15 نقطة) — معناها: "' + item.answer + '".';
+          } else {
+            gameFeedbackType = 'err';
+            gameFeedback = '❌ لم يطابق نطق الجملة ("' + item.sentence + '") — سمع الميكروفون: "' + transcript + '".';
+          }
+        } else if (activeGame === 'beat') {
+          const ok = evaluateTargetInSpeech(cleanHeard, item.english);
+          if (ok) {
+            clearBeatTimer();
+            await addGamePoints(15);
+            gameFeedbackType = 'ok';
+            gameFeedback = '⚡ سرعة ودقة! نطقت "' + item.english + '" (+15 نقطة) — سمع الميكروفون: "' + transcript + '".';
+          } else {
+            gameFeedbackType = 'err';
+            gameFeedback = '❌ نطق غير مطابق للكلمة "' + item.english + '" (سمع: "' + transcript + '"). حاول مرة أخرى قبل انتهاء الوقت!';
+          }
+        }
+
+        gameListening = false;
+        renderGameStage();
+      };
+
+      rec.onerror = () => {
+        gameListening = false;
+        gameFeedbackType = 'err';
+        gameFeedback = '❌ تعذر التقاط الصوت؛ تأكد من السماح للمتصفح باستخدام الميكروفون.';
+        renderGameStage();
+      };
+
+      rec.onend = () => {
+        if (gameListening) {
+          gameListening = false;
+          renderGameStage();
+        }
+      };
+
+      rec.start();
+    }
+
+    function nextGameItem() {
+      gameTranscript = '';
+      gameFeedback = '';
+      gameChoiceAnswered = false;
+      noTransRevealed = false;
+      gameIdx++;
+      renderGameStage();
+      if (activeGame === 'notrans' && gameIdx < gameItems.length) {
+        speak(gameItems[gameIdx].sentence);
+      } else if (activeGame === 'beat' && gameIdx < gameItems.length) {
+        armBeatTimer();
+      }
+    }
+
+    function startWeeklyVoiceReview() {
+      voiceMode = 'weekly';
+      goTab('weekly');
+      const items = getWeeklyWords();
+      setupVoiceQueue(items);
     }
 
     function startSentenceBuilder() {
@@ -1040,18 +1600,39 @@
     function startDialoguePractice() {
       voiceMode = 'dialogue';
       goTab('weekly');
-      const items = shuffleArray(DIALOGUE_SCENARIOS);
+      const items = shuffleArray([
+        {
+          situation: "موقف بسيط — رد سريع واضح",
+          botPrompt: "Are you ready to go?",
+          botArabic: "هل أنت مستعد للذهاب؟",
+          hint: "قل: Yes, let's go أو Wait a minute",
+          sampleReply: "Yes, let's go.",
+          replyArabic: "نعم، لنذهب.",
+          keywords: ["go", "yes", "wait", "ready"]
+        },
+        {
+          situation: "موقف يومي — طلب مساعدة أو توضيح",
+          botPrompt: "Do you understand what I mean?",
+          botArabic: "هل تفهم ما أعنيه؟",
+          hint: "قل: Yes, I understand أو Can you help me",
+          sampleReply: "Yes, I understand.",
+          replyArabic: "نعم، أفهم.",
+          keywords: ["understand", "yes", "help", "mean"]
+        },
+        {
+          situation: "موقف حواري — إبداء رأي بسيط",
+          botPrompt: "Do you like this movie?",
+          botArabic: "هل يعجبك هذا الفيلم؟",
+          hint: "قل: Yes, it's good أو Honestly, yes",
+          sampleReply: "Honestly, it's really good.",
+          replyArabic: "بصراحة، إنه جيد حقاً.",
+          keywords: ["good", "yes", "honestly", "like", "movie"]
+        }
+      ]);
       setupVoiceQueue(items);
       if (voiceQueue.length) {
         speak(voiceQueue[0].botPrompt);
       }
-    }
-
-    function startWeeklyVoiceReview() {
-      voiceMode = 'weekly';
-      goTab('weekly');
-      const items = getWeeklyWords();
-      setupVoiceQueue(items);
     }
 
     function setupVoiceQueue(items) {
@@ -1059,24 +1640,83 @@
       voiceIdx = 0;
       voiceScore = 0;
       voiceFeedback = '';
+      voiceFeedbackType = 'err';
       spokenTranscript = '';
       renderVoiceSession();
+    }
+
+    function normalizeForSpeech(str) {
+      return String(str || '')
+        .toLowerCase()
+        .replace(/[^a-z'\s]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function levenshteinDistance(a, b) {
+      const m = a.length;
+      const n = b.length;
+      if (!m) return n;
+      if (!n) return m;
+      const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
+      for (let i = 0; i <= m; i++) dp[i][0] = i;
+      for (let j = 0; j <= n; j++) dp[0][j] = j;
+      for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+          const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+          dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
+        }
+      }
+      return dp[m][n];
+    }
+
+    function isCloseSingleWord(heardWord, targetWord) {
+      if (!heardWord || !targetWord) return false;
+      if (heardWord === targetWord) return true;
+      const dist = levenshteinDistance(heardWord, targetWord);
+      const maxLen = Math.max(heardWord.length, targetWord.length);
+      if (maxLen <= 3) {
+        return dist <= 1 && Math.abs(heardWord.length - targetWord.length) <= 1;
+      }
+      return dist <= 1 && maxLen >= 4;
+    }
+
+    function evaluateTargetInSpeech(heardText, targetPhrase) {
+      const cleanHeard = normalizeForSpeech(heardText);
+      const cleanTarget = normalizeForSpeech(targetPhrase);
+      if (!cleanHeard || !cleanTarget) return false;
+
+      const heardTokens = cleanHeard.split(' ').filter(Boolean);
+      const targetTokens = cleanTarget.split(' ').filter(Boolean);
+
+      if (targetTokens.length === 1) {
+        const tWord = targetTokens[0];
+        return heardTokens.some(hWord => isCloseSingleWord(hWord, tWord));
+      }
+
+      let matchedCount = 0;
+      for (const tWord of targetTokens) {
+        if (heardTokens.some(hWord => isCloseSingleWord(hWord, tWord))) {
+          matchedCount++;
+        }
+      }
+      return matchedCount >= Math.max(2, Math.ceil(targetTokens.length * 0.75));
     }
 
     function renderVoiceSession() {
       const box = document.getElementById('voice-session-box');
       const titles = {
+        weekly: '🎤 مراجعة أسبوعية وتصحيح دقيق للنطق',
         builder: '🗣️ كوّن جملة من تأليفك بصوتك',
-        dialogue: '💬 مواقف حوارية للتحدث والرد الطبيعي',
-        weekly: '📅 مراجعة الأسبوع بالمايك ونبرة الجملة'
+        dialogue: '💬 مواقف حوارية للتحدث والرد الطبيعي'
       };
-      const heading = titles[voiceMode] || 'تدريب التحدث';
+      const heading = titles[voiceMode] || 'اختبار النطق';
 
       if (!voiceQueue.length) {
         box.innerHTML = `<div style="text-align:center; padding:18px;">
           <h2>${heading}</h2>
-          <p class="muted">لا توجد كلمات محفوظة بعد للتدرب عليها. ولّد كلمات شائعة أو أضف كلماتك.</p>
-          <button class="btn-ai" onclick="generateDailySentences()">✨ توليد 5 كلمات شائعة</button>
+          <p class="muted">لا توجد كلمات محفوظة بعد للمراجعة. ولّد كلمات لمستواك أو أضف كلماتك.</p>
+          <button class="btn-ai" onclick="generateDailySentences()">✨ توليد 5 كلمات لمستواك</button>
         </div>`;
         return;
       }
@@ -1085,10 +1725,10 @@
         const retryFn = voiceMode === 'builder' ? 'startSentenceBuilder()' : (voiceMode === 'dialogue' ? 'startDialoguePractice()' : 'startWeeklyVoiceReview()');
         box.innerHTML = `<div style="text-align:center; padding:18px;">
           <div style="font-size:2.2rem;">🎙️</div>
-          <h2>أحسنت! اكتمل تدريب التحدث</h2>
-          <p style="font-size:1.15rem; font-weight:800; color:#10B981;">النتيجة: ${voiceScore} من ${voiceQueue.length}</p>
+          <h2>اكتملت جلسة النطق</h2>
+          <p style="font-size:1.15rem; font-weight:800; color:#10B981;">النطق الصحيح: ${voiceScore} من ${voiceQueue.length}</p>
           <div class="flex-gap" style="justify-content:center; margin-top:12px;">
-            <button class="btn-primary" onclick="${retryFn}">إعادة التدريب</button>
+            <button class="btn-primary" onclick="${retryFn}">إعادة الجلسة</button>
             <button class="btn-secondary" onclick="goTab('home')">العودة للرئيسية</button>
           </div>
         </div>`;
@@ -1116,7 +1756,7 @@
               💡 تلميح للرد: ${escapeHtml(sc.hint)}
             </div>
             <div style="margin-top:6px; font-size:0.84rem;" class="muted">
-              مثال رد طبيعي: <span dir="ltr" style="color:#34D399;">"${escapeHtml(sc.sampleReply)}"</span>
+              مثال رد واضح: <span dir="ltr" style="color:#34D399;">"${escapeHtml(sc.sampleReply)}"</span>
               <button class="btn-secondary" style="padding:3px 8px; font-size:0.75rem; margin-right:6px;" onclick="speak('${escapeAttr(sc.sampleReply)}')">🔊 اسمع الرد</button>
             </div>
           </div>
@@ -1125,11 +1765,11 @@
             <button class="btn-mic ${isListening ? 'listening' : ''}" onclick="listenUserVoice()">
               ${isListening ? '🔴 جاري الاستماع لردك...' : '🎤 اضغط وردّ بصوتك'}
             </button>
-            <button class="btn-secondary" onclick="nextVoiceItem()">➡️ الموقف التالي</button>
+            <button class="btn-secondary" onclick="nextVoiceItem()">➡️ التالي</button>
           </div>
 
-          ${spokenTranscript ? `<div class="muted" style="text-align:center;">إجابتك المسموعة: <strong dir="ltr">"${escapeHtml(spokenTranscript)}"</strong></div>` : ''}
-          ${voiceFeedback ? `<div style="text-align:center; margin-top:8px; font-weight:700; color:#60A5FA;">${escapeHtml(voiceFeedback)}</div>` : ''}
+          ${spokenTranscript ? `<div class="muted" style="text-align:center;">ما التقطه الميكروفون: <strong dir="ltr">"${escapeHtml(spokenTranscript)}"</strong></div>` : ''}
+          ${voiceFeedback ? `<div class="${voiceFeedbackType === 'ok' ? 'feedback-ok' : 'feedback-err'}">${escapeHtml(voiceFeedback)}</div>` : ''}
         `;
         return;
       }
@@ -1147,38 +1787,40 @@
         <div class="detail-box">
           <div class="muted" style="margin-bottom:6px;">
             ${isBuilder
-              ? '🗣️ التحدي: أدخل هذه العبارة في جملة إنجليزية صحيحة من تأليفك (3 كلمات على الأقل) وانطقها بصوتك!'
-              : '📅 استمع لنبرة الجملة الصحيحة ثم انطق الكلمة أو الجملة في الميكروفون:'}
+              ? '🗣️ أدخل هذه الكلمة في جملة بسيطة من تأليفك (3 كلمات على الأقل) وانطقها بوضوح:'
+              : '🎤 استمع لنطق الكلمة بوضوح ثم انطق الكلمة نفسها في الميكروفون:'}
           </div>
           <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
             <div>
-              <div style="font-size:1.8rem; font-weight:900;" dir="ltr">${escapeHtml(w.english)}</div>
+              <div style="font-size:1.85rem; font-weight:900; color:#60A5FA;" dir="ltr">${escapeHtml(w.english)}</div>
+              ${w.pronunciation ? `<div style="color:#FBBF24; font-weight:700; margin-top:4px;">النطق الصحيح: ${escapeHtml(w.pronunciation)}</div>` : ''}
               <div style="color:#34D399; font-weight:700; margin-top:4px;">المعنى: ${escapeHtml(w.arabic)}</div>
-              ${w.example ? `<div dir="ltr" class="muted" style="margin-top:6px;">مثال صحيح في الكلام: "${escapeHtml(w.example)}"</div>` : ''}
+              ${w.notes ? `<div class="muted" style="margin-top:6px;">💡 ملاحظة النطق: ${escapeHtml(w.notes)}</div>` : ''}
             </div>
             <div class="flex-gap">
-              <button class="btn-secondary" onclick="speak('${escapeAttr(w.english)}')">🔊 الكلمة</button>
-              <button class="btn-primary" onclick="speak('${escapeAttr(targetToneText)}')">🔊 نبرة الجملة</button>
+              <button class="btn-primary" onclick="speak('${escapeAttr(w.english)}')">🔊 استمع للكلمة</button>
+              <button class="btn-secondary" onclick="speak('${escapeAttr(targetToneText)}')">🔊 استمع للجملة</button>
             </div>
           </div>
         </div>
 
         <div class="flex-gap" style="justify-content:center; margin-bottom:12px;">
           <button id="mic-trigger-btn" class="btn-mic ${isListening ? 'listening' : ''}" onclick="listenUserVoice()">
-            ${isListening ? '🔴 جاري الاستماع لصوتك...' : (isBuilder ? '🎤 انطق جملتك الآن' : '🎤 اضغط وتحدث الآن')}
+            ${isListening ? '🔴 جاري الاستماع لصوتك...' : '🎤 اضغط واختبر نطقك'}
           </button>
           <button class="btn-secondary" onclick="nextVoiceItem()">➡️ التالي</button>
         </div>
 
         ${spokenTranscript ? `<div class="muted" style="text-align:center;">ما التقطه الميكروفون: <strong dir="ltr">"${escapeHtml(spokenTranscript)}"</strong></div>` : ''}
-        ${voiceFeedback ? `<div style="text-align:center; margin-top:8px; font-weight:700; color:#60A5FA;">${escapeHtml(voiceFeedback)}</div>` : ''}
+        ${voiceFeedback ? `<div class="${voiceFeedbackType === 'ok' ? 'feedback-ok' : 'feedback-err'}">${escapeHtml(voiceFeedback)}</div>` : ''}
       `;
     }
 
     function listenUserVoice() {
       const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRec) {
-        voiceFeedback = 'متصفحك لا يدعم التعرّف الصوتي المباشر؛ استمع للنبرة وكرّر بصوت مسموع ثم انتقل للتالي.';
+        voiceFeedbackType = 'err';
+        voiceFeedback = 'متصفحك لا يدعم التعرّف الصوتي المباشر؛ استمع للكلمة بوضوح وكرّرها ثم انتقل للتالي.';
         renderVoiceSession();
         return;
       }
@@ -1198,38 +1840,42 @@
       rec.onresult = (event) => {
         const transcript = (event.results[0][0].transcript || '').trim();
         spokenTranscript = transcript;
-        const cleanHeard = transcript.toLowerCase().replace(/[^a-z\s]/g, '').trim();
-        const wordsHeard = cleanHeard.split(/\s+/).filter(Boolean);
+        const cleanHeard = normalizeForSpeech(transcript);
+        const wordsHeard = cleanHeard.split(' ').filter(Boolean);
 
         if (voiceMode === 'dialogue') {
-          const hitKeyword = item.keywords.some(kw => cleanHeard.includes(kw));
+          const hitKeyword = item.keywords.some(kw => evaluateTargetInSpeech(cleanHeard, kw));
           if (wordsHeard.length >= 2 && (hitKeyword || wordsHeard.length >= 4)) {
             voiceScore++;
-            voiceFeedback = '✅ ردّ رائع وطبيعي! استمر بهذا الأسلوب.';
-            speak("That sounded great! Let's try the next situation.");
+            voiceFeedbackType = 'ok';
+            voiceFeedback = '✅ نطق وردّ صحيح! سمع الميكروفون: "' + transcript + '".';
           } else {
-            voiceFeedback = '💬 حاول الرد بجملة أطول قليلاً مستعيناً بالتلميح أعلاه.';
+            voiceFeedbackType = 'err';
+            voiceFeedback = '❌ نطق غير مطابق للرد المطلوب (سمع الميكروفون: "' + transcript + '"). جرّب أن تقول: "' + item.sampleReply + '".';
           }
         } else if (voiceMode === 'builder') {
-          const cleanWord = item.english.toLowerCase().replace(/[^a-z\s]/g, '').trim();
-          const usedTargetWord = cleanHeard.includes(cleanWord);
-          if (usedTargetWord && wordsHeard.length >= 3) {
+          const matchedWord = evaluateTargetInSpeech(cleanHeard, item.english);
+          if (matchedWord && wordsHeard.length >= 3) {
             voiceScore++;
-            voiceFeedback = '✅ ممتاز! استخدمت "' + item.english + '" في جملة كاملة بنطق واضح.';
-            speak("Awesome sentence! Well done.");
-          } else if (usedTargetWord) {
-            voiceFeedback = '⚠️ نطقت العبارة بشكل صحيح، لكن ضعها الآن داخل جملة من 3 كلمات على الأقل.';
+            voiceFeedbackType = 'ok';
+            voiceFeedback = '✅ ممتاز! نطقت "' + item.english + '" داخل جملة واضحة: "' + transcript + '".';
+          } else if (matchedWord) {
+            voiceFeedbackType = 'err';
+            voiceFeedback = '⚠️ نطقت الكلمة "' + item.english + '"، لكن ضعها في جملة من 3 كلمات على الأقل.';
           } else {
-            voiceFeedback = '🎧 حاول تكوين جملة تحتوي على "' + item.english + '" وانطقها بوضوح.';
+            voiceFeedbackType = 'err';
+            voiceFeedback = '❌ لم يلتقط الميكروفون الكلمة "' + item.english + '" بوضوح (سمع: "' + transcript + '"). استمع للنطق وأعد المحاولة.';
           }
         } else {
-          const cleanWord = item.english.toLowerCase().replace(/[^a-z\s]/g, '');
-          const cleanEx = (item.example || '').toLowerCase().replace(/[^a-z\s]/g, '');
-          if (cleanHeard.includes(cleanWord) || (cleanEx && cleanEx.includes(cleanHeard) && cleanHeard.length > 3)) {
+          const matchedWord = evaluateTargetInSpeech(cleanHeard, item.english);
+          if (matchedWord) {
             voiceScore++;
-            voiceFeedback = '✅ نطق ممتاز ومتطابق!';
+            voiceFeedbackType = 'ok';
+            voiceFeedback = '✅ صحيح! نطقت "' + item.english + '" بدقة (سمع الميكروفون: "' + transcript + '").';
           } else {
-            voiceFeedback = '🎧 استمع لنبرة الجملة مجدداً وحاول نطق "' + item.english + '" بوضوح.';
+            voiceFeedbackType = 'err';
+            const pronNote = item.pronunciation ? ' — النطق الصحيح: ' + item.pronunciation : '';
+            voiceFeedback = '❌ خطأ في النطق! المطلوب: "' + item.english + '"' + pronNote + '، لكن الميكروفون سمع: "' + transcript + '". اضغط «استمع للكلمة» وحاول مرة أخرى.';
           }
         }
 
@@ -1239,7 +1885,8 @@
 
       rec.onerror = () => {
         isListening = false;
-        voiceFeedback = 'تعذر التقاط الصوت؛ تأكد من السماح للمتصفح باستخدام الميكروفون.';
+        voiceFeedbackType = 'err';
+        voiceFeedback = '❌ تعذر التقاط الصوت؛ تأكد من السماح للمتصفح باستخدام الميكروفون.';
         renderVoiceSession();
       };
 
@@ -1273,7 +1920,7 @@
         box.innerHTML = `<div style="text-align:center; padding:16px;">
           <img class="crest-img" style="margin:0 auto 10px; display:block;" src="${lvl.img}" alt="${lvl.name}" />
           <h2>أنت في أعلى مستوى: ${lvl.name}</h2>
-          <p class="muted">واصل مراجعة مفرداتك وممارسة التحدث اليومي.</p>
+          <p class="muted">واصل مراجعة مفرداتك وممارسة النطق اليومي.</p>
         </div>`;
         return;
       }
@@ -1307,7 +1954,7 @@
           const masked = target.example.replace(new RegExp(escapeRegex(target.english), 'ig'), '_____');
           return {
             tag: 'إكمال جملة صحيحة من حفظك',
-            prompt: 'اختر العبارة المناسبة لإكمال الجملة:',
+            prompt: 'اختر الكلمة المناسبة لإكمال الجملة:',
             sub: masked,
             speakText: '',
             options: shuffleArray([target.english, ...distractors.map(d => d.english)]),
@@ -1317,9 +1964,9 @@
 
         if (type === 'audio') {
           return {
-            tag: 'اختبار الاستماع ونبرة الكلام',
-            prompt: 'استمع إلى العبارة ثم اختر معناها الصحيح:',
-            sub: target.pronunciation ? 'النطق التقريبي: ' + target.pronunciation : 'اضغط زر الاستماع',
+            tag: 'اختبار الاستماع والنطق',
+            prompt: 'استمع إلى الكلمة ثم اختر معناها الصحيح:',
+            sub: target.pronunciation ? 'النطق: ' + target.pronunciation : 'اضغط زر الاستماع',
             speakText: target.english,
             options: shuffleArray([target.arabic, ...distractors.map(d => d.arabic)]),
             answer: target.arabic
@@ -1329,7 +1976,7 @@
         if (type === 'reverse') {
           return {
             tag: 'ترجمة عكسية (عربي ← إنجليزي)',
-            prompt: 'ما العبارة الإنجليزية الشائعة التي تعني:',
+            prompt: 'ما الكلمة الإنجليزية التي تعني:',
             sub: target.arabic,
             speakText: '',
             options: shuffleArray([target.english, ...distractors.map(d => d.english)]),
@@ -1339,7 +1986,7 @@
 
         return {
           tag: 'المعنى في السياق',
-          prompt: 'ما معنى الكلمة أو العبارة التالية؟',
+          prompt: 'ما معنى الكلمة التالية؟',
           sub: target.english + (target.example ? ' — "' + target.example + '"' : ''),
           speakText: target.english,
           options: shuffleArray([target.arabic, ...distractors.map(d => d.arabic)]),
@@ -1447,14 +2094,29 @@
       return String(s || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 
+    function getLevelPackPool(lvlObj) {
+      const primary = LEVEL_PACKS[lvlObj.tier] || LEVEL_PACKS.easy;
+      const fallbackOrder = ['easy', 'light', 'medium', 'higher'];
+      const combined = [...primary];
+      for (const tKey of fallbackOrder) {
+        for (const item of (LEVEL_PACKS[tKey] || [])) {
+          if (!combined.some(x => x.english.toLowerCase() === item.english.toLowerCase())) {
+            combined.push(item);
+          }
+        }
+      }
+      return combined;
+    }
+
     async function generateDailySentences() {
+      const lvl = getCurrentLevelObj();
       const existingSet = new Set(vocab.map(w => w.english.toLowerCase()));
-      const available = NATURAL_SPOKEN_PACK.filter(item => !existingSet.has(item.english.toLowerCase()));
-      if (!available.length) {
-        showToast('تمت إضافة جميع العبارات الشائعة الجاهزة! يمكنك إضافة كلمات جديدة يدوياً.');
+      const pool = getLevelPackPool(lvl).filter(item => !existingSet.has(item.english.toLowerCase()));
+      if (!pool.length) {
+        showToast('تمت إضافة جميع الكلمات الجاهزة لهذا التدرج! يمكنك إضافة كلمات جديدة يدوياً.');
         return;
       }
-      const picked = shuffleArray(available).slice(0, 5);
+      const picked = pool.slice(0, 5);
       const now = todayStr();
 
       for (const p of picked) {
@@ -1478,7 +2140,9 @@
       }
 
       const card = document.getElementById('daily-generated-card');
+      const titleEl = document.getElementById('daily-generated-title');
       const list = document.getElementById('daily-generated-list');
+      titleEl.textContent = '✨ 5 كلمات مناسبة لـ ' + lvl.name + ' (أُضيفت إلى قائمة للتعلّم)';
       list.innerHTML = picked.map(p => `
         <div style="background:#111A2E; border:1px solid #1E293B; border-radius:12px; padding:12px; margin-bottom:8px;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
@@ -1494,12 +2158,12 @@
           </div>
           <div dir="ltr" style="margin-top:6px; font-size:0.95rem;">"${escapeHtml(p.example)}"</div>
           <div class="muted" style="margin-top:2px;">${escapeHtml(p.translation)}</div>
-          ${p.tip ? `<div style="margin-top:6px; font-size:0.8rem; color:#FBBF24;">💡 كيفية الفهم والاستخدام: ${escapeHtml(p.tip)}</div>` : ''}
+          ${p.tip ? `<div style="margin-top:6px; font-size:0.8rem; color:#FBBF24;">💡 النطق والفهم: ${escapeHtml(p.tip)}</div>` : ''}
         </div>
       `).join('');
       card.style.display = 'block';
       refreshAll();
-      showToast('تمت إضافة 5 كلمات شائعة إلى قائمة للتعلّم!');
+      showToast('تمت إضافة 5 كلمات مناسبة لـ ' + lvl.name + ' إلى قائمة للتعلّم!');
     }
 
     function openWordModal(word = null) {
@@ -1651,7 +2315,7 @@
           <p class="muted">الكلمات التي ضغطت عليها «تم التعلّم» أُزيلت من قائمة للتعلّم وانتقلت إلى قسم «المتعلّمة». المتبقي للتعلّم: <strong>${remainingToLearn.length}</strong></p>
           ${learnLog.length ? `<div style="text-align:right; max-width:440px; margin:12px auto;">${itemsHtml}</div>` : ''}
           <div class="flex-gap" style="justify-content:center; margin-top:12px;">
-            ${remainingToLearn.length ? `<button class="btn-primary" onclick="startLearn()">متابعة الكلمات المتبقية للتعلّم (${remainingToLearn.length})</button>` : `<button class="btn-ai" onclick="generateDailySentences()">✨ توليد 5 كلمات شائعة جديدة</button>`}
+            ${remainingToLearn.length ? `<button class="btn-primary" onclick="startLearn()">متابعة الكلمات المتبقية للتعلّم (${remainingToLearn.length})</button>` : `<button class="btn-ai" onclick="generateDailySentences()">✨ توليد 5 كلمات لمستواك</button>`}
             <button class="btn-secondary" onclick="goTab('vocab')">عرض الكلمات المتعلّمة</button>
           </div>
         </div>`;
@@ -1660,8 +2324,8 @@
 
       const w = learnQueue[learnIdx];
       const smartTip = w.notes || (w.example
-        ? `تُقال "${w.english}" في سياق "${w.example}" بمعنى (${w.arabic})؛ استمع للنبرة وكرّرها بصوت واضح.`
-        : `اربط معنى "${w.arabic}" بنطق "${w.english}" واستخدمها في جملة قصيرة من يومك.`);
+        ? `تُنطق "${w.english}" في جملة "${w.example}" بمعنى (${w.arabic})؛ استمع للنطق وكرّرها بوضوح.`
+        : `اربط معنى "${w.arabic}" بنطق "${w.english}" واستمع إليه عدة مرات.`);
 
       box.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.82rem; margin-bottom:10px;" class="muted">
@@ -1673,7 +2337,7 @@
           <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
             <div>
               <h2 style="margin:0; font-size:2rem; color:#60A5FA;" dir="ltr">${escapeHtml(w.english)}</h2>
-              ${w.pronunciation ? `<div class="muted" style="margin-top:4px;">🗣️ النطق: <strong>${escapeHtml(w.pronunciation)}</strong></div>` : ''}
+              ${w.pronunciation ? `<div style="color:#FBBF24; font-weight:700; margin-top:4px;">🗣️ النطق: ${escapeHtml(w.pronunciation)}</div>` : ''}
             </div>
             <div class="flex-gap">
               <button class="btn-secondary" onclick="speak('${escapeAttr(w.english)}')">🔊 استمع للكلمة</button>
@@ -1688,14 +2352,14 @@
 
           ${w.example ? `
             <div style="margin-top:12px; padding-top:12px; border-top:1px solid #1E293B;">
-              <div class="muted">جملة صحيحة وشائعة في الكلام:</div>
+              <div class="muted">جملة شائعة وسهلة:</div>
               <div dir="ltr" style="font-size:1.05rem; font-weight:700; margin-top:4px;">"${escapeHtml(w.example)}"</div>
               ${w.translation ? `<div class="muted" style="margin-top:4px;">${escapeHtml(w.translation)}</div>` : ''}
             </div>
           ` : ''}
 
           <div style="margin-top:12px; padding-top:12px; border-top:1px solid #1E293B; font-size:0.85rem; color:#FBBF24;">
-            💡 كيف تفهمها وتستخدمها: ${escapeHtml(smartTip)}
+            💡 تفصيل النطق والفهم: ${escapeHtml(smartTip)}
           </div>
         </div>
 
@@ -1724,7 +2388,6 @@
         vocab = vocab.map(x => x.id === updated.id ? updated : x);
         await recordLearnedWordForCurrentLevel(w.id);
 
-        // Remove immediately from active learning queue so it moves to Learned
         learnQueue.splice(learnIdx, 1);
         learnLog.push({ en: w.english, label: 'نُقلت إلى المتعلّمة ✅' });
 
