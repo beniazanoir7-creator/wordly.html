@@ -107,9 +107,9 @@
     .btn-mic { background: linear-gradient(135deg, #059669, #10B981); color: #fff; padding: 10px 15px; font-weight: 700; font-size: 0.88rem; }
     .btn-mic.listening { background: #DC2626; animation: pulse 1s infinite; }
     .btn-secondary { background: #1E293B; color: #fff; padding: 10px 15px; font-weight: 700; font-size: 0.88rem; }
-    .btn-green { background: var(--green); color: #fff; padding: 10px 14px; font-weight: 700; }
-    .btn-amber { background: var(--amber); color: #111; padding: 10px 14px; font-weight: 700; }
-    .btn-red { background: var(--red); color: #fff; padding: 8px 12px; font-weight: 700; }
+    .btn-green { background: var(--green); color: #fff; padding: 10px 14px; font-weight: 700; font-size: 0.88rem; }
+    .btn-amber { background: var(--amber); color: #111; padding: 10px 14px; font-weight: 700; font-size: 0.88rem; }
+    .btn-red { background: var(--red); color: #fff; padding: 8px 12px; font-weight: 700; font-size: 0.84rem; }
 
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
@@ -226,6 +226,7 @@
       border-radius: 14px;
       padding: 14px;
       margin-bottom: 10px;
+      flex-wrap: wrap;
     }
 
     .pill {
@@ -377,7 +378,7 @@
 
       <div class="desktop-nav">
         <button class="nav-btn active" data-tab="home" onclick="goTab('home')">🏠 الرئيسية</button>
-        <button class="nav-btn" data-tab="learn" onclick="startLearn()">📖 للتعلّم</button>
+        <button class="nav-btn" data-tab="learn" onclick="startLearn()">📖 قائمة التي أريد حفظها</button>
         <button class="nav-btn" data-tab="weekly" onclick="startWeeklyVoiceReview()">🎤 مراجعة النطق</button>
         <button class="nav-btn" data-tab="games" onclick="openGamesTab()">🎮 الألعاب</button>
         <button class="nav-btn" data-tab="exam" onclick="startExam()">🏆 اختبار الترقية</button>
@@ -386,7 +387,7 @@
         <button class="nav-btn" data-tab="settings" onclick="goTab('settings')">⚙️ الإعدادات</button>
       </div>
 
-      <button class="btn-primary" onclick="openWordModal()">+ إضافة كلمة</button>
+      <button class="btn-primary" onclick="openWordModal()">+ إضافة كلمة أو جملة</button>
     </div>
   </header>
 
@@ -397,11 +398,11 @@
         <span style="font-size:1.5rem;">🎬</span>
         <div>
           <strong style="font-size:0.95rem;">لقطات الأفلام، استجواب المحقق، والرد الساخر</strong>
-          <div class="muted" style="font-size:0.78rem;">مواقف أكشن وكوميديا وغموض وحوارات متجددة باستمرار مع التحدث بالمايك.</div>
+          <div class="muted" style="font-size:0.78rem;">اللقطة تبقى ثابتة حتى تغيّرها بنفسك، ويمكنك إرسال أي لقطة أو جملة إلى «قائمة التي أريد حفظها».</div>
         </div>
       </div>
       <div class="flex-gap">
-        <button class="btn-ai" onclick="startMovieSceneGame('all')">🎬 لقطات الأفلام</button>
+        <button class="btn-ai" onclick="openMovieSceneView(false)">🎬 لقطات الأفلام</button>
         <button class="btn-mic" onclick="startDetectiveGame()">🕵️‍♂️ استجواب المحقق</button>
         <button class="btn-secondary" onclick="openGamesTab()">🎮 كل الألعاب</button>
       </div>
@@ -437,15 +438,15 @@
         <p class="muted" style="margin:0 0 14px;" id="home-level-guide">المستوى 1 خفيف وسهل جداً: كلمات وعبارات قصيرة سهلة النطق ومستخدمة بكثرة في الأفلام والحوارات اليومية.</p>
         <div class="flex-gap">
           <button class="btn-ai" onclick="generateDailySentences()" id="btn-gen-level">✨ توليد 5 كلمات للمستوى 1</button>
-          <button class="btn-primary" onclick="startLearn()" id="home-learn-btn">📖 قائمة للتعلّم (0)</button>
-          <button class="btn-mic" onclick="startMovieSceneGame('all')">🎬 لقطات الأفلام</button>
-          <button class="btn-secondary" id="home-learned-btn" onclick="goTab('vocab')">✅ المتعلّمة (0)</button>
+          <button class="btn-primary" onclick="startLearn()" id="home-learn-btn">📖 قائمة التي أريد حفظها (0)</button>
+          <button class="btn-mic" onclick="openMovieSceneView(false)">🎬 لقطات الأفلام</button>
+          <button class="btn-secondary" id="home-learned-btn" onclick="goTab('vocab')">✅ المتعلّمة والمحفوظة (0)</button>
         </div>
       </div>
 
       <div id="daily-generated-card" class="card" style="display:none; border-color:#3B82F6;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <strong style="color:#60A5FA;" id="daily-generated-title">✨ كلمات شائعة ومناسبة لمستواك (أُضيفت إلى قائمة للتعلّم)</strong>
+          <strong style="color:#60A5FA;" id="daily-generated-title">✨ كلمات وجمل سهلة ومناسبة لمستواك</strong>
           <button class="nav-btn" onclick="document.getElementById('daily-generated-card').style.display='none'">✕</button>
         </div>
         <div id="daily-generated-list"></div>
@@ -453,11 +454,11 @@
 
       <div class="grid-4">
         <div class="card" style="margin:0;">
-          <div class="stat-label">قائمة للتعلّم</div>
+          <div class="stat-label">قائمة التي أريد حفظها</div>
           <div class="stat-val" style="color:#F59E0B;" id="h-to-learn">0</div>
         </div>
         <div class="card" style="margin:0;">
-          <div class="stat-label">الكلمات المتعلّمة</div>
+          <div class="stat-label">المحفوظات والمتعلّمة</div>
           <div class="stat-val" style="color:#10B981;" id="h-learned">0</div>
         </div>
         <div class="card" style="margin:0;">
@@ -471,7 +472,7 @@
       </div>
     </section>
 
-    <!-- 2. LEARN -->
+    <!-- 2. LIST TO SAVE / LEARN -->
     <section id="page-learn" class="page">
       <div class="card" id="learn-box"></div>
     </section>
@@ -496,7 +497,7 @@
           <span class="pill" style="font-size:0.85rem; padding:4px 10px;">⭐ رصيد النقاط: <span id="games-total-points">0</span></span>
         </div>
         <div class="flex-gap">
-          <button class="btn-ai" onclick="startMovieSceneGame('all')">🎬 لقطات الأفلام</button>
+          <button class="btn-ai" onclick="openMovieSceneView(false)">🎬 لقطات الأفلام</button>
           <button class="btn-mic" onclick="startDetectiveGame()">🕵️‍♂️ استجواب المحقق</button>
           <button class="btn-amber" onclick="startWittyReplyGame()">😂 الرد الساخر أو الطريف</button>
           <button class="btn-primary" onclick="startUnderstandNoTransGame()">🎧 افهم بدون ترجمة</button>
@@ -511,19 +512,19 @@
       <div class="card" id="exam-box"></div>
     </section>
 
-    <!-- 6. MY VOCABULARY -->
+    <!-- 6. MY VOCABULARY & SAVED SENTENCES -->
     <section id="page-vocab" class="page">
       <div class="card">
         <div class="grid-2">
-          <input type="text" id="search-input" placeholder="ابحث بالإنجليزية أو العربية..." oninput="renderVocabList()" style="margin:0;" />
+          <input type="text" id="search-input" placeholder="ابحث في الكلمات أو الجمل المحفوظة..." oninput="renderVocabList()" style="margin:0;" />
           <select id="sort-select" onchange="renderVocabList()" style="margin:0;">
             <option value="newest">الأحدث إضافة</option>
             <option value="alpha">ترتيب أبجدي (A-Z)</option>
           </select>
         </div>
         <div class="flex-gap" style="margin-top:10px;">
-          <button class="nav-btn active" data-filter="to_learn" onclick="setFilter('to_learn', this)">📖 للتعلّم (غير متعلمة)</button>
-          <button class="nav-btn" data-filter="learned" onclick="setFilter('learned', this)">✅ المتعلّمة</button>
+          <button class="nav-btn active" data-filter="to_learn" onclick="setFilter('to_learn', this)">📖 التي أريد حفظها</button>
+          <button class="nav-btn" data-filter="learned" onclick="setFilter('learned', this)">✅ المحفوظات والمتعلّمة</button>
           <button class="nav-btn" data-filter="difficult" onclick="setFilter('difficult', this)">⚠️ صعبة</button>
           <button class="nav-btn" data-filter="all" onclick="setFilter('all', this)">الكل</button>
         </div>
@@ -534,17 +535,17 @@
     <!-- 7. LEVELS & STATS -->
     <section id="page-stats" class="page">
       <div class="card">
-        <h3 style="margin:0 0 12px; font-size:1.05rem;">نظام المستويات العشرة وتدرّج النطق (بعد تخفيض 20%)</h3>
+        <h3 style="margin:0 0 12px; font-size:1.05rem;">نظام المستويات العشرة وتدرّج النطق</h3>
         <div class="roadmap-grid" id="ranks-roadmap"></div>
       </div>
 
       <div class="grid-4">
         <div class="card" style="margin:0;">
-          <div class="stat-label">للتعلّم حالياً</div>
+          <div class="stat-label">التي أريد حفظها</div>
           <div class="stat-val" style="color:#F59E0B;" id="s-to-learn">0</div>
         </div>
         <div class="card" style="margin:0;">
-          <div class="stat-label">الكلمات المتعلّمة</div>
+          <div class="stat-label">المحفوظات والمتعلّمة</div>
           <div class="stat-val" style="color:#10B981;" id="s-learned">0</div>
         </div>
         <div class="card" style="margin:0;">
@@ -567,7 +568,7 @@
     <section id="page-settings" class="page">
       <div class="card">
         <h3 style="margin:0 0 12px; font-size:1.05rem;">الإعدادات</h3>
-        <label>عدد الكلمات في جلسة «للتعلّم» اليومية:</label>
+        <label>عدد العناصر في جلسة «التي أريد حفظها»:</label>
         <input type="number" id="set-target" min="1" max="50" onchange="saveSettings()" />
 
         <label>سرعة نبرة الصوت (0.6 بطيء - 1.2 سريع):</label>
@@ -582,7 +583,7 @@
 
       <div class="card">
         <h3 style="margin:0 0 8px; font-size:1.05rem;">النسخ الاحتياطي وتصدير البيانات</h3>
-        <p class="muted">احفظ نسخة من كلماتك ومستواك أو استعدها في أي وقت.</p>
+        <p class="muted">احفظ نسخة من كلماتك وجملك ومستواك أو استعدها في أي وقت.</p>
         <div class="flex-gap">
           <button class="btn-secondary" onclick="exportCSV()">📄 تصدير CSV</button>
           <button class="btn-primary" onclick="exportJSON()">💾 نسخ احتياطي JSON</button>
@@ -599,43 +600,43 @@
   <div class="modal-backdrop" id="word-modal">
     <div class="modal-box">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <h3 style="margin:0;" id="modal-title">إضافة كلمة إنجليزية</h3>
+        <h3 style="margin:0;" id="modal-title">إضافة كلمة أو جملة إلى «التي أريد حفظها»</h3>
         <button class="nav-btn" onclick="closeWordModal()">✕</button>
       </div>
       <div class="error-msg" id="form-error"></div>
       <form onsubmit="submitWordForm(event)">
         <div class="grid-2">
           <div>
-            <label>الكلمة أو العبارة الإنجليزية *</label>
-            <input type="text" id="f-english" dir="ltr" placeholder="Go" />
+            <label>الكلمة أو الجملة الإنجليزية *</label>
+            <input type="text" id="f-english" dir="ltr" placeholder="I need a minute to think." />
           </div>
           <div>
             <label>المعنى بالعربية *</label>
-            <input type="text" id="f-arabic" placeholder="اذهب / ينطلق" />
+            <input type="text" id="f-arabic" placeholder="أحتاج دقيقة لأفكر." />
           </div>
         </div>
         <div class="grid-2">
           <div>
             <label>النطق التقريبي (اختياري)</label>
-            <input type="text" id="f-pron" dir="ltr" placeholder="غو" />
+            <input type="text" id="f-pron" dir="ltr" placeholder="آي نيد أ مينِت تو ثينك" />
           </div>
           <div>
             <label>التصنيف (اختياري)</label>
-            <input type="text" id="f-cat" placeholder="سهل وشائع، أفلام..." />
+            <input type="text" id="f-cat" placeholder="جملة محفوظة، فيلم..." />
           </div>
         </div>
-        <label>جملة شائعة وسهلة بالإنجليزية (اختياري)</label>
-        <input type="text" id="f-ex" dir="ltr" placeholder="Let's go inside." />
+        <label>جملة إضافية في السياق (اختياري)</label>
+        <input type="text" id="f-ex" dir="ltr" placeholder="Wait a minute, I need to think." />
 
-        <label>ترجمة الجملة بالعربية (اختياري)</label>
-        <input type="text" id="f-trans" placeholder="هيا ندخل إلى الداخل." />
+        <label>ترجمة الجملة الإضافية (اختياري)</label>
+        <input type="text" id="f-trans" placeholder="انتظر دقيقة، أحتاج أن أفكر." />
 
-        <label>ملاحظة بسيطة للنطق والفهم (اختياري)</label>
-        <textarea id="f-notes" rows="2" placeholder="كلمة قصيرة جداً وشائعة في الحوارات والأفلام."></textarea>
+        <label>ملاحظة بسيطة للفهم والنطق (اختياري)</label>
+        <textarea id="f-notes" rows="2" placeholder="جملة واضحة وسهلة وتُستخدم كثيراً في الأفلام."></textarea>
 
         <div class="flex-gap" style="justify-content:flex-end;">
           <button type="button" class="btn-secondary" onclick="closeWordModal()">إلغاء</button>
-          <button type="submit" class="btn-primary">حفظ في قائمة للتعلّم</button>
+          <button type="submit" class="btn-primary">حفظ في قائمة «التي أريد حفظها»</button>
         </div>
       </form>
     </div>
@@ -644,7 +645,7 @@
   <!-- Mobile Bottom Nav -->
   <nav class="mobile-nav">
     <button class="m-btn active" data-tab="home" onclick="goTab('home')"><span>🏠</span><span>الرئيسية</span></button>
-    <button class="m-btn" data-tab="learn" onclick="startLearn()"><span>📖</span><span>للتعلّم</span></button>
+    <button class="m-btn" data-tab="learn" onclick="startLearn()"><span>📖</span><span>للحفظ</span></button>
     <button class="m-btn" data-tab="weekly" onclick="startWeeklyVoiceReview()"><span>🎤</span><span>النطق</span></button>
     <button class="m-btn" data-tab="games" onclick="openGamesTab()"><span>🎮</span><span>الألعاب</span></button>
     <button class="m-btn" data-tab="exam" onclick="startExam()"><span>🏆</span><span>الاختبار</span></button>
@@ -653,6 +654,8 @@
   </nav>
 
   <script>
+    const PERSISTENT_SCENE_KEY = 'wordly_pinned_movie_scene_v1';
+
     const LEVELS_10 = [
       { level: 1, name: "المستوى 1", reqWords: 40, img: "rank-1.png", tier: "easy", guide: "المستوى 1 خفيف وسهل جداً: كلمات وعبارات قصيرة سهلة النطق ومستخدمة بكثرة في الأفلام والحوارات اليومية." },
       { level: 2, name: "المستوى 2", reqWords: 80, img: "rank-2.png", tier: "light", guide: "المستوى 2 خفيف أيضاً: عبارات وكلمات شائعة جداً وسهلة النطق والفهم في الكلام اليومي." },
@@ -701,7 +704,6 @@
       ]
     };
 
-    // Rich base movie scenes across Action, Comedy, Mystery, and Everyday Dialogue
     const BASE_MOVIE_SCENES = [
       { genre: "action", genreLabel: "أكشن", mood: "مطاردة ومهمة عاجلة", desc: "البطل يندفع نحو المخرج ويشير لرفيقه بالتحرك فوراً قبل إغلاق الباب.", line: "Let's go right now!", arabic: "لنذهب الآن فوراً!", pron: "ليتس غو رايت ناو", tip: "انطقها بحماس وحسم كأن كل ثانية تفرق." },
       { genre: "action", genreLabel: "أكشن", mood: "تحذير في لحظة خطر", desc: "صوت يرن في سماعة الاتصال يحذّر الفريق من خطوة غير محسوبة.", line: "Be careful, don't move.", arabic: "كن حذراً، لا تتحرك.", pron: "بي كيرفُل، دونت موف", tip: "تُقال بنبرة منخفضة وحازمة لزيادة التوتر في المشهد." },
@@ -721,8 +723,7 @@
       { genre: "dialogue", genreLabel: "حوارات", mood: "تعاون لحل مشكلة يومية", desc: "شخصان يواجهان صعوبة بسيطة ويقرران إيجاد حل معاً.", line: "Don't worry, we will figure it out.", arabic: "لا تقلق، سنجد لها حلاً.", pron: "دونت ووري، وي ويل فيغَر إت أوت", tip: "عبارة مشجعة وطبيعية جداً في الكلام اليومي." }
     ];
 
-    // Combinatorial generator so the user has an endless stream of varied movie scenes
-    const SCENE_CHARACTERS = [
+    const SCENE_LOCATIONS = [
       { en: "in the dark hallway", ar: "في الممر المظلم" },
       { en: "on the rooftop", ar: "على سطح المبنى" },
       { en: "inside the quiet cafe", ar: "داخل المقهى الهادئ" },
@@ -738,136 +739,48 @@
       { prefix: "Well,", arPrefix: "حسناً،", genre: "dialogue", genreLabel: "حوارات" }
     ];
 
-    function generateEndlessMovieScenes(genreFilter = 'all', count = 12) {
+    function buildSingleMovieScene(genreFilter = 'all') {
       const pool = genreFilter === 'all'
         ? BASE_MOVIE_SCENES
         : BASE_MOVIE_SCENES.filter(s => s.genre === genreFilter);
       const source = pool.length ? pool : BASE_MOVIE_SCENES;
-      const generated = [];
+      const base = source[Math.floor(Math.random() * source.length)];
+      const loc = SCENE_LOCATIONS[Math.floor(Math.random() * SCENE_LOCATIONS.length)];
+      const tag = SCENE_TAGS[Math.floor(Math.random() * SCENE_TAGS.length)];
+      const useTag = Math.random() > 0.45 && !base.line.startsWith(tag.prefix);
+      const line = useTag ? `${tag.prefix} ${base.line.charAt(0).toLowerCase() + base.line.slice(1)}` : base.line;
+      const arabic = useTag ? `${tag.arPrefix} ${base.arabic}` : base.arabic;
 
-      for (let i = 0; i < count; i++) {
-        const base = source[Math.floor(Math.random() * source.length)];
-        const loc = SCENE_CHARACTERS[Math.floor(Math.random() * SCENE_CHARACTERS.length)];
-        const tag = SCENE_TAGS[Math.floor(Math.random() * SCENE_TAGS.length)];
-        const useTag = i % 2 === 1 && !base.line.startsWith(tag.prefix);
-        const line = useTag ? `${tag.prefix} ${base.line.charAt(0).toLowerCase() + base.line.slice(1)}` : base.line;
-        const arabic = useTag ? `${tag.arPrefix} ${base.arabic}` : base.arabic;
-
-        generated.push({
-          genre: base.genre,
-          genreLabel: base.genreLabel,
-          mood: `${base.mood} • ${loc.ar}`,
-          desc: `${base.desc} (${loc.ar}).`,
-          line,
-          arabic,
-          pron: base.pron,
-          tip: base.tip
-        });
-      }
-      return generated;
+      return {
+        genre: base.genre,
+        genreLabel: base.genreLabel,
+        mood: `${base.mood} • ${loc.ar}`,
+        desc: `${base.desc} (${loc.ar}).`,
+        line,
+        arabic,
+        pron: base.pron,
+        tip: base.tip
+      };
     }
 
-    const DETECTIVE_CASES = [
-      {
-        caseTitle: "قضية المفتاح المفقود",
-        clue: "الباب كان مغلقاً من الداخل، لكن النافذة المفتوحة تشير لشيء آخر. ماذا يقول المحقق؟",
-        questionAr: "ما الجملة الأنسب لكشف الحقيقة؟",
-        options: [
-          "Tell me the truth, I know you're hiding something.",
-          "Let's go right now!",
-          "No problem, we can fix it later."
-        ],
-        answer: "Tell me the truth, I know you're hiding something.",
-        arabicAnswer: "أخبرني بالحقيقة، أعرف أنك تخفي شيئاً.",
-        voiceTarget: "Tell me the truth"
-      },
-      {
-        caseTitle: "لغز الساعة المتوقفة",
-        clue: "الساعة توقفت عند العاشرة تماماً، وهناك أثر أقدام خفيف قرب الطاولة.",
-        questionAr: "اختر أو انطق جملة المحقق لاكتشاف الخيط:",
-        options: [
-          "I see something nobody else noticed.",
-          "That sounds like a good idea to me.",
-          "Wait a minute, I need to think."
-        ],
-        answer: "I see something nobody else noticed.",
-        arabicAnswer: "أرى شيئاً لم يلاحظه أحد غيري.",
-        voiceTarget: "I see something"
-      },
-      {
-        caseTitle: "همس في الظلام",
-        clue: "المحقق يسمع خطوات تقترب في الممر المظلم قبل بدء الاستجواب.",
-        questionAr: "ماذا يقول لرفيقه قبل التحرك؟",
-        options: [
-          "Listen, did you hear that sound?",
-          "Honestly, I have no idea how that happened.",
-          "No problem, I can do it."
-        ],
-        answer: "Listen, did you hear that sound?",
-        arabicAnswer: "استمع، هل سمعت ذلك الصوت؟",
-        voiceTarget: "Listen, did you hear that sound"
-      },
-      {
-        caseTitle: "لحظة الحقيقة في التحقيق",
-        clue: "بعد جمع كل الأدلة، تتضح الصورة كاملة أمام المحقق.",
-        questionAr: "اختر الجملة التي تعبّر عن فهم اللغز:",
-        options: [
-          "Now I understand the whole mystery.",
-          "Stop talking for a minute.",
-          "Come here for a second."
-        ],
-        answer: "Now I understand the whole mystery.",
-        arabicAnswer: "الآن أفهم اللغز بالكامل.",
-        voiceTarget: "Now I understand"
-      }
-    ];
+    function savePinnedMovieScene(scene) {
+      try {
+        localStorage.setItem(PERSISTENT_SCENE_KEY, JSON.stringify(scene));
+      } catch (e) {}
+    }
 
-    const WITTY_SCENES = [
-      {
-        setup: "صديقك ينسى مفتاح السيارة داخلها وهي تعمل ويقول: «الخطأ لم يكن خطأي»!",
-        promptAr: "اختر أو انطق الرد الطريف والساخر بخفة:",
-        options: [
-          "Are you seriously telling me that's the plan?",
-          "Listen, did you hear that sound?",
-          "Now I understand the whole mystery."
-        ],
-        answer: "Are you seriously telling me that's the plan?",
-        arabicAnswer: "هل تخبرني بجدية أن هذه هي الخطة؟",
-        voiceTarget: "Are you seriously telling me"
-      },
-      {
-        setup: "طباخ مبتدئ يحرق الفطور ثم يسألك بثقة: «هل نبدأ من جديد؟»",
-        promptAr: "اختر الرد الكوميدي المناسب:",
-        options: [
-          "Actually, forget what I just said.",
-          "Be careful, don't move.",
-          "Tell me the truth."
-        ],
-        answer: "Actually, forget what I just said.",
-        arabicAnswer: "في الواقع، انسَ ما قلته للتو.",
-        voiceTarget: "Actually, forget what I just said"
-      },
-      {
-        setup: "شخص يسكب القهوة على الورق بالخطأ ثم ينظر إليك بابتسامة محرجة.",
-        promptAr: "ردّ بخفة دم وهدوء:",
-        options: [
-          "Honestly, I have no idea how that happened.",
-          "Stop right here and listen.",
-          "I see something nobody else noticed."
-        ],
-        answer: "Honestly, I have no idea how that happened.",
-        arabicAnswer: "بصراحة، ليس لدي أي فكرة كيف حدث ذلك.",
-        voiceTarget: "Honestly, I have no idea"
-      }
-    ];
-
-    const NO_TRANSLATION_PACK = [
-      { sentence: "Don't worry, we will figure it out.", guessOptions: ["لا تقلق، سنجد لها حلاً.", "اذهب الآن فوراً.", "هل سمعت ذلك الصوت؟"], answer: "لا تقلق، سنجد لها حلاً.", focusWord: "figure it out" },
-      { sentence: "Be careful on the stairs.", guessOptions: ["انتبه على الدرج.", "أنا مستعد للبدء.", "هذا صحيح تماماً."], answer: "انتبه على الدرج.", focusWord: "Be careful" },
-      { sentence: "Do you understand what I mean?", guessOptions: ["هل تفهم ما أعنيه؟", "متى سنصل إلى هناك؟", "لماذا تأخرت كثيراً؟"], answer: "هل تفهم ما أعنيه؟", focusWord: "understand" },
-      { sentence: "I need a minute to think.", guessOptions: ["أحتاج دقيقة لأفكر.", "أريد أن أشاهد هذا الفيلم.", "لا مشكلة أبداً."], answer: "أحتاج دقيقة لأفكر.", focusWord: "think" },
-      { sentence: "Tell me what happened.", guessOptions: ["أخبرني ماذا حدث.", "أين وضعت المفاتيح؟", "لنأخذ استراحة قصيرة."], answer: "أخبرني ماذا حدث.", focusWord: "Tell me" }
-    ];
+    function loadPinnedMovieScene() {
+      try {
+        const raw = localStorage.getItem(PERSISTENT_SCENE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.line) return parsed;
+        }
+      } catch (e) {}
+      const initial = buildSingleMovieScene('all');
+      savePinnedMovieScene(initial);
+      return initial;
+    }
 
     const DB_NAME = 'WordlyVoiceLevelsDB';
     let db = null;
@@ -901,9 +814,10 @@
     let spokenTranscript = '';
     let isListening = false;
 
-    // Games state
+    // Games & Movie Scene state
     let activeGame = 'movie'; // movie | detective | witty | notrans | beat
     let movieGenreFilter = 'all';
+    let pinnedMovieScene = null;
     let gameItems = [];
     let gameIdx = 0;
     let gameRoundPoints = 0;
@@ -914,7 +828,6 @@
     let beatTimerId = null;
     let beatSecondsLeft = 8;
     let gameChoiceAnswered = false;
-    let noTransRevealed = false;
 
     let examQuestions = [];
     let examIdx = 0;
@@ -931,6 +844,55 @@
 
     function getLearnedWords() {
       return vocab.filter(w => isWordLearned(w));
+    }
+
+    // Extract saved sentences & words from user's saved/learned items first
+    function getSavedSentencesPool() {
+      const saved = getLearnedWords();
+      const allSavedOrAdded = saved.length ? saved : vocab;
+      const sentences = [];
+
+      for (const w of allSavedOrAdded) {
+        if (w.example && w.example.trim()) {
+          sentences.push({
+            id: w.id,
+            word: w.english,
+            arabicWord: w.arabic,
+            pronunciation: w.pronunciation || '',
+            sentence: w.example.trim(),
+            arabicSentence: w.translation || w.arabic,
+            notes: w.notes || '',
+            fromSaved: true
+          });
+        } else {
+          sentences.push({
+            id: w.id,
+            word: w.english,
+            arabicWord: w.arabic,
+            pronunciation: w.pronunciation || '',
+            sentence: `I remember "${w.english}".`,
+            arabicSentence: `أتذكر كلمة "${w.arabic}".`,
+            notes: w.notes || '',
+            fromSaved: true
+          });
+        }
+      }
+      return sentences;
+    }
+
+    function getSavedWordsPool() {
+      const saved = getLearnedWords();
+      return saved.length ? saved : vocab;
+    }
+
+    function pickEasyNewWordFallback(excludeSet) {
+      const easyPool = [...LEVEL_PACKS.easy, ...LEVEL_PACKS.light];
+      for (const item of easyPool) {
+        if (!excludeSet.has(item.english.toLowerCase())) {
+          return { ...item, fromSaved: false };
+        }
+      }
+      return { ...LEVEL_PACKS.easy[0], fromSaved: false };
     }
 
     function showToast(msg) {
@@ -1014,6 +976,11 @@
         settings = { ...settings, ...found.value, levelLearnedIds: { ...(found.value.levelLearnedIds || {}) } };
       }
 
+      pinnedMovieScene = loadPinnedMovieScene();
+      if (pinnedMovieScene && pinnedMovieScene.genre) {
+        movieGenreFilter = pinnedMovieScene.genre;
+      }
+
       document.documentElement.dir = settings.dir || 'rtl';
       document.getElementById('set-target').value = settings.dailyTarget;
       document.getElementById('set-rate').value = settings.rate || 0.9;
@@ -1093,8 +1060,8 @@
       document.getElementById('h-learned').textContent = learnedList.length;
       document.getElementById('h-game-points').textContent = settings.gamePoints || 0;
       document.getElementById('h-streak').textContent = '🔥 ' + (settings.streak || 0);
-      document.getElementById('home-learn-btn').textContent = '📖 قائمة للتعلّم (' + toLearnList.length + ')';
-      document.getElementById('home-learned-btn').textContent = '✅ المتعلّمة (' + learnedList.length + ')';
+      document.getElementById('home-learn-btn').textContent = '📖 قائمة التي أريد حفظها (' + toLearnList.length + ')';
+      document.getElementById('home-learned-btn').textContent = '✅ المحفوظات والمتعلّمة (' + learnedList.length + ')';
 
       const gpEl = document.getElementById('games-total-points');
       if (gpEl) gpEl.textContent = settings.gamePoints || 0;
@@ -1138,8 +1105,8 @@
 
     function openGamesTab() {
       goTab('games');
-      if (!gameItems.length) {
-        startMovieSceneGame('all');
+      if (activeGame === 'movie') {
+        openMovieSceneView(false);
       } else {
         renderGameStage();
       }
@@ -1152,32 +1119,141 @@
       }
     }
 
-    function startMovieSceneGame(genre = movieGenreFilter) {
+    // Keep current movie scene pinned across reloads & tab switches unless user clicks change/new scene
+    function openMovieSceneView(generateNew = false, genre = null) {
       clearBeatTimer();
       goTab('games');
       activeGame = 'movie';
-      movieGenreFilter = genre || 'all';
-      gameItems = generateEndlessMovieScenes(movieGenreFilter, 12);
-      gameIdx = 0;
-      gameRoundPoints = 0;
+      if (genre) {
+        movieGenreFilter = genre;
+      }
+      if (!pinnedMovieScene) {
+        pinnedMovieScene = loadPinnedMovieScene();
+      }
+      if (generateNew) {
+        pinnedMovieScene = buildSingleMovieScene(movieGenreFilter);
+        savePinnedMovieScene(pinnedMovieScene);
+      }
       gameFeedback = '';
       gameTranscript = '';
-      gameChoiceAnswered = false;
       renderGameStage();
     }
 
-    function appendMoreEndlessScenes() {
-      const extra = generateEndlessMovieScenes(movieGenreFilter, 10);
-      gameItems.push(...extra);
-      showToast('تمت إضافة 10 لقطات سينمائية جديدة للمكتبة!');
-      renderGameStage();
+    async function saveSceneToWantToSaveList(sceneObj) {
+      const existing = vocab.find(w => w.english.toLowerCase() === sceneObj.line.toLowerCase());
+      if (existing) {
+        const updated = {
+          ...existing,
+          status: 'new',
+          arabic: sceneObj.arabic || existing.arabic,
+          pronunciation: sceneObj.pron || existing.pronunciation,
+          example: sceneObj.line,
+          translation: sceneObj.arabic || existing.translation,
+          category: 'لقطة فيلم محفوظة للحفظ',
+          notes: sceneObj.tip || existing.notes
+        };
+        await putItem('vocabulary', updated);
+        vocab = vocab.map(x => x.id === updated.id ? updated : x);
+        refreshAll();
+        showToast('تم نقل اللقطة إلى قائمة «التي أريد حفظها»!');
+        return;
+      }
+
+      const item = {
+        id: Date.now().toString() + '_' + Math.random().toString(36).slice(2, 6),
+        english: sceneObj.line,
+        arabic: sceneObj.arabic,
+        pronunciation: sceneObj.pron || '',
+        category: 'لقطة فيلم • ' + (sceneObj.genreLabel || 'أفلام'),
+        example: sceneObj.line,
+        translation: sceneObj.arabic,
+        notes: sceneObj.tip || sceneObj.desc || '',
+        status: 'new',
+        interval: 0,
+        dateCreated: todayStr(),
+        lastReviewedDate: null,
+        nextReviewDate: todayStr()
+      };
+      await putItem('vocabulary', item);
+      vocab.unshift(item);
+      refreshAll();
+      showToast('تمت إضافة كامل اللقطة إلى قائمة «التي أريد حفظها»!');
     }
 
+    async function saveAnySentenceToWantToSaveList(engText, arText, pronText = '', tipText = '', catText = 'جملة محفوظة للحفظ') {
+      const existing = vocab.find(w => w.english.toLowerCase() === String(engText).toLowerCase());
+      if (existing) {
+        const updated = { ...existing, status: 'new' };
+        await putItem('vocabulary', updated);
+        vocab = vocab.map(x => x.id === updated.id ? updated : x);
+        refreshAll();
+        showToast('تمت إضافتها إلى قائمة «التي أريد حفظها»!');
+        return;
+      }
+      const item = {
+        id: Date.now().toString() + '_' + Math.random().toString(36).slice(2, 6),
+        english: engText,
+        arabic: arText,
+        pronunciation: pronText,
+        category: catText,
+        example: engText,
+        translation: arText,
+        notes: tipText,
+        status: 'new',
+        interval: 0,
+        dateCreated: todayStr(),
+        lastReviewedDate: null,
+        nextReviewDate: todayStr()
+      };
+      await putItem('vocabulary', item);
+      vocab.unshift(item);
+      refreshAll();
+      showToast('تمت إضافة الجملة إلى قائمة «التي أريد حفظها»!');
+    }
+
+    // Build Detective cases from saved sentences first + easy new fallback if needed
     function startDetectiveGame() {
       clearBeatTimer();
       goTab('games');
       activeGame = 'detective';
-      gameItems = shuffleArray(DETECTIVE_CASES);
+
+      const savedPool = getSavedSentencesPool();
+      const usedWords = new Set(savedPool.map(s => s.word.toLowerCase()));
+      const easyExtra = pickEasyNewWordFallback(usedWords);
+
+      const cases = savedPool.slice(0, 5).map((item, idx) => {
+        const others = savedPool.filter((_, i) => i !== idx).map(x => x.sentence);
+        const distractorA = others[0] || easyExtra.example;
+        const distractorB = others[1] || 'Be careful on the stairs.';
+        return {
+          caseTitle: `تحقيق من محفوظاتك — كلمة "${item.word}" (${item.arabicWord})`,
+          clue: `في جملة حفظتها سابقاً مرتبطة بكلمة (${item.word} = ${item.arabicWord})، أي جملة تعبّر عن الفكرة بوضوح؟`,
+          questionAr: 'اختر أو انطق الجملة الصحيحة لكشف الخيط:',
+          options: shuffleArray([item.sentence, distractorA, distractorB]),
+          answer: item.sentence,
+          arabicAnswer: item.arabicSentence,
+          voiceTarget: item.word,
+          fromSaved: true
+        };
+      });
+
+      // Add 1 easy new word/sentence gently so user also practices a simple new derivative/phrase
+      cases.push({
+        caseTitle: `إضافة سهلة ومبسّطة — كلمة جديدة "${easyExtra.english}" (${easyExtra.arabic})`,
+        clue: `كلمة سهلة وبسيطة تُضاف لتوسيع فهمك بخفة: "${easyExtra.english}" وتعني (${easyExtra.arabic}).`,
+        questionAr: 'اختر الجملة السهلة المناسبة لهذه الكلمة:',
+        options: shuffleArray([
+          easyExtra.example,
+          savedPool[0] ? savedPool[0].sentence : 'Let\'s go right now.',
+          'Wait a minute.'
+        ]),
+        answer: easyExtra.example,
+        arabicAnswer: easyExtra.translation,
+        voiceTarget: easyExtra.english,
+        fromSaved: false
+      });
+
+      gameItems = cases;
       gameIdx = 0;
       gameRoundPoints = 0;
       gameFeedback = '';
@@ -1190,7 +1266,41 @@
       clearBeatTimer();
       goTab('games');
       activeGame = 'witty';
-      gameItems = shuffleArray(WITTY_SCENES);
+
+      const savedPool = getSavedSentencesPool();
+      const usedWords = new Set(savedPool.map(s => s.word.toLowerCase()));
+      const easyExtra = pickEasyNewWordFallback(usedWords);
+
+      const scenes = savedPool.slice(0, 5).map((item, idx) => {
+        const others = savedPool.filter((_, i) => i !== idx).map(x => x.sentence);
+        const d1 = others[0] || easyExtra.example;
+        const d2 = others[1] || 'No problem, I can do it.';
+        return {
+          setup: `موقف طريف ومألوف من محفوظاتك حول (${item.word} — ${item.arabicWord}): صديقك ينسى ما اتفقتم عليه ويطلب منك رداً خفيفاً.`,
+          promptAr: 'اختر أو انطق الرد المناسب من محفوظاتك:',
+          options: shuffleArray([item.sentence, d1, d2]),
+          answer: item.sentence,
+          arabicAnswer: item.arabicSentence,
+          voiceTarget: item.sentence,
+          fromSaved: true
+        };
+      });
+
+      scenes.push({
+        setup: `موقف كوميدي بسيط بكلمة جديدة سهلة (${easyExtra.english} = ${easyExtra.arabic}): صديقك يمازحك قبل بدء مهمة بسيطة.`,
+        promptAr: 'اختر أو انطق الرد السهل:',
+        options: shuffleArray([
+          easyExtra.example,
+          savedPool[0] ? savedPool[0].sentence : 'Tell me what happened.',
+          'Look at the screen.'
+        ]),
+        answer: easyExtra.example,
+        arabicAnswer: easyExtra.translation,
+        voiceTarget: easyExtra.example,
+        fromSaved: false
+      });
+
+      gameItems = scenes;
       gameIdx = 0;
       gameRoundPoints = 0;
       gameFeedback = '';
@@ -1203,16 +1313,44 @@
       clearBeatTimer();
       goTab('games');
       activeGame = 'notrans';
-      gameItems = shuffleArray(NO_TRANSLATION_PACK).map(item => ({
-        ...item,
-        shuffledOptions: shuffleArray(item.guessOptions)
-      }));
+
+      const savedPool = getSavedSentencesPool();
+      const usedWords = new Set(savedPool.map(s => s.word.toLowerCase()));
+      const easyExtra = pickEasyNewWordFallback(usedWords);
+
+      const rawItems = savedPool.slice(0, 5).map((item, idx) => {
+        const othersAr = savedPool.filter((_, i) => i !== idx).map(x => x.arabicSentence);
+        return {
+          sentence: item.sentence,
+          focusWord: `${item.word} (${item.arabicWord})`,
+          answer: item.arabicSentence,
+          guessOptions: shuffleArray([
+            item.arabicSentence,
+            othersAr[0] || easyExtra.translation,
+            othersAr[1] || 'انتظر دقيقة.'
+          ]),
+          fromSaved: true
+        };
+      });
+
+      rawItems.push({
+        sentence: easyExtra.example,
+        focusWord: `${easyExtra.english} (جديدة سهلة)`,
+        answer: easyExtra.translation,
+        guessOptions: shuffleArray([
+          easyExtra.translation,
+          savedPool[0] ? savedPool[0].arabicSentence : 'لا مشكلة.',
+          'انظر إلى الشاشة.'
+        ]),
+        fromSaved: false
+      });
+
+      gameItems = rawItems;
       gameIdx = 0;
       gameRoundPoints = 0;
       gameFeedback = '';
       gameTranscript = '';
       gameChoiceAnswered = false;
-      noTransRevealed = false;
       renderGameStage();
       if (gameItems.length) {
         speak(gameItems[0].sentence);
@@ -1223,8 +1361,8 @@
       clearBeatTimer();
       goTab('games');
       activeGame = 'beat';
-      const source = vocab.length ? shuffleArray(vocab).slice(0, 6) : shuffleArray(LEVEL_PACKS.easy).slice(0, 6);
-      gameItems = source;
+      const savedWords = getSavedWordsPool();
+      gameItems = savedWords.length ? shuffleArray(savedWords).slice(0, 6) : shuffleArray(LEVEL_PACKS.easy).slice(0, 6);
       gameIdx = 0;
       gameRoundPoints = 0;
       gameFeedback = '';
@@ -1254,29 +1392,8 @@
       const box = document.getElementById('games-stage-box');
       if (!box) return;
 
-      if (gameIdx >= gameItems.length) {
-        const replayMap = {
-          movie: `startMovieSceneGame('${movieGenreFilter}')`,
-          detective: 'startDetectiveGame()',
-          witty: 'startWittyReplyGame()',
-          notrans: 'startUnderstandNoTransGame()',
-          beat: 'startBeatMicGame()'
-        };
-        box.innerHTML = `<div style="text-align:center; padding:18px;">
-          <div style="font-size:2.4rem;">🏆</div>
-          <h2>انتهت الجولة!</h2>
-          <p style="font-size:1.15rem; font-weight:800; color:#10B981;">نقاط هذه الجولة: +${gameRoundPoints} نقطة</p>
-          <p class="muted">إجمالي نقاطك في الألعاب: <strong>${settings.gamePoints || 0}</strong></p>
-          <div class="flex-gap" style="justify-content:center; margin-top:12px;">
-            <button class="btn-ai" onclick="${replayMap[activeGame] || 'startMovieSceneGame()'}">🔁 جولة جديدة</button>
-            <button class="btn-secondary" onclick="openGamesTab()">🎮 قائمة الألعاب</button>
-          </div>
-        </div>`;
-        return;
-      }
-
       if (activeGame === 'movie') {
-        const sc = gameItems[gameIdx];
+        const sc = pinnedMovieScene || loadPinnedMovieScene();
         const genres = [
           { key: 'all', label: 'الكل' },
           { key: 'action', label: '🔥 أكشن' },
@@ -1287,9 +1404,9 @@
         box.innerHTML = `
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
             <div class="flex-gap">
-              ${genres.map(g => `<button class="nav-btn ${movieGenreFilter === g.key ? 'active' : ''}" onclick="startMovieSceneGame('${g.key}')">${g.label}</button>`).join('')}
+              ${genres.map(g => `<button class="nav-btn ${movieGenreFilter === g.key ? 'active' : ''}" onclick="openMovieSceneView(true, '${g.key}')">${g.label}</button>`).join('')}
             </div>
-            <span class="muted">لقطة ${gameIdx + 1} من ${gameItems.length} (متجددة باستمرار)</span>
+            <span class="pill" style="background:#064E3B; color:#6EE7B7;">🔒 ثابتة حتى تطلب تغييرها</span>
           </div>
 
           <div class="scene-box">
@@ -1308,8 +1425,8 @@
             <button class="btn-mic ${gameListening ? 'listening' : ''}" onclick="listenGameVoice()">
               ${gameListening ? '🔴 جاري الاستماع...' : '🎤 مثّل اللقطة بصوتك'}
             </button>
-            <button class="btn-secondary" onclick="nextGameItem()">➡️ اللقطة التالية</button>
-            <button class="btn-ai" onclick="appendMoreEndlessScenes()">♾️ +10 لقطات إضافية</button>
+            <button class="btn-green" onclick="saveSceneToWantToSaveList(pinnedMovieScene)">📥 تحويل اللقطة إلى «التي أريد حفظها»</button>
+            <button class="btn-ai" onclick="openMovieSceneView(true, movieGenreFilter)">🔄 تغيير إلى لقطة أخرى</button>
           </div>
 
           ${gameTranscript ? `<div class="muted" style="text-align:center;">ما سمعه الميكروفون: <strong dir="ltr">"${escapeHtml(gameTranscript)}"</strong></div>` : ''}
@@ -1318,11 +1435,40 @@
         return;
       }
 
+      if (!gameItems.length) {
+        box.innerHTML = `<div style="text-align:center; padding:18px;">
+          <h3>لا توجد كلمات أو جمل محفوظة بعد</h3>
+          <p class="muted">أضف كلماتك وجملك أو ولّد كلمات سهلة لتبدأ التدريب من محفوظاتك.</p>
+          <button class="btn-ai" onclick="generateDailySentences()">✨ توليد 5 كلمات سهلة</button>
+        </div>`;
+        return;
+      }
+
+      if (gameIdx >= gameItems.length) {
+        const replayMap = {
+          detective: 'startDetectiveGame()',
+          witty: 'startWittyReplyGame()',
+          notrans: 'startUnderstandNoTransGame()',
+          beat: 'startBeatMicGame()'
+        };
+        box.innerHTML = `<div style="text-align:center; padding:18px;">
+          <div style="font-size:2.4rem;">🏆</div>
+          <h2>انتهت الجولة!</h2>
+          <p style="font-size:1.15rem; font-weight:800; color:#10B981;">نقاط هذه الجولة: +${gameRoundPoints} نقطة</p>
+          <p class="muted">إجمالي نقاطك في الألعاب: <strong>${settings.gamePoints || 0}</strong></p>
+          <div class="flex-gap" style="justify-content:center; margin-top:12px;">
+            <button class="btn-ai" onclick="${replayMap[activeGame] || 'startDetectiveGame()'}">🔁 جولة جديدة</button>
+            <button class="btn-secondary" onclick="openGamesTab()">🎮 قائمة الألعاب</button>
+          </div>
+        </div>`;
+        return;
+      }
+
       if (activeGame === 'detective') {
         const c = gameItems[gameIdx];
         box.innerHTML = `
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <span class="pill">🕵️‍♂️ لعبة استجواب المحقق (غموض)</span>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:6px;">
+            <span class="pill">🕵️‍♂️ استجواب المحقق ${c.fromSaved ? '• من محفوظاتك' : '• إضافة سهلة'}</span>
             <span class="muted">قضية ${gameIdx + 1} من ${gameItems.length}</span>
           </div>
 
@@ -1339,9 +1485,10 @@
           <div class="flex-gap" style="justify-content:center; margin-top:12px;">
             <button class="btn-primary" onclick="speak('${escapeAttr(c.answer)}')">🔊 استمع لجملة المحقق</button>
             <button class="btn-mic ${gameListening ? 'listening' : ''}" onclick="listenGameVoice()">
-              ${gameListening ? '🔴 جاري الاستماع...' : '🎤 انطق الجملة بالمايك'}
+              ${gameListening ? '🔴 جاري الاستماع...' : '🎤 انطق بالمايك'}
             </button>
-            <button class="btn-secondary" onclick="nextGameItem()">➡️ القضية التالية</button>
+            <button class="btn-green" onclick="saveAnySentenceToWantToSaveList('${escapeAttr(c.answer)}', '${escapeAttr(c.arabicAnswer)}', '', '', 'جملة من استجواب المحقق')">📥 أضف لـ «التي أريد حفظها»</button>
+            <button class="btn-secondary" onclick="nextGameItem()">➡️ التالي</button>
           </div>
 
           ${gameTranscript ? `<div class="muted" style="text-align:center; margin-top:8px;">ما سمعه الميكروفون: <strong dir="ltr">"${escapeHtml(gameTranscript)}"</strong></div>` : ''}
@@ -1353,13 +1500,13 @@
       if (activeGame === 'witty') {
         const w = gameItems[gameIdx];
         box.innerHTML = `
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <span class="pill">😂 لعبة الرد الساخر أو الطريف (كوميديا)</span>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:6px;">
+            <span class="pill">😂 الرد الساخر أو الطريف ${w.fromSaved ? '• من محفوظاتك' : '• إضافة سهلة'}</span>
             <span class="muted">مشهد ${gameIdx + 1} من ${gameItems.length}</span>
           </div>
 
           <div class="scene-box">
-            <div class="pill" style="background:#451A03; color:#FCD34D; margin-bottom:8px;">🎭 موقف كوميدي</div>
+            <div class="pill" style="background:#451A03; color:#FCD34D; margin-bottom:8px;">🎭 موقف طريف</div>
             <p style="margin:0 0 8px; font-size:0.96rem;">${escapeHtml(w.setup)}</p>
             <div style="font-weight:700; color:#34D399;">${escapeHtml(w.promptAr)}</div>
           </div>
@@ -1369,11 +1516,12 @@
           </div>
 
           <div class="flex-gap" style="justify-content:center; margin-top:12px;">
-            <button class="btn-primary" onclick="speak('${escapeAttr(w.answer)}')">🔊 استمع للرد الطريف</button>
+            <button class="btn-primary" onclick="speak('${escapeAttr(w.answer)}')">🔊 استمع للرد</button>
             <button class="btn-mic ${gameListening ? 'listening' : ''}" onclick="listenGameVoice()">
               ${gameListening ? '🔴 جاري الاستماع...' : '🎤 قل الرد بالمايك'}
             </button>
-            <button class="btn-secondary" onclick="nextGameItem()">➡️ المشهد التالي</button>
+            <button class="btn-green" onclick="saveAnySentenceToWantToSaveList('${escapeAttr(w.answer)}', '${escapeAttr(w.arabicAnswer)}', '', '', 'جملة من الرد الطريف')">📥 أضف لـ «التي أريد حفظها»</button>
+            <button class="btn-secondary" onclick="nextGameItem()">➡️ التالي</button>
           </div>
 
           ${gameTranscript ? `<div class="muted" style="text-align:center; margin-top:8px;">ما سمعه الميكروفون: <strong dir="ltr">"${escapeHtml(gameTranscript)}"</strong></div>` : ''}
@@ -1385,8 +1533,8 @@
       if (activeGame === 'notrans') {
         const item = gameItems[gameIdx];
         box.innerHTML = `
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <span class="pill">🎧 لعبة افهم بدون ترجمة</span>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:6px;">
+            <span class="pill">🎧 افهم بدون ترجمة ${item.fromSaved ? '• من محفوظاتك' : '• إضافة سهلة'}</span>
             <span class="muted">${gameIdx + 1} / ${gameItems.length}</span>
           </div>
 
@@ -1395,20 +1543,21 @@
             <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
               <div>
                 <div style="font-size:1.35rem; font-weight:900; color:#60A5FA;" dir="ltr">"${escapeHtml(item.sentence)}"</div>
-                <div class="muted" style="margin-top:4px;">كلمة مفتاحية للمساعدة في الفهم: <strong dir="ltr" style="color:#FBBF24;">${escapeHtml(item.focusWord)}</strong></div>
+                <div class="muted" style="margin-top:4px;">كلمة مفتاحية للمساعدة: <strong style="color:#FBBF24;">${escapeHtml(item.focusWord)}</strong></div>
               </div>
-              <button class="btn-primary" onclick="speak('${escapeAttr(item.sentence)}')">🔊 استمع مرة أخرى</button>
+              <button class="btn-primary" onclick="speak('${escapeAttr(item.sentence)}')">🔊 استمع</button>
             </div>
           </div>
 
           <div id="game-choices">
-            ${item.shuffledOptions.map(opt => `<button class="choice-btn" onclick="pickChoiceGame('${escapeAttr(opt)}', this)">${escapeHtml(opt)}</button>`).join('')}
+            ${item.guessOptions.map(opt => `<button class="choice-btn" onclick="pickChoiceGame('${escapeAttr(opt)}', this)">${escapeHtml(opt)}</button>`).join('')}
           </div>
 
           <div class="flex-gap" style="justify-content:center; margin-top:12px;">
             <button class="btn-mic ${gameListening ? 'listening' : ''}" onclick="listenGameVoice()">
               ${gameListening ? '🔴 جاري الاستماع...' : '🎤 انطق الجملة بالمايك'}
             </button>
+            <button class="btn-green" onclick="saveAnySentenceToWantToSaveList('${escapeAttr(item.sentence)}', '${escapeAttr(item.answer)}', '', '', 'جملة محفوظة')">📥 أضف لـ «التي أريد حفظها»</button>
             <button class="btn-secondary" onclick="nextGameItem()">➡️ التالي</button>
           </div>
 
@@ -1449,7 +1598,7 @@
     function pickChoiceGame(chosen, btnEl) {
       if (gameChoiceAnswered) return;
       const item = gameItems[gameIdx];
-      const correctAns = activeGame === 'notrans' ? item.answer : item.answer;
+      const correctAns = item.answer;
       gameChoiceAnswered = true;
 
       document.querySelectorAll('#game-choices .choice-btn').forEach(b => {
@@ -1461,10 +1610,9 @@
         addGamePoints(15);
         gameFeedbackType = 'ok';
         if (activeGame === 'notrans') {
-          noTransRevealed = true;
           gameFeedback = '✅ فهمت بدون ترجمة! المعنى الصحيح: "' + item.answer + '" (+15 نقطة).';
         } else {
-          gameFeedback = '✅ اختيار ممتاز! الترجمة: "' + item.arabicAnswer + '" (+15 نقطة). جرّب نطقها بالمايك أيضاً!';
+          gameFeedback = '✅ اختيار ممتاز! الترجمة: "' + item.arabicAnswer + '" (+15 نقطة).';
         }
       } else {
         btnEl.classList.add('wrong');
@@ -1487,9 +1635,6 @@
         return;
       }
 
-      const item = gameItems[gameIdx];
-      if (!item) return;
-
       const rec = new SpeechRec();
       rec.lang = 'en-US';
       rec.interimResults = false;
@@ -1505,46 +1650,50 @@
         const cleanHeard = normalizeForSpeech(transcript);
 
         if (activeGame === 'movie') {
-          const ok = evaluateTargetInSpeech(cleanHeard, item.line);
+          const sc = pinnedMovieScene || loadPinnedMovieScene();
+          const ok = evaluateTargetInSpeech(cleanHeard, sc.line);
           if (ok) {
             await addGamePoints(20);
             gameFeedbackType = 'ok';
             gameFeedback = '🎬 أداء رائع! نطقت لقطة الفيلم بوضوح (+20 نقطة) — سمع الميكروفون: "' + transcript + '".';
           } else {
             gameFeedbackType = 'err';
-            gameFeedback = '❌ لم يطابق نطق اللقطة المطلوبة ("' + item.line + '"). سمع الميكروفون: "' + transcript + '". استمع للقطة وأعد المحاولة.';
+            gameFeedback = '❌ لم يطابق نطق اللقطة ("' + sc.line + '"). سمع الميكروفون: "' + transcript + '". استمع وأعد المحاولة.';
           }
-        } else if (activeGame === 'detective' || activeGame === 'witty') {
-          const targetPhrase = item.voiceTarget || item.answer;
-          const ok = evaluateTargetInSpeech(cleanHeard, targetPhrase);
-          if (ok) {
-            await addGamePoints(20);
-            gameFeedbackType = 'ok';
-            gameFeedback = '✅ نطق واضح ومطابق (+20 نقطة)! الترجمة: "' + item.arabicAnswer + '" — سمع الميكروفون: "' + transcript + '".';
-          } else {
-            gameFeedbackType = 'err';
-            gameFeedback = '❌ نطق غير مطابق (المطلوب: "' + targetPhrase + '"، وسمع الميكروفون: "' + transcript + '"). استمع وأعد المحاولة.';
-          }
-        } else if (activeGame === 'notrans') {
-          const ok = evaluateTargetInSpeech(cleanHeard, item.sentence) || evaluateTargetInSpeech(cleanHeard, item.focusWord);
-          if (ok) {
-            await addGamePoints(15);
-            gameFeedbackType = 'ok';
-            gameFeedback = '🎧 ممتاز! نطقت الجملة بوضوح (+15 نقطة) — معناها: "' + item.answer + '".';
-          } else {
-            gameFeedbackType = 'err';
-            gameFeedback = '❌ لم يطابق نطق الجملة ("' + item.sentence + '") — سمع الميكروفون: "' + transcript + '".';
-          }
-        } else if (activeGame === 'beat') {
-          const ok = evaluateTargetInSpeech(cleanHeard, item.english);
-          if (ok) {
-            clearBeatTimer();
-            await addGamePoints(15);
-            gameFeedbackType = 'ok';
-            gameFeedback = '⚡ سرعة ودقة! نطقت "' + item.english + '" (+15 نقطة) — سمع الميكروفون: "' + transcript + '".';
-          } else {
-            gameFeedbackType = 'err';
-            gameFeedback = '❌ نطق غير مطابق للكلمة "' + item.english + '" (سمع: "' + transcript + '"). حاول مرة أخرى قبل انتهاء الوقت!';
+        } else {
+          const item = gameItems[gameIdx];
+          if (activeGame === 'detective' || activeGame === 'witty') {
+            const targetPhrase = item.voiceTarget || item.answer;
+            const ok = evaluateTargetInSpeech(cleanHeard, targetPhrase);
+            if (ok) {
+              await addGamePoints(20);
+              gameFeedbackType = 'ok';
+              gameFeedback = '✅ نطق واضح ومطابق (+20 نقطة)! الترجمة: "' + item.arabicAnswer + '" — سمع الميكروفون: "' + transcript + '".';
+            } else {
+              gameFeedbackType = 'err';
+              gameFeedback = '❌ نطق غير مطابق (المطلوب: "' + targetPhrase + '"، وسمع الميكروفون: "' + transcript + '").';
+            }
+          } else if (activeGame === 'notrans') {
+            const ok = evaluateTargetInSpeech(cleanHeard, item.sentence);
+            if (ok) {
+              await addGamePoints(15);
+              gameFeedbackType = 'ok';
+              gameFeedback = '🎧 ممتاز! نطقت الجملة بوضوح (+15 نقطة) — معناها: "' + item.answer + '".';
+            } else {
+              gameFeedbackType = 'err';
+              gameFeedback = '❌ لم يطابق نطق الجملة ("' + item.sentence + '") — سمع الميكروفون: "' + transcript + '".';
+            }
+          } else if (activeGame === 'beat') {
+            const ok = evaluateTargetInSpeech(cleanHeard, item.english);
+            if (ok) {
+              clearBeatTimer();
+              await addGamePoints(15);
+              gameFeedbackType = 'ok';
+              gameFeedback = '⚡ سرعة ودقة! نطقت "' + item.english + '" (+15 نقطة) — سمع الميكروفون: "' + transcript + '".';
+            } else {
+              gameFeedbackType = 'err';
+              gameFeedback = '❌ نطق غير مطابق للكلمة "' + item.english + '" (سمع: "' + transcript + '").';
+            }
           }
         }
 
@@ -1573,7 +1722,6 @@
       gameTranscript = '';
       gameFeedback = '';
       gameChoiceAnswered = false;
-      noTransRevealed = false;
       gameIdx++;
       renderGameStage();
       if (activeGame === 'notrans' && gameIdx < gameItems.length) {
@@ -1930,7 +2078,7 @@
           <img class="crest-img" style="margin:0 auto 10px; display:block;" src="${lvl.img}" alt="${lvl.name}" />
           <h2>اختبار الترقية من ${lvl.name}</h2>
           <p class="muted">يجب إكمال <strong>${lvl.reqWords}</strong> كلمة جديدة في هذا المستوى لفتح هذا الاختبار. لديك حالياً <strong>${learnedInLevel}</strong> كلمات في هذا المستوى.</p>
-          <button class="btn-primary" onclick="startLearn()">الذهاب إلى قائمة للتعلّم</button>
+          <button class="btn-primary" onclick="startLearn()">الذهاب إلى قائمة «التي أريد حفظها»</button>
         </div>`;
         return;
       }
@@ -2142,7 +2290,7 @@
       const card = document.getElementById('daily-generated-card');
       const titleEl = document.getElementById('daily-generated-title');
       const list = document.getElementById('daily-generated-list');
-      titleEl.textContent = '✨ 5 كلمات مناسبة لـ ' + lvl.name + ' (أُضيفت إلى قائمة للتعلّم)';
+      titleEl.textContent = '✨ 5 كلمات مناسبة لـ ' + lvl.name + ' (أُضيفت إلى قائمة «التي أريد حفظها»)';
       list.innerHTML = picked.map(p => `
         <div style="background:#111A2E; border:1px solid #1E293B; border-radius:12px; padding:12px; margin-bottom:8px;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
@@ -2163,12 +2311,12 @@
       `).join('');
       card.style.display = 'block';
       refreshAll();
-      showToast('تمت إضافة 5 كلمات مناسبة لـ ' + lvl.name + ' إلى قائمة للتعلّم!');
+      showToast('تمت إضافة 5 كلمات مناسبة لـ ' + lvl.name + ' إلى قائمة «التي أريد حفظها»!');
     }
 
     function openWordModal(word = null) {
       editingId = word ? word.id : null;
-      document.getElementById('modal-title').textContent = word ? 'تعديل الكلمة' : 'إضافة كلمة إلى قائمة للتعلّم';
+      document.getElementById('modal-title').textContent = word ? 'تعديل الكلمة أو الجملة' : 'إضافة كلمة أو جملة إلى «التي أريد حفظها»';
       document.getElementById('form-error').style.display = 'none';
       document.getElementById('f-english').value = word ? word.english : '';
       document.getElementById('f-arabic').value = word ? word.arabic : '';
@@ -2190,13 +2338,13 @@
       const ar = document.getElementById('f-arabic').value.trim();
       const errEl = document.getElementById('form-error');
       if (!en || !ar) {
-        errEl.textContent = 'يرجى إدخال الكلمة أو العبارة الإنجليزية ومعناها بالعربية.';
+        errEl.textContent = 'يرجى إدخال الكلمة أو الجملة الإنجليزية ومعناها بالعربية.';
         errEl.style.display = 'block';
         return;
       }
       const dup = vocab.find(w => w.english.toLowerCase() === en.toLowerCase() && w.id !== editingId);
       if (dup) {
-        errEl.textContent = 'هذه الكلمة موجودة مسبقاً.';
+        errEl.textContent = 'هذه الكلمة أو الجملة موجودة مسبقاً.';
         errEl.style.display = 'block';
         return;
       }
@@ -2225,7 +2373,7 @@
     }
 
     async function removeWord(id) {
-      if (!confirm('هل تريد حذف هذه الكلمة نهائياً؟')) return;
+      if (!confirm('هل تريد حذف هذه الكلمة أو الجملة نهائياً؟')) return;
       await delItem('vocabulary', id);
       vocab = vocab.filter(w => w.id !== id);
       learnQueue = learnQueue.filter(w => w.id !== id);
@@ -2260,19 +2408,19 @@
       const box = document.getElementById('vocab-list');
       if (!list.length) {
         const emptyMsg = currentFilter === 'to_learn'
-          ? 'قائمة «للتعلّم» فارغة حالياً! أضف كلمات أو ولّد كلمات جديدة لتبدأ.'
-          : 'لا توجد كلمات في هذا القسم حالياً.';
+          ? 'قائمة «التي أريد حفظها» فارغة حالياً! أضف كلمات أو جمل أو أرسل لقطة فيلم إليها.'
+          : 'لا توجد عناصر في هذا القسم حالياً.';
         box.innerHTML = `<div class="card muted" style="text-align:center;">${emptyMsg}</div>`;
         return;
       }
 
       box.innerHTML = list.map(w => {
         const statusBadge = isWordLearned(w)
-          ? '<span class="pill" style="background:#064E3B; color:#6EE7B7;">✅ متعلّمة</span>'
-          : '<span class="pill" style="background:#451A03; color:#FCD34D;">📖 للتعلّم</span>';
+          ? '<span class="pill" style="background:#064E3B; color:#6EE7B7;">✅ محفوظة / متعلّمة</span>'
+          : '<span class="pill" style="background:#451A03; color:#FCD34D;">📖 التي أريد حفظها</span>';
         return `
           <div class="word-row">
-            <div>
+            <div style="flex:1; min-width:220px;">
               <div>
                 <strong style="font-size:1.1rem;" dir="ltr">${escapeHtml(w.english)}</strong>
                 ${statusBadge}
@@ -2287,7 +2435,7 @@
             <div class="flex-gap">
               <button class="btn-secondary" onclick="speak('${escapeAttr(w.english)}')">🔊</button>
               <button class="btn-amber" onclick='openWordModal(${JSON.stringify(w).replace(/'/g, "&#39;")})'>✏️</button>
-              <button class="btn-red" onclick="removeWord('${w.id}')">🗑️</button>
+              <button class="btn-red" onclick="removeWord('${w.id}')">🗑️ حذف</button>
             </div>
           </div>
         `;
@@ -2311,12 +2459,12 @@
       if (!learnQueue.length || learnIdx >= learnQueue.length) {
         const itemsHtml = learnLog.map(x => `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #1E293B;"><span>${escapeHtml(x.en)}</span><span style="color:#60A5FA;">${x.label}</span></div>`).join('');
         box.innerHTML = `<div style="text-align:center;">
-          <h2>${learnLog.length ? '🎉 أحسنت! تم تحديث قائمة للتعلّم' : '📖 لا توجد كلمات في قائمة للتعلّم'}</h2>
-          <p class="muted">الكلمات التي ضغطت عليها «تم التعلّم» أُزيلت من قائمة للتعلّم وانتقلت إلى قسم «المتعلّمة». المتبقي للتعلّم: <strong>${remainingToLearn.length}</strong></p>
+          <h2>${learnLog.length ? '🎉 أحسنت! تم تحديث قائمة «التي أريد حفظها»' : '📖 قائمة «التي أريد حفظها» فارغة حالياً'}</h2>
+          <p class="muted">العناصر التي ضغطت عليها «تم الحفظ / التعلّم» انتقلت إلى قسم «المحفوظات والمتعلّمة». المتبقي في القائمة: <strong>${remainingToLearn.length}</strong></p>
           ${learnLog.length ? `<div style="text-align:right; max-width:440px; margin:12px auto;">${itemsHtml}</div>` : ''}
           <div class="flex-gap" style="justify-content:center; margin-top:12px;">
-            ${remainingToLearn.length ? `<button class="btn-primary" onclick="startLearn()">متابعة الكلمات المتبقية للتعلّم (${remainingToLearn.length})</button>` : `<button class="btn-ai" onclick="generateDailySentences()">✨ توليد 5 كلمات لمستواك</button>`}
-            <button class="btn-secondary" onclick="goTab('vocab')">عرض الكلمات المتعلّمة</button>
+            ${remainingToLearn.length ? `<button class="btn-primary" onclick="startLearn()">متابعة المتبقي في القائمة (${remainingToLearn.length})</button>` : `<button class="btn-ai" onclick="generateDailySentences()">✨ توليد 5 كلمات سهلة</button>`}
+            <button class="btn-secondary" onclick="goTab('vocab')">إدارة وحذف العناصر</button>
           </div>
         </div>`;
         return;
@@ -2324,24 +2472,24 @@
 
       const w = learnQueue[learnIdx];
       const smartTip = w.notes || (w.example
-        ? `تُنطق "${w.english}" في جملة "${w.example}" بمعنى (${w.arabic})؛ استمع للنطق وكرّرها بوضوح.`
+        ? `تُنطق "${w.english}" في سياق "${w.example}" بمعنى (${w.arabic})؛ استمع للنطق وكرّرها بوضوح.`
         : `اربط معنى "${w.arabic}" بنطق "${w.english}" واستمع إليه عدة مرات.`);
 
       box.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.82rem; margin-bottom:10px;" class="muted">
-          <span class="pill" style="background:#451A03; color:#FCD34D;">📖 قائمة للتعلّم (غير متعلمة)</span>
-          <span>بطاقة ${learnIdx + 1} من ${learnQueue.length}</span>
+          <span class="pill" style="background:#451A03; color:#FCD34D;">📖 قائمة «التي أريد حفظها»</span>
+          <span>عنصر ${learnIdx + 1} من ${learnQueue.length}</span>
         </div>
 
         <div class="detail-box">
           <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
             <div>
-              <h2 style="margin:0; font-size:2rem; color:#60A5FA;" dir="ltr">${escapeHtml(w.english)}</h2>
+              <h2 style="margin:0; font-size:1.85rem; color:#60A5FA;" dir="ltr">${escapeHtml(w.english)}</h2>
               ${w.pronunciation ? `<div style="color:#FBBF24; font-weight:700; margin-top:4px;">🗣️ النطق: ${escapeHtml(w.pronunciation)}</div>` : ''}
             </div>
             <div class="flex-gap">
-              <button class="btn-secondary" onclick="speak('${escapeAttr(w.english)}')">🔊 استمع للكلمة</button>
-              ${w.example ? `<button class="btn-primary" onclick="speak('${escapeAttr(w.example)}')">🔊 استمع للجملة</button>` : ''}
+              <button class="btn-secondary" onclick="speak('${escapeAttr(w.english)}')">🔊 استمع</button>
+              ${w.example ? `<button class="btn-primary" onclick="speak('${escapeAttr(w.example)}')">🔊 استمع للسياق</button>` : ''}
             </div>
           </div>
 
@@ -2352,7 +2500,7 @@
 
           ${w.example ? `
             <div style="margin-top:12px; padding-top:12px; border-top:1px solid #1E293B;">
-              <div class="muted">جملة شائعة وسهلة:</div>
+              <div class="muted">جملة في السياق:</div>
               <div dir="ltr" style="font-size:1.05rem; font-weight:700; margin-top:4px;">"${escapeHtml(w.example)}"</div>
               ${w.translation ? `<div class="muted" style="margin-top:4px;">${escapeHtml(w.translation)}</div>` : ''}
             </div>
@@ -2364,8 +2512,9 @@
         </div>
 
         <div class="flex-gap" style="justify-content:center;">
-          <button class="btn-green" onclick="chooseLearn('learned')">✅ تم التعلّم (نقل إلى المتعلّمة)</button>
-          <button class="btn-amber" onclick="chooseLearn('difficult')">⚠️ صعبة (تبقى للتعلّم)</button>
+          <button class="btn-green" onclick="chooseLearn('learned')">✅ تم الحفظ (نقل إلى المحفوظات)</button>
+          <button class="btn-amber" onclick="chooseLearn('difficult')">⚠️ صعبة (تبقى)</button>
+          <button class="btn-red" onclick="removeWord('${w.id}')">🗑️ حذف هذه الكلمة/الجملة</button>
           <button class="btn-secondary" onclick="chooseLearn('not_learned')">➡️ التالية</button>
         </div>
       `;
@@ -2389,7 +2538,7 @@
         await recordLearnedWordForCurrentLevel(w.id);
 
         learnQueue.splice(learnIdx, 1);
-        learnLog.push({ en: w.english, label: 'نُقلت إلى المتعلّمة ✅' });
+        learnLog.push({ en: w.english, label: 'نُقلت إلى المحفوظات ✅' });
 
         if (learnLog.length && learnQueue.length === 0) {
           const sRec = { id: Date.now().toString(), date: now, wordsCount: learnLog.length };
@@ -2405,7 +2554,7 @@
         };
         await putItem('vocabulary', updated);
         vocab = vocab.map(x => x.id === updated.id ? updated : x);
-        learnLog.push({ en: w.english, label: choice === 'difficult' ? 'صعبة ⚠️' : 'تبقى للتعلّم 📖' });
+        learnLog.push({ en: w.english, label: choice === 'difficult' ? 'صعبة ⚠️' : 'تبقى في القائمة 📖' });
         learnIdx++;
       }
 
