@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WORDLY - التحدث وإنجليزية الأفلام</title>
+  <title>WORDLY - التعلّم والتحدث وإنجليزية الأفلام</title>
   <style>
     :root {
       --bg-main: #070B14;
@@ -358,6 +358,7 @@
     .muted { color: var(--muted); font-size: 0.85rem; }
     .error-msg { background: #450A0A; border: 1px solid #991B1B; color: #FCA5A5; padding: 10px; border-radius: 10px; font-size: 0.85rem; margin-bottom: 10px; display: none; }
     .toast { position: fixed; top: 72px; left: 50%; transform: translateX(-50%); background: #10B981; color: #fff; padding: 10px 18px; border-radius: 999px; font-weight: 700; font-size: 0.85rem; z-index: 60; display: none; box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+    .detail-box { background: #111A2E; border: 1px solid #1E293B; border-radius: 14px; padding: 14px; margin-bottom: 14px; }
   </style>
 </head>
 <body>
@@ -373,7 +374,7 @@
 
       <div class="desktop-nav">
         <button class="nav-btn active" data-tab="home" onclick="goTab('home')">🏠 الرئيسية</button>
-        <button class="nav-btn" data-tab="learn" onclick="startLearn()">📖 تعلّم</button>
+        <button class="nav-btn" data-tab="learn" onclick="startLearn()">📖 للتعلّم</button>
         <button class="nav-btn" data-tab="weekly" onclick="startSentenceBuilder()">🗣️ تحدّث</button>
         <button class="nav-btn" data-tab="exam" onclick="startExam()">🏆 اختبار الترقية</button>
         <button class="nav-btn" data-tab="vocab" onclick="goTab('vocab')">📚 كلماتي</button>
@@ -429,18 +430,18 @@
       </div>
 
       <div class="card">
-        <p class="muted" style="margin:0 0 14px;">تعلّم مفردات الأفلام والحوار اليومي، كوّن جملاً بصوتك، وتدرّب على الردود الطبيعية في المحادثات.</p>
+        <p class="muted" style="margin:0 0 14px;">قائمة «للتعلّم» تعرض الكلمات التي لم تتعلمها بعد بكامل تفاصيلها، وعند إتقان أي كلمة تنتقل مباشرة إلى قسم «المتعلّمة».</p>
         <div class="flex-gap">
-          <button class="btn-ai" onclick="generateDailySentences()">✨ توليد 5 جمل من الأفلام</button>
-          <button class="btn-primary" onclick="startLearn()">⚡ ابدأ جلسة تعلّم</button>
+          <button class="btn-ai" onclick="generateDailySentences()">✨ توليد 5 كلمات شائعة</button>
+          <button class="btn-primary" onclick="startLearn()" id="home-learn-btn">📖 قائمة للتعلّم (0)</button>
           <button class="btn-mic" onclick="startSentenceBuilder()">🗣️ كوّن جملة بصوتك</button>
-          <button class="btn-secondary" id="home-review-btn" onclick="goTab('vocab')">📚 الكلمات المحفوظة (0)</button>
+          <button class="btn-secondary" id="home-learned-btn" onclick="goTab('vocab')">✅ المتعلّمة / المحفوظة (0)</button>
         </div>
       </div>
 
       <div id="daily-generated-card" class="card" style="display:none; border-color:#3B82F6;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <strong style="color:#60A5FA;">✨ جمل شائعة في الأفلام والمحادثة (تم حفظها في قاموسك)</strong>
+          <strong style="color:#60A5FA;">✨ كلمات شائعة وصحيحة في الكلام (أُضيفت إلى قائمة للتعلّم)</strong>
           <button class="nav-btn" onclick="document.getElementById('daily-generated-card').style.display='none'">✕</button>
         </div>
         <div id="daily-generated-list"></div>
@@ -448,16 +449,16 @@
 
       <div class="grid-4">
         <div class="card" style="margin:0;">
+          <div class="stat-label">قائمة للتعلّم</div>
+          <div class="stat-val" style="color:#F59E0B;" id="h-to-learn">0</div>
+        </div>
+        <div class="card" style="margin:0;">
+          <div class="stat-label">الكلمات المتعلّمة</div>
+          <div class="stat-val" style="color:#10B981;" id="h-learned">0</div>
+        </div>
+        <div class="card" style="margin:0;">
           <div class="stat-label">كلمات المستوى الحالي</div>
           <div class="stat-val" style="color:#60A5FA;" id="h-level-words">0</div>
-        </div>
-        <div class="card" style="margin:0;">
-          <div class="stat-label">إجمالي المحفوظة</div>
-          <div class="stat-val" id="h-total">0</div>
-        </div>
-        <div class="card" style="margin:0;">
-          <div class="stat-label">كلمات آخر 7 أيام</div>
-          <div class="stat-val" style="color:var(--amber);" id="h-weekly">0</div>
         </div>
         <div class="card" style="margin:0;">
           <div class="stat-label">سلسلة الأيام</div>
@@ -466,7 +467,7 @@
       </div>
     </section>
 
-    <!-- 2. LEARN -->
+    <!-- 2. LEARN (ONLY UNLEARNED / TO-LEARN QUEUE) -->
     <section id="page-learn" class="page">
       <div class="card" id="learn-box"></div>
     </section>
@@ -488,7 +489,7 @@
       <div class="card" id="exam-box"></div>
     </section>
 
-    <!-- 5. MY VOCABULARY -->
+    <!-- 5. MY VOCABULARY (SEPARATED: TO LEARN vs LEARNED) -->
     <section id="page-vocab" class="page">
       <div class="card">
         <div class="grid-2">
@@ -499,11 +500,10 @@
           </select>
         </div>
         <div class="flex-gap" style="margin-top:10px;">
-          <button class="nav-btn active" data-filter="all" onclick="setFilter('all', this)">الكل</button>
-          <button class="nav-btn" data-filter="learned" onclick="setFilter('learned', this)">متعلمة</button>
-          <button class="nav-btn" data-filter="difficult" onclick="setFilter('difficult', this)">صعبة</button>
-          <button class="nav-btn" data-filter="new" onclick="setFilter('new', this)">جديدة</button>
-          <button class="nav-btn" data-filter="week" onclick="setFilter('week', this)">آخر 7 أيام</button>
+          <button class="nav-btn active" data-filter="to_learn" onclick="setFilter('to_learn', this)">📖 للتعلّم (غير متعلمة)</button>
+          <button class="nav-btn" data-filter="learned" onclick="setFilter('learned', this)">✅ المتعلّمة</button>
+          <button class="nav-btn" data-filter="difficult" onclick="setFilter('difficult', this)">⚠️ صعبة</button>
+          <button class="nav-btn" data-filter="all" onclick="setFilter('all', this)">الكل</button>
         </div>
       </div>
       <div id="vocab-list"></div>
@@ -518,12 +518,12 @@
 
       <div class="grid-4">
         <div class="card" style="margin:0;">
-          <div class="stat-label">كلمات المستوى الحالي</div>
-          <div class="stat-val" style="color:#60A5FA;" id="s-level-words">0</div>
+          <div class="stat-label">للتعلّم حالياً</div>
+          <div class="stat-val" style="color:#F59E0B;" id="s-to-learn">0</div>
         </div>
         <div class="card" style="margin:0;">
-          <div class="stat-label">إجمالي المحفوظة</div>
-          <div class="stat-val" id="s-total">0</div>
+          <div class="stat-label">الكلمات المتعلّمة</div>
+          <div class="stat-val" style="color:#10B981;" id="s-learned">0</div>
         </div>
         <div class="card" style="margin:0;">
           <div class="stat-label">اختبارات ناجحة</div>
@@ -545,7 +545,7 @@
     <section id="page-settings" class="page">
       <div class="card">
         <h3 style="margin:0 0 12px; font-size:1.05rem;">الإعدادات</h3>
-        <label>الهدف اليومي لعدد الكلمات في الجلسة:</label>
+        <label>عدد الكلمات في جلسة «للتعلّم» اليومية:</label>
         <input type="number" id="set-target" min="1" max="50" onchange="saveSettings()" />
 
         <label>سرعة نبرة الصوت (0.6 بطيء - 1.2 سريع):</label>
@@ -584,36 +584,36 @@
       <form onsubmit="submitWordForm(event)">
         <div class="grid-2">
           <div>
-            <label>الكلمة الإنجليزية *</label>
-            <input type="text" id="f-english" dir="ltr" placeholder="Figure out" />
+            <label>الكلمة أو العبارة الإنجليزية *</label>
+            <input type="text" id="f-english" dir="ltr" placeholder="Make up your mind" />
           </div>
           <div>
             <label>المعنى بالعربية *</label>
-            <input type="text" id="f-arabic" placeholder="يكتشف / يفهم" />
+            <input type="text" id="f-arabic" placeholder="يقرّر / يحسم أمره" />
           </div>
         </div>
         <div class="grid-2">
           <div>
-            <label>النطق (اختياري)</label>
-            <input type="text" id="f-pron" dir="ltr" placeholder="فيغَر أوت" />
+            <label>النطق التقريبي (اختياري)</label>
+            <input type="text" id="f-pron" dir="ltr" placeholder="ميك أب يور مايند" />
           </div>
           <div>
             <label>التصنيف (اختياري)</label>
-            <input type="text" id="f-cat" placeholder="أفلام، حوار..." />
+            <input type="text" id="f-cat" placeholder="كلام يومي، أفلام..." />
           </div>
         </div>
-        <label>جملة مثال بالإنجليزية (اختياري)</label>
-        <input type="text" id="f-ex" dir="ltr" placeholder="We will figure it out together." />
+        <label>جملة صحيحة وشائعة بالإنجليزية (اختياري)</label>
+        <input type="text" id="f-ex" dir="ltr" placeholder="Have you made up your mind yet?" />
 
-        <label>ترجمة المثال بالعربية (اختياري)</label>
-        <input type="text" id="f-trans" placeholder="سنكتشف حلها معاً." />
+        <label>ترجمة الجملة بالعربية (اختياري)</label>
+        <input type="text" id="f-trans" placeholder="هل حسمت قرارك بعد؟" />
 
-        <label>ملاحظات (اختياري)</label>
-        <textarea id="f-notes" rows="2"></textarea>
+        <label>ملاحظة لفهم المعنى واستخدامه في الجملة (اختياري)</label>
+        <textarea id="f-notes" rows="2" placeholder="تُستخدم عندما يتردد شخص في اتخاذ قرار..."></textarea>
 
         <div class="flex-gap" style="justify-content:flex-end;">
           <button type="button" class="btn-secondary" onclick="closeWordModal()">إلغاء</button>
-          <button type="submit" class="btn-primary">حفظ الكلمة</button>
+          <button type="submit" class="btn-primary">حفظ في قائمة للتعلّم</button>
         </div>
       </form>
     </div>
@@ -622,7 +622,7 @@
   <!-- Mobile Bottom Nav -->
   <nav class="mobile-nav">
     <button class="m-btn active" data-tab="home" onclick="goTab('home')"><span>🏠</span><span>الرئيسية</span></button>
-    <button class="m-btn" data-tab="learn" onclick="startLearn()"><span>📖</span><span>تعلّم</span></button>
+    <button class="m-btn" data-tab="learn" onclick="startLearn()"><span>📖</span><span>للتعلّم</span></button>
     <button class="m-btn" data-tab="weekly" onclick="startSentenceBuilder()"><span>🗣️</span><span>تحدّث</span></button>
     <button class="m-btn" data-tab="exam" onclick="startExam()"><span>🏆</span><span>الاختبار</span></button>
     <button class="m-btn" data-tab="vocab" onclick="goTab('vocab')"><span>📚</span><span>كلماتي</span></button>
@@ -643,95 +643,155 @@
       { level: 10, name: "المستوى 10", reqWords: 1000, img: "rank-10.png" }
     ];
 
-    // High-frequency spoken English vocabulary & movie dialogue phrases
-    const MOVIE_SPOKEN_PACK = [
-      { english: "Figure out", arabic: "يكتشف / يستوعب", pronunciation: "فيغَر أوت", category: "أفلام وحوار", example: "Don't worry, we'll figure it out.", translation: "لا تقلق، سنكتشف حلها." },
-      { english: "Get out", arabic: "اخرج / لا أصدق", pronunciation: "غِت أوت", category: "أفلام وحوار", example: "Get out of here! Are you serious?", translation: "لا أصدق! هل تتحدث بجدية؟" },
-      { english: "Calm down", arabic: "اهدأ", pronunciation: "كام داون", category: "أفلام وحوار", example: "Calm down and tell me what happened.", translation: "اهدأ وأخبرني ماذا حدث." },
-      { english: "Trust", arabic: "يثق / ثقة", pronunciation: "ترَست", category: "أفلام وحوار", example: "You need to trust me right now.", translation: "تحتاج أن تثق بي الآن." },
-      { english: "Secret", arabic: "سرّ", pronunciation: "سيكرِت", category: "أفلام وحوار", example: "Can you keep a secret?", translation: "هل يمكنك حفظ سرّ؟" },
-      { english: "Promise", arabic: "يوعد / وعد", pronunciation: "برومِس", category: "أفلام وحوار", example: "I promise I won't be late.", translation: "أعدك أنني لن أتأخر." },
-      { english: "Danger", arabic: "خطر", pronunciation: "دينجَر", category: "أفلام وحوار", example: "There is real danger ahead.", translation: "هناك خطر حقيقي أمامنا." },
-      { english: "Hurry", arabic: "يسرع / عجلة", pronunciation: "هَري", category: "أفلام وحوار", example: "Hurry up! The train is leaving.", translation: "أسرع! القطار يغادر." },
-      { english: "Lie", arabic: "يكذب / كذبة", pronunciation: "لاي", category: "أفلام وحوار", example: "Tell me the truth, don't lie.", translation: "قل لي الحقيقة، لا تكذب." },
-      { english: "Truth", arabic: "الحقيقة", pronunciation: "تروث", category: "أفلام وحوار", example: "I just want to know the truth.", translation: "أريد فقط أن أعرف الحقيقة." },
-      { english: "Trouble", arabic: "ورطة / مشكلة", pronunciation: "ترَبُل", category: "أفلام وحوار", example: "We are in big trouble now.", translation: "نحن في ورطة كبيرة الآن." },
-      { english: "Wait", arabic: "ينتظر / انتظر", pronunciation: "ويت", category: "أفلام وحوار", example: "Wait a second, listen to this.", translation: "انتظر ثانية، استمع إلى هذا." },
-      { english: "Catch up", arabic: "يلحق بـ / يواكب", pronunciation: "كاتش أب", category: "أفلام وحوار", example: "Go ahead, I'll catch up with you.", translation: "تقدم أنت، سألحق بك." },
-      { english: "Give up", arabic: "يستسلم", pronunciation: "غيف أب", category: "أفلام وحوار", example: "Never give up on your dream.", translation: "لا تستسلم أبداً عن حلمك." },
-      { english: "Watch out", arabic: "احترس / انتبه", pronunciation: "ووتش أوت", category: "أفلام وحوار", example: "Watch out! There's a car coming.", translation: "انتبه! هناك سيارة قادمة." },
-      { english: "Look like", arabic: "يبدو شبيهاً بـ", pronunciation: "لوك لايك", category: "أفلام وحوار", example: "You look like you haven't slept.", translation: "يبدو عليك أنك لم تنم." },
-      { english: "Make sense", arabic: "منطقي / مفهوم", pronunciation: "ميك سِنس", category: "أفلام وحوار", example: "That doesn't make any sense.", translation: "هذا لا يبدو منطقياً أبداً." },
-      { english: "Hang on", arabic: "انتظر لحظة / تمسّك", pronunciation: "هانغ أون", category: "أفلام وحوار", example: "Hang on, I'm almost ready.", translation: "انتظر لحظة، أنا شبه جاهز." },
-      { english: "Forget", arabic: "ينسى", pronunciation: "فورغِت", category: "أفلام وحوار", example: "Forget about it, it doesn't matter.", translation: "انسَ الأمر، لا يهم." },
-      { english: "Blame", arabic: "يلوم / لوم", pronunciation: "بليم", category: "أفلام وحوار", example: "Don't blame yourself for this.", translation: "لا تلم نفسك على هذا." },
-      { english: "Chance", arabic: "فرصة", pronunciation: "تشانس", category: "أفلام وحوار", example: "Give me one more chance.", translation: "أعطني فرصة واحدة أخرى." },
-      { english: "Decision", arabic: "قرار", pronunciation: "ديسيجَن", category: "أفلام وحوار", example: "It's your decision, not mine.", translation: "إنه قرارك أنت، وليس قراري." },
-      { english: "Afraid", arabic: "خائف", pronunciation: "أفريد", category: "أفلام وحوار", example: "I'm not afraid of anything.", translation: "لست خائفاً من أي شيء." },
-      { english: "Excuse", arabic: "عذر / يسامح", pronunciation: "إكسكيوز", category: "أفلام وحوار", example: "Excuse me, can I ask you something?", translation: "عذراً، هل يمكنني سؤالك عن شيء؟" },
-      { english: "Actually", arabic: "في الواقع / بالحقيقة", pronunciation: "أكتشُوالي", category: "أفلام وحوار", example: "Actually, I changed my mind.", translation: "في الواقع، غيّرت رأيي." },
-      { english: "Probably", arabic: "غالباً / على الأرجح", pronunciation: "بروبَابلي", category: "أفلام وحوار", example: "He's probably stuck in traffic.", translation: "على الأرجح عالق في الزحمة." },
-      { english: "Suddenly", arabic: "فجأة", pronunciation: "سَدَنلي", category: "أفلام وحوار", example: "Suddenly, the lights went out.", translation: "فجأة، انطفأت الأنوار." },
-      { english: "Enough", arabic: "كافٍ / كفى", pronunciation: "إنَف", category: "أفلام وحوار", example: "That's enough talking for today.", translation: "هذا يكفي من الكلام لليوم." },
-      { english: "Seriously", arabic: "بجدية / حقاً", pronunciation: "سيريَزلي", category: "أفلام وحوار", example: "Seriously? You did that on purpose?", translation: "بجدية؟ فعلت ذلك عن قصد؟" },
-      { english: "Together", arabic: "معاً", pronunciation: "توغِذَر", category: "أفلام وحوار", example: "We can get through this together.", translation: "يمكننا تجاوز هذا معاً." }
+    // Logically & grammatically natural spoken English + movie phrases with usage tips
+    const NATURAL_SPOKEN_PACK = [
+      {
+        english: "Make up your mind",
+        arabic: "يقرّر / يحسم قراره",
+        pronunciation: "ميك أب يور مايند",
+        category: "كلام يومي وأفلام",
+        example: "You need to make up your mind before noon.",
+        translation: "تحتاج أن تحسم قرارك قبل الظهر.",
+        tip: "تُقال في الكلام اليومي عندما يطول تردد الشخص في اختيار شيء واضح."
+      },
+      {
+        english: "Run out of",
+        arabic: "ينفد منه / يخلص",
+        pronunciation: "رَن أوت أَف",
+        category: "كلام يومي وأفلام",
+        example: "We ran out of time before finishing the scene.",
+        translation: "نفد منا الوقت قبل إنهاء المشهد.",
+        tip: "تأتي دائماً متبوعة بالشيء الذي انتهى (وقت، بطارية، مال، صبر)."
+      },
+      {
+        english: "Keep in touch",
+        arabic: "يبقى على تواصل",
+        pronunciation: "كيب إن تاتش",
+        category: "كلام يومي وأفلام",
+        example: "Text me when you get home so we keep in touch.",
+        translation: "راسلني عندما تصل إلى البيت لنبقى على تواصل."
+      ,
+        tip: "عبارة شائعة جداً في نهاية الحوارات أو الوداع بين الأصدقاء."
+      },
+      {
+        english: "Take a break",
+        arabic: "يأخذ استراحة",
+        pronunciation: "تيك أ بريك",
+        category: "كلام يومي",
+        example: "Let's take a break for ten minutes.",
+        translation: "لنأخذ استراحة لمدة عشر دقائق.",
+        tip: "تُستخدم للراحة القصيرة أثناء العمل أو الدراسة أو المشاهدة."
+      },
+      {
+        english: "Get along",
+        arabic: "ينسجم / يتفاهم مع شخص",
+        pronunciation: "غِت ألونغ",
+        category: "أفلام وحوار",
+        example: "Do you get along with your teammates?",
+        translation: "هل تنسجم مع أفراد فريقك؟",
+        tip: "تُستخدم للسؤال عن مدى التفاهم والانسجام بين شخصين أو أكثر."
+      },
+      {
+        english: "By the way",
+        arabic: "بالمناسبة / على فكرة",
+        pronunciation: "باي ذَ وي",
+        category: "أفلام وحوار",
+        example: "By the way, did you see the message I sent?",
+        translation: "بالمناسبة، هل رأيت الرسالة التي أرسلتها؟",
+        tip: "أداة انتقال طبيعية جداً في الكلام لتغيير الموضوع أو إضافة معلومة مفاجئة."
+      },
+      {
+        english: "Find out",
+        arabic: "يكتشف / يعرف الحقيقة",
+        pronunciation: "فايند أوت",
+        category: "أفلام وحوار",
+        example: "I will find out who took the keys.",
+        translation: "سأكتشف مَن أخذ المفاتيح.",
+        tip: "تُستخدم عندما يكتشف الشخص حقيقة أو معلومة لم تكن معروفة لديه."
+      },
+      {
+        english: "Settle down",
+        arabic: "يهدأ / يستقر",
+        pronunciation: "سِتُل داون",
+        category: "أفلام وحوار",
+        example: "Settle down, everyone, we're starting now.",
+        translation: "اهدؤوا يا جماعة، سنبدأ الآن.",
+        tip: "تُقال لتهدئة مجموعة أو شخص متوتر أو مشتت."
+      },
+      {
+        english: "Count on",
+        arabic: "يعتمد على",
+        pronunciation: "كاونت أون",
+        category: "أفلام وحوار",
+        example: "You can always count on me when things get tough.",
+        translation: "يمكنك دائماً الاعتماد عليّ عندما تصبح الأمور صعبة.",
+        tip: "تعبّر عن الثقة بأن شخصاً سيساندك وقت الحاجة."
+      },
+      {
+        english: "Show up",
+        arabic: "يحضر / يظهر في موعد",
+        pronunciation: "شو أب",
+        category: "كلام يومي وأفلام",
+        example: "He didn't show up to the meeting this morning.",
+        translation: "لم يحضر إلى الاجتماع هذا الصباح.",
+        tip: "تُستخدم بكثرة في الكلام اليومي بمعنى الحضور أو الظهور في مكان أو موعد."
+      },
+      {
+        english: "Look forward to",
+        arabic: "يتطلع بحماس إلى",
+        pronunciation: "لوك فوروارد تو",
+        category: "كلام يومي",
+        example: "I'm really looking forward to the weekend.",
+        translation: "أتطلع بحماس شديد إلى عطلة نهاية الأسبوع.",
+        tip: "تُستعمل لترقب حدث قادم يسعدك أو يثير حماسك."
+      },
+      {
+        english: "Give someone a hand",
+        arabic: "يساعد شخصاً",
+        pronunciation: "غيف سَموَن أ هاند",
+        category: "كلام يومي وأفلام",
+        example: "Could you give me a hand with these bags?",
+        translation: "هل يمكنك مساعدتي في حمل هذه الحقائب؟",
+        tip: "طريقة ودية وطبيعية جداً لطلب أو تقديم مساعدة عملية."
+      }
     ];
 
-    // Real-life & movie speaking roleplay scenarios
     const DIALOGUE_SCENARIOS = [
       {
         situation: "في مقهى أو مطعم — طلب شيء بلباقة",
         botPrompt: "Hi there! What can I get started for you today?",
         botArabic: "مرحباً! ماذا تحب أن أجهّز لك اليوم؟",
-        hint: "ابدأ بـ: I would like... أو Can I get...",
+        hint: "ابدأ بـ: Can I get... أو I'd like...",
         sampleReply: "Can I get a cup of coffee, please?",
         replyArabic: "هل يمكنني الحصول على كوب قهوة، من فضلك؟",
         keywords: ["like", "get", "want", "please", "coffee", "water", "tea"]
-      },
-      {
-        situation: "في الشارع — طلب المساعدة أو الاتجاهات",
-        botPrompt: "Excuse me, you look lost. Do you need some help?",
-        botArabic: "عذراً، يبدو أنك تائه. هل تحتاج إلى مساعدة؟",
-        hint: "قل: Yes please, I'm looking for... أو Can you help me...",
-        sampleReply: "Yes, please. Can you tell me how to get to the station?",
-        replyArabic: "نعم من فضلك. هل يمكنك إخباري كيف أصل إلى المحطة؟",
-        keywords: ["yes", "help", "looking", "station", "where", "please", "thank"]
       },
       {
         situation: "حوار مع صديق — إبداء الرأي في فيلم",
         botPrompt: "So, what did you think about the movie last night?",
         botArabic: "حسناً، ما رأيك في الفيلم الليلة الماضية؟",
         hint: "استخدم: I think it was... أو I really liked...",
-        sampleReply: "I think it was really exciting, especially the ending.",
-        replyArabic: "أعتقد أنه كان مشوقاً حقاً، خاصة النهاية.",
-        keywords: ["think", "movie", "good", "great", "amazing", "liked", "exciting", "boring"]
+        sampleReply: "I think it was really engaging from start to finish.",
+        replyArabic: "أعتقد أنه كان مشوقاً حقاً من البداية إلى النهاية.",
+        keywords: ["think", "movie", "good", "great", "amazing", "liked", "engaging", "boring"]
       },
       {
-        situation: "موقف طارئ في فيلم — تحذير أو طمأنة شخص",
-        botPrompt: "We don't have much time! What should we do now?",
-        botArabic: "ليس لدينا الكثير من الوقت! ماذا يجب أن نفعل الآن؟",
-        hint: "استخدم عبارات مثل: Calm down, we need to... أو Let's figure it out...",
-        sampleReply: "Calm down, we need to stick together and figure it out.",
-        replyArabic: "اهدأ، نحتاج أن نبقى معاً ونكتشف الحل.",
-        keywords: ["calm", "together", "figure", "need", "let", "hurry", "wait", "trust"]
+        situation: "حديث يومي — التخطيط والقرار",
+        botPrompt: "Are you ready to make up your mind about today's plan?",
+        botArabic: "هل أنت مستعد لتحسم قرارك بشأن خطة اليوم؟",
+        hint: "قل: Let's take a break first أو I think we should...",
+        sampleReply: "Let's take a quick break and then decide.",
+        replyArabic: "لنأخذ استراحة سريعة ثم نقرر.",
+        keywords: ["break", "decide", "think", "plan", "ready", "sure", "let"]
       },
       {
-        situation: "تعارف وحديث يومي — التحدث عن أهدافك",
-        botPrompt: "Why are you learning English right now?",
-        botArabic: "لماذا تتعلم اللغة الإنجليزية في الوقت الحالي؟",
-        hint: "قل: I want to understand movies and speak fluently...",
-        sampleReply: "I want to understand English movies and speak with confidence.",
-        replyArabic: "أريد أن أفهم الأفلام الإنجليزية وأتحدث بثقة.",
-        keywords: ["want", "movies", "speak", "understand", "english", "confidence", "goal"]
-      },
-      {
-        situation: "رفض دعوة بلباقة — الاعتذار بأسلوب طبيعي",
-        botPrompt: "Hey, are you free to hang out tonight?",
-        botArabic: "مرحباً، هل أنت متفرغ للخروج الليلة؟",
-        hint: "قل: I'm sorry, I can't tonight because... أو Maybe another time...",
-        sampleReply: "I'm sorry, I can't tonight. Maybe we can catch up tomorrow?",
-        replyArabic: "أنا آسف، لا أستطيع الليلة. ربما نلتقي غداً؟",
-        keywords: ["sorry", "can't", "cannot", "busy", "tomorrow", "another", "time", "catch"]
+        situation: "تعارف وحديث — هدفك في الإنجليزية",
+        botPrompt: "Why are you practicing English every day?",
+        botArabic: "لماذا تتدرب على الإنجليزية كل يوم؟",
+        hint: "قل: I want to understand movies and speak naturally...",
+        sampleReply: "I want to understand English movies and speak naturally.",
+        replyArabic: "أريد أن أفهم الأفلام الإنجليزية وأتحدث بشكل طبيعي.",
+        keywords: ["want", "movies", "speak", "understand", "english", "practice", "naturally"]
       }
     ];
 
@@ -752,13 +812,11 @@
     };
 
     let editingId = null;
-    let currentFilter = 'all';
+    let currentFilter = 'to_learn';
     let learnQueue = [];
     let learnIdx = 0;
-    let learnReveal = false;
     let learnLog = [];
 
-    // Modes: 'builder' (make your own sentence), 'dialogue' (roleplay), 'weekly' (weekly mic review)
     let voiceMode = 'builder';
     let voiceQueue = [];
     let voiceIdx = 0;
@@ -771,6 +829,18 @@
     let examIdx = 0;
     let examScore = 0;
     let examAnswered = false;
+
+    function isWordLearned(w) {
+      return w && (w.status === 'learned' || w.status === 'mastered');
+    }
+
+    function getToLearnWords() {
+      return vocab.filter(w => !isWordLearned(w));
+    }
+
+    function getLearnedWords() {
+      return vocab.filter(w => isWordLearned(w));
+    }
 
     function showToast(msg) {
       const t = document.getElementById('toast');
@@ -891,6 +961,8 @@
 
     function refreshAll() {
       const t = todayStr();
+      const toLearnList = getToLearnWords();
+      const learnedList = getLearnedWords();
       const weeklyWords = getWeeklyWords();
       const lvl = getCurrentLevelObj();
       const nextLvl = LEVELS_10[lvl.level] || null;
@@ -915,14 +987,15 @@
         document.getElementById('rank-next-info').textContent = 'تبقّى ' + rem + ' كلمات جديدة في هذا المستوى لفتح اختبار الترقية إلى ' + nextLvl.name + '.';
       }
 
+      document.getElementById('h-to-learn').textContent = toLearnList.length;
+      document.getElementById('h-learned').textContent = learnedList.length;
       document.getElementById('h-level-words').textContent = learnedInLevel + ' / ' + lvl.reqWords;
-      document.getElementById('h-total').textContent = vocab.length;
-      document.getElementById('h-weekly').textContent = weeklyWords.length;
       document.getElementById('h-streak').textContent = '🔥 ' + (settings.streak || 0);
-      document.getElementById('home-review-btn').textContent = '📚 الكلمات المحفوظة (' + vocab.length + ')';
+      document.getElementById('home-learn-btn').textContent = '📖 قائمة للتعلّم (' + toLearnList.length + ')';
+      document.getElementById('home-learned-btn').textContent = '✅ المتعلّمة (' + learnedList.length + ')';
 
-      document.getElementById('s-level-words').textContent = learnedInLevel + ' / ' + lvl.reqWords;
-      document.getElementById('s-total').textContent = vocab.length;
+      document.getElementById('s-to-learn').textContent = toLearnList.length;
+      document.getElementById('s-learned').textContent = learnedList.length;
       document.getElementById('s-exams').textContent = settings.examsPassed || 0;
       document.getElementById('s-weekly').textContent = weeklyWords.length;
 
@@ -957,7 +1030,6 @@
       refreshAll();
     }
 
-    // 1. Make your own sentence using your saved word
     function startSentenceBuilder() {
       voiceMode = 'builder';
       goTab('weekly');
@@ -965,7 +1037,6 @@
       setupVoiceQueue(source);
     }
 
-    // 2. Real-life & movie speaking dialogue roleplay
     function startDialoguePractice() {
       voiceMode = 'dialogue';
       goTab('weekly');
@@ -976,7 +1047,6 @@
       }
     }
 
-    // 3. Weekly microphone review
     function startWeeklyVoiceReview() {
       voiceMode = 'weekly';
       goTab('weekly');
@@ -1005,8 +1075,8 @@
       if (!voiceQueue.length) {
         box.innerHTML = `<div style="text-align:center; padding:18px;">
           <h2>${heading}</h2>
-          <p class="muted">لا توجد كلمات محفوظة بعد للتدرب عليها. ولّد جملاً من الأفلام أو أضف كلماتك.</p>
-          <button class="btn-ai" onclick="generateDailySentences()">✨ توليد 5 جمل من الأفلام</button>
+          <p class="muted">لا توجد كلمات محفوظة بعد للتدرب عليها. ولّد كلمات شائعة أو أضف كلماتك.</p>
+          <button class="btn-ai" onclick="generateDailySentences()">✨ توليد 5 كلمات شائعة</button>
         </div>`;
         return;
       }
@@ -1033,7 +1103,7 @@
             <span class="muted">${voiceIdx + 1} / ${voiceQueue.length}</span>
           </div>
 
-          <div style="background:#111A2E; border:1px solid #1E293B; border-radius:14px; padding:16px; margin-bottom:14px;">
+          <div class="detail-box">
             <div class="pill" style="margin-bottom:8px;">📍 الموقف: ${escapeHtml(sc.situation)}</div>
             <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
               <div>
@@ -1074,17 +1144,17 @@
           <span class="muted">${voiceIdx + 1} / ${voiceQueue.length}</span>
         </div>
 
-        <div style="background:#111A2E; border:1px solid #1E293B; border-radius:14px; padding:16px; margin-bottom:14px;">
+        <div class="detail-box">
           <div class="muted" style="margin-bottom:6px;">
             ${isBuilder
-              ? '🗣️ التحدي: أدخل هذه الكلمة في جملة إنجليزية كاملة من تأليفك (3 كلمات على الأقل) وانطقها بصوتك!'
+              ? '🗣️ التحدي: أدخل هذه العبارة في جملة إنجليزية صحيحة من تأليفك (3 كلمات على الأقل) وانطقها بصوتك!'
               : '📅 استمع لنبرة الجملة الصحيحة ثم انطق الكلمة أو الجملة في الميكروفون:'}
           </div>
           <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
             <div>
               <div style="font-size:1.8rem; font-weight:900;" dir="ltr">${escapeHtml(w.english)}</div>
               <div style="color:#34D399; font-weight:700; margin-top:4px;">المعنى: ${escapeHtml(w.arabic)}</div>
-              ${w.example ? `<div dir="ltr" class="muted" style="margin-top:6px;">نموذج من الفيلم: "${escapeHtml(w.example)}"</div>` : ''}
+              ${w.example ? `<div dir="ltr" class="muted" style="margin-top:6px;">مثال صحيح في الكلام: "${escapeHtml(w.example)}"</div>` : ''}
             </div>
             <div class="flex-gap">
               <button class="btn-secondary" onclick="speak('${escapeAttr(w.english)}')">🔊 الكلمة</button>
@@ -1148,9 +1218,9 @@
             voiceFeedback = '✅ ممتاز! استخدمت "' + item.english + '" في جملة كاملة بنطق واضح.';
             speak("Awesome sentence! Well done.");
           } else if (usedTargetWord) {
-            voiceFeedback = '⚠️ نطقت الكلمة بشكل صحيح، لكن ضعها الآن داخل جملة من 3 كلمات على الأقل.';
+            voiceFeedback = '⚠️ نطقت العبارة بشكل صحيح، لكن ضعها الآن داخل جملة من 3 كلمات على الأقل.';
           } else {
-            voiceFeedback = '🎧 حاول تكوين جملة تحتوي على الكلمة "' + item.english + '" وانطقها بوضوح.';
+            voiceFeedback = '🎧 حاول تكوين جملة تحتوي على "' + item.english + '" وانطقها بوضوح.';
           }
         } else {
           const cleanWord = item.english.toLowerCase().replace(/[^a-z\s]/g, '');
@@ -1213,13 +1283,13 @@
           <img class="crest-img" style="margin:0 auto 10px; display:block;" src="${lvl.img}" alt="${lvl.name}" />
           <h2>اختبار الترقية من ${lvl.name}</h2>
           <p class="muted">يجب إكمال <strong>${lvl.reqWords}</strong> كلمة جديدة في هذا المستوى لفتح هذا الاختبار. لديك حالياً <strong>${learnedInLevel}</strong> كلمات في هذا المستوى.</p>
-          <button class="btn-primary" onclick="startLearn()">العودة للتعلّم</button>
+          <button class="btn-primary" onclick="startLearn()">الذهاب إلى قائمة للتعلّم</button>
         </div>`;
         return;
       }
 
-      const pool = vocab.filter(w => w.status === 'learned' || w.status === 'mastered' || (w.interval || 0) >= 1);
-      const source = pool.length >= 5 ? pool : vocab;
+      const pool = getLearnedWords();
+      const source = pool.length >= 4 ? pool : vocab;
       if (source.length < 4) {
         box.innerHTML = `<div style="text-align:center; padding:16px;"><p class="muted">تحتاج إلى 4 كلمات محفوظة على الأقل لتوليد أسئلة الاختبار.</p></div>`;
         return;
@@ -1236,7 +1306,7 @@
         if (type === 'fill' && target.example && target.example.toLowerCase().includes(target.english.toLowerCase())) {
           const masked = target.example.replace(new RegExp(escapeRegex(target.english), 'ig'), '_____');
           return {
-            tag: 'إكمال حوار من حفظك',
+            tag: 'إكمال جملة صحيحة من حفظك',
             prompt: 'اختر العبارة المناسبة لإكمال الجملة:',
             sub: masked,
             speakText: '',
@@ -1247,7 +1317,7 @@
 
         if (type === 'audio') {
           return {
-            tag: 'اختبار الاستماع ونبرة الفيلم',
+            tag: 'اختبار الاستماع ونبرة الكلام',
             prompt: 'استمع إلى العبارة ثم اختر معناها الصحيح:',
             sub: target.pronunciation ? 'النطق التقريبي: ' + target.pronunciation : 'اضغط زر الاستماع',
             speakText: target.english,
@@ -1379,9 +1449,9 @@
 
     async function generateDailySentences() {
       const existingSet = new Set(vocab.map(w => w.english.toLowerCase()));
-      const available = MOVIE_SPOKEN_PACK.filter(item => !existingSet.has(item.english.toLowerCase()));
+      const available = NATURAL_SPOKEN_PACK.filter(item => !existingSet.has(item.english.toLowerCase()));
       if (!available.length) {
-        showToast('تمت إضافة جميع جمل الأفلام الجاهزة! يمكنك إضافة كلمات جديدة يدوياً.');
+        showToast('تمت إضافة جميع العبارات الشائعة الجاهزة! يمكنك إضافة كلمات جديدة يدوياً.');
         return;
       }
       const picked = shuffleArray(available).slice(0, 5);
@@ -1396,7 +1466,7 @@
           category: p.category,
           example: p.example,
           translation: p.translation,
-          notes: 'إنجليزية الأفلام والحوارات',
+          notes: p.tip || '',
           status: 'new',
           interval: 0,
           dateCreated: now,
@@ -1424,16 +1494,17 @@
           </div>
           <div dir="ltr" style="margin-top:6px; font-size:0.95rem;">"${escapeHtml(p.example)}"</div>
           <div class="muted" style="margin-top:2px;">${escapeHtml(p.translation)}</div>
+          ${p.tip ? `<div style="margin-top:6px; font-size:0.8rem; color:#FBBF24;">💡 كيفية الفهم والاستخدام: ${escapeHtml(p.tip)}</div>` : ''}
         </div>
       `).join('');
       card.style.display = 'block';
       refreshAll();
-      showToast('تم توليد وحفظ 5 جمل من الأفلام!');
+      showToast('تمت إضافة 5 كلمات شائعة إلى قائمة للتعلّم!');
     }
 
     function openWordModal(word = null) {
       editingId = word ? word.id : null;
-      document.getElementById('modal-title').textContent = word ? 'تعديل الكلمة' : 'إضافة كلمة إنجليزية';
+      document.getElementById('modal-title').textContent = word ? 'تعديل الكلمة' : 'إضافة كلمة إلى قائمة للتعلّم';
       document.getElementById('form-error').style.display = 'none';
       document.getElementById('f-english').value = word ? word.english : '';
       document.getElementById('f-arabic').value = word ? word.arabic : '';
@@ -1455,7 +1526,7 @@
       const ar = document.getElementById('f-arabic').value.trim();
       const errEl = document.getElementById('form-error');
       if (!en || !ar) {
-        errEl.textContent = 'يرجى إدخال الكلمة الإنجليزية ومعناها بالعربية.';
+        errEl.textContent = 'يرجى إدخال الكلمة أو العبارة الإنجليزية ومعناها بالعربية.';
         errEl.style.display = 'block';
         return;
       }
@@ -1490,10 +1561,14 @@
     }
 
     async function removeWord(id) {
-      if (!confirm('هل تريد حذف هذه الكلمة؟')) return;
+      if (!confirm('هل تريد حذف هذه الكلمة نهائياً؟')) return;
       await delItem('vocabulary', id);
       vocab = vocab.filter(w => w.id !== id);
+      learnQueue = learnQueue.filter(w => w.id !== id);
       refreshAll();
+      if (document.getElementById('page-learn').classList.contains('active')) {
+        renderLearnBox();
+      }
     }
 
     function setFilter(f, btn) {
@@ -1506,15 +1581,13 @@
     function renderVocabList() {
       const q = (document.getElementById('search-input').value || '').toLowerCase().trim();
       const sort = document.getElementById('sort-select').value;
-      const weekCutoff = addDays(todayStr(), -7);
 
       let list = vocab.filter(w => {
         const match = w.english.toLowerCase().includes(q) || w.arabic.toLowerCase().includes(q) || (w.category || '').toLowerCase().includes(q);
         if (!match) return false;
-        if (currentFilter === 'learned') return w.status === 'learned' || w.status === 'mastered';
+        if (currentFilter === 'to_learn') return !isWordLearned(w);
+        if (currentFilter === 'learned') return isWordLearned(w);
         if (currentFilter === 'difficult') return w.status === 'difficult';
-        if (currentFilter === 'new') return w.status === 'new';
-        if (currentFilter === 'week') return (w.lastReviewedDate || w.dateCreated || '') >= weekCutoff;
         return true;
       });
 
@@ -1522,133 +1595,155 @@
 
       const box = document.getElementById('vocab-list');
       if (!list.length) {
-        box.innerHTML = '<div class="card muted" style="text-align:center;">لا توجد كلمات مطابقة.</div>';
+        const emptyMsg = currentFilter === 'to_learn'
+          ? 'قائمة «للتعلّم» فارغة حالياً! أضف كلمات أو ولّد كلمات جديدة لتبدأ.'
+          : 'لا توجد كلمات في هذا القسم حالياً.';
+        box.innerHTML = `<div class="card muted" style="text-align:center;">${emptyMsg}</div>`;
         return;
       }
 
-      box.innerHTML = list.map(w => `
-        <div class="word-row">
-          <div>
+      box.innerHTML = list.map(w => {
+        const statusBadge = isWordLearned(w)
+          ? '<span class="pill" style="background:#064E3B; color:#6EE7B7;">✅ متعلّمة</span>'
+          : '<span class="pill" style="background:#451A03; color:#FCD34D;">📖 للتعلّم</span>';
+        return `
+          <div class="word-row">
             <div>
-              <strong style="font-size:1.1rem;" dir="ltr">${escapeHtml(w.english)}</strong>
-              ${w.pronunciation ? `<span class="pill">${escapeHtml(w.pronunciation)}</span>` : ''}
-              ${w.category ? `<span class="pill">${escapeHtml(w.category)}</span>` : ''}
+              <div>
+                <strong style="font-size:1.1rem;" dir="ltr">${escapeHtml(w.english)}</strong>
+                ${statusBadge}
+                ${w.pronunciation ? `<span class="pill">${escapeHtml(w.pronunciation)}</span>` : ''}
+                ${w.category ? `<span class="pill">${escapeHtml(w.category)}</span>` : ''}
+              </div>
+              <div style="margin-top:4px; font-weight:700;">${escapeHtml(w.arabic)}</div>
+              ${w.example ? `<div class="muted" dir="ltr" style="font-size:0.82rem; margin-top:4px;">"${escapeHtml(w.example)}"</div>` : ''}
+              ${w.translation ? `<div class="muted" style="font-size:0.8rem;">${escapeHtml(w.translation)}</div>` : ''}
+              ${w.notes ? `<div style="font-size:0.78rem; color:#FBBF24; margin-top:4px;">💡 ${escapeHtml(w.notes)}</div>` : ''}
             </div>
-            <div style="margin-top:4px;">${escapeHtml(w.arabic)}</div>
-            ${w.example ? `<div class="muted" dir="ltr" style="font-size:0.8rem; margin-top:4px;">"${escapeHtml(w.example)}"</div>` : ''}
+            <div class="flex-gap">
+              <button class="btn-secondary" onclick="speak('${escapeAttr(w.english)}')">🔊</button>
+              <button class="btn-amber" onclick='openWordModal(${JSON.stringify(w).replace(/'/g, "&#39;")})'>✏️</button>
+              <button class="btn-red" onclick="removeWord('${w.id}')">🗑️</button>
+            </div>
           </div>
-          <div class="flex-gap">
-            <button class="btn-secondary" onclick="speak('${escapeAttr(w.english)}')">🔊</button>
-            <button class="btn-amber" onclick='openWordModal(${JSON.stringify(w).replace(/'/g, "&#39;")})'>✏️</button>
-            <button class="btn-red" onclick="removeWord('${w.id}')">🗑️</button>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     function startLearn() {
       goTab('learn');
       const target = Number(settings.dailyTarget) || 5;
-      const pool = vocab.filter(w => w.status === 'new' || w.status === 'difficult');
-      const source = pool.length ? pool : vocab;
-      learnQueue = source.slice(0, target);
+      const unlearned = getToLearnWords();
+      learnQueue = unlearned.slice(0, target);
       learnIdx = 0;
-      learnReveal = false;
       learnLog = [];
       renderLearnBox();
     }
 
     function renderLearnBox() {
       const box = document.getElementById('learn-box');
-      if (!vocab.length) {
-        box.innerHTML = `<div style="text-align:center; padding:20px;">
-          <p class="muted">لا توجد كلمات بعد. اضغط على توليد الجمل من الأفلام أو أضف كلماتك.</p>
-          <div class="flex-gap" style="justify-content:center;">
-            <button class="btn-ai" onclick="generateDailySentences()">✨ توليد 5 جمل من الأفلام</button>
-            <button class="btn-primary" onclick="openWordModal()">+ إضافة كلمة</button>
-          </div>
-        </div>`;
-        return;
-      }
+      const remainingToLearn = getToLearnWords();
 
       if (!learnQueue.length || learnIdx >= learnQueue.length) {
         const itemsHtml = learnLog.map(x => `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #1E293B;"><span>${escapeHtml(x.en)}</span><span style="color:#60A5FA;">${x.label}</span></div>`).join('');
         box.innerHTML = `<div style="text-align:center;">
-          <h2>🎉 انتهت الجلسة</h2>
-          <p class="muted">تمت ممارسة ${learnLog.length} كلمات.</p>
-          <div style="text-align:right; max-width:420px; margin:12px auto;">${itemsHtml}</div>
+          <h2>${learnLog.length ? '🎉 أحسنت! تم تحديث قائمة للتعلّم' : '📖 لا توجد كلمات في قائمة للتعلّم'}</h2>
+          <p class="muted">الكلمات التي ضغطت عليها «تم التعلّم» أُزيلت من قائمة للتعلّم وانتقلت إلى قسم «المتعلّمة». المتبقي للتعلّم: <strong>${remainingToLearn.length}</strong></p>
+          ${learnLog.length ? `<div style="text-align:right; max-width:440px; margin:12px auto;">${itemsHtml}</div>` : ''}
           <div class="flex-gap" style="justify-content:center; margin-top:12px;">
-            <button class="btn-primary" onclick="startLearn()">بدء جلسة جديدة</button>
-            <button class="btn-ai" onclick="startSentenceBuilder()">🗣️ تدرّب على نطقها في جمل</button>
+            ${remainingToLearn.length ? `<button class="btn-primary" onclick="startLearn()">متابعة الكلمات المتبقية للتعلّم (${remainingToLearn.length})</button>` : `<button class="btn-ai" onclick="generateDailySentences()">✨ توليد 5 كلمات شائعة جديدة</button>`}
+            <button class="btn-secondary" onclick="goTab('vocab')">عرض الكلمات المتعلّمة</button>
           </div>
         </div>`;
         return;
       }
 
       const w = learnQueue[learnIdx];
+      const smartTip = w.notes || (w.example
+        ? `تُقال "${w.english}" في سياق "${w.example}" بمعنى (${w.arabic})؛ استمع للنبرة وكرّرها بصوت واضح.`
+        : `اربط معنى "${w.arabic}" بنطق "${w.english}" واستخدمها في جملة قصيرة من يومك.`);
+
       box.innerHTML = `
-        <div style="display:flex; justify-content:space-between; font-size:0.8rem;" class="muted">
-          <span>جلسة التعلّم</span>
-          <span>${learnIdx + 1} / ${learnQueue.length}</span>
+        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.82rem; margin-bottom:10px;" class="muted">
+          <span class="pill" style="background:#451A03; color:#FCD34D;">📖 قائمة للتعلّم (غير متعلمة)</span>
+          <span>بطاقة ${learnIdx + 1} من ${learnQueue.length}</span>
         </div>
-        <div style="text-align:center; padding:18px 0;">
-          <div style="display:inline-flex; align-items:center; gap:10px;">
-            <h2 style="margin:0; font-size:2rem;" dir="ltr">${escapeHtml(w.english)}</h2>
-            <button class="btn-secondary" onclick="speak('${escapeAttr(w.english)}')">🔊</button>
+
+        <div class="detail-box">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+            <div>
+              <h2 style="margin:0; font-size:2rem; color:#60A5FA;" dir="ltr">${escapeHtml(w.english)}</h2>
+              ${w.pronunciation ? `<div class="muted" style="margin-top:4px;">🗣️ النطق: <strong>${escapeHtml(w.pronunciation)}</strong></div>` : ''}
+            </div>
+            <div class="flex-gap">
+              <button class="btn-secondary" onclick="speak('${escapeAttr(w.english)}')">🔊 استمع للكلمة</button>
+              ${w.example ? `<button class="btn-primary" onclick="speak('${escapeAttr(w.example)}')">🔊 استمع للجملة</button>` : ''}
+            </div>
           </div>
-          ${w.pronunciation ? `<div class="muted" style="margin-top:4px;">النطق: ${escapeHtml(w.pronunciation)}</div>` : ''}
-        </div>
-        <div style="text-align:center; margin-bottom:12px;">
-          <button class="btn-secondary" onclick="toggleLearnReveal()">${learnReveal ? 'إخفاء المعنى والجملة' : 'إظهار المعنى والجملة'}</button>
-        </div>
-        ${learnReveal ? `
-          <div style="background:#111A2E; border:1px solid #1E293B; border-radius:12px; padding:14px; text-align:center; margin-bottom:14px;">
-            <div style="font-size:1.3rem; font-weight:800; color:#34D399;">${escapeHtml(w.arabic)}</div>
-            ${w.example ? `<div dir="ltr" style="margin-top:8px;">"${escapeHtml(w.example)}" <button class="btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="speak('${escapeAttr(w.example)}')">🔊</button></div>` : ''}
-            ${w.translation ? `<div class="muted" style="margin-top:4px;">${escapeHtml(w.translation)}</div>` : ''}
+
+          <div style="margin-top:14px; padding-top:12px; border-top:1px solid #1E293B;">
+            <div class="muted">المعنى بالعربية:</div>
+            <div style="font-size:1.3rem; font-weight:800; color:#34D399; margin-top:2px;">${escapeHtml(w.arabic)}</div>
           </div>
-        ` : ''}
+
+          ${w.example ? `
+            <div style="margin-top:12px; padding-top:12px; border-top:1px solid #1E293B;">
+              <div class="muted">جملة صحيحة وشائعة في الكلام:</div>
+              <div dir="ltr" style="font-size:1.05rem; font-weight:700; margin-top:4px;">"${escapeHtml(w.example)}"</div>
+              ${w.translation ? `<div class="muted" style="margin-top:4px;">${escapeHtml(w.translation)}</div>` : ''}
+            </div>
+          ` : ''}
+
+          <div style="margin-top:12px; padding-top:12px; border-top:1px solid #1E293B; font-size:0.85rem; color:#FBBF24;">
+            💡 كيف تفهمها وتستخدمها: ${escapeHtml(smartTip)}
+          </div>
+        </div>
+
         <div class="flex-gap" style="justify-content:center;">
-          <button class="btn-green" onclick="chooseLearn('learned')">✅ تم التعلّم</button>
-          <button class="btn-amber" onclick="chooseLearn('difficult')">⚠️ صعبة</button>
+          <button class="btn-green" onclick="chooseLearn('learned')">✅ تم التعلّم (نقل إلى المتعلّمة)</button>
+          <button class="btn-amber" onclick="chooseLearn('difficult')">⚠️ صعبة (تبقى للتعلّم)</button>
           <button class="btn-secondary" onclick="chooseLearn('not_learned')">➡️ التالية</button>
         </div>
       `;
-    }
-
-    function toggleLearnReveal() {
-      learnReveal = !learnReveal;
-      renderLearnBox();
     }
 
     async function chooseLearn(choice) {
       const w = learnQueue[learnIdx];
       if (!w) return;
       const now = todayStr();
-      const updated = {
-        ...w,
-        status: choice === 'not_learned' ? 'new' : choice,
-        interval: choice === 'not_learned' ? 0 : 1,
-        lastReviewedDate: now,
-        nextReviewDate: addDays(now, choice === 'not_learned' ? 0 : 1)
-      };
-      await putItem('vocabulary', updated);
-      vocab = vocab.map(x => x.id === updated.id ? updated : x);
 
       if (choice === 'learned') {
+        const updated = {
+          ...w,
+          status: 'learned',
+          interval: 1,
+          lastReviewedDate: now,
+          nextReviewDate: addDays(now, 1)
+        };
+        await putItem('vocabulary', updated);
+        vocab = vocab.map(x => x.id === updated.id ? updated : x);
         await recordLearnedWordForCurrentLevel(w.id);
-      }
 
-      const labelMap = { learned: 'تم التعلّم', difficult: 'صعبة', not_learned: 'غير متعلمة' };
-      learnLog.push({ en: w.english, label: labelMap[choice] });
-      learnIdx++;
-      learnReveal = false;
+        // Remove immediately from active learning queue so it moves to Learned
+        learnQueue.splice(learnIdx, 1);
+        learnLog.push({ en: w.english, label: 'نُقلت إلى المتعلّمة ✅' });
 
-      if (learnIdx >= learnQueue.length) {
-        const sRec = { id: Date.now().toString(), date: now, wordsCount: learnQueue.length };
-        await putItem('sessions', sRec);
-        sessions.push(sRec);
-        await bumpStreak(now);
+        if (learnLog.length && learnQueue.length === 0) {
+          const sRec = { id: Date.now().toString(), date: now, wordsCount: learnLog.length };
+          await putItem('sessions', sRec);
+          sessions.push(sRec);
+          await bumpStreak(now);
+        }
+      } else {
+        const updated = {
+          ...w,
+          status: choice === 'difficult' ? 'difficult' : 'new',
+          lastReviewedDate: now
+        };
+        await putItem('vocabulary', updated);
+        vocab = vocab.map(x => x.id === updated.id ? updated : x);
+        learnLog.push({ en: w.english, label: choice === 'difficult' ? 'صعبة ⚠️' : 'تبقى للتعلّم 📖' });
+        learnIdx++;
       }
 
       renderLearnBox();
